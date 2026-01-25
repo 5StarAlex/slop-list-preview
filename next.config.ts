@@ -1,12 +1,19 @@
-// next.config.js
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: [
-      "static.wikia.nocookie.net",
-      "upload.wikimedia.org"
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "static.wikia.nocookie.net",
+        pathname: "/**", // allows all paths under this domain
+      },
+      {
+        protocol: "https",
+        hostname: "upload.wikimedia.org",
+        pathname: "/**",
+      },
     ],
   },
-}
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
