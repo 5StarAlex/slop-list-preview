@@ -1,19 +1,37 @@
-export default function Profile() {
+import Link from "next/link";
+import SiteHeader from "../components/SiteHeader";
+
+export default function ProfilePage() {
   return (
-    <div className="space-y-6">
-      <h1 className="text-3xl text-green-400">Your Profile</h1>
-
-      <div className="flex gap-4 items-center">
-        <div className="w-20 h-20 bg-green-700 rounded-full" />
-        <div>
-          <p className="font-bold">Username</p>
-          <p className="text-sm">Slop Streak: 🔥🔥🔥</p>
+    <div className="route-page">
+      <SiteHeader />
+      <div className="route-shell">
+        <div className="route-page-head">
+          <p className="route-page-subtitle">Profile</p>
+          <h1 className="route-page-title">Your Slop Profile</h1>
+          <p className="route-copy">
+            Track your coin count, your posting energy, and the kind of chaos you bring.
+          </p>
         </div>
-      </div>
 
-      <div className="border border-green-700 p-4 rounded-lg">
-        <h2 className="text-xl">Badges</h2>
-        <div className="flex gap-3 mt-2">🏅 🧠 🥵</div>
+        <div className="route-grid">
+          <article className="route-card">
+            <h3>Coin Snapshot</h3>
+            <p>5820 coins and climbing from posts, reactions, and board comments.</p>
+            <div className="route-tag-row">
+              <span className="route-tag">Top Poster</span>
+              <span className="route-tag">Rom-Com Brain</span>
+            </div>
+          </article>
+
+          <article className="route-card">
+            <h3>Current Badges</h3>
+            <p>Tastemaker, lore goblin, and repeat argument starter.</p>
+            <Link href="/" className="route-button">
+              Back Home
+            </Link>
+          </article>
+        </div>
       </div>
     </div>
   );

@@ -1,19 +1,34 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+import type { NextConfig } from "next";
+import path from "path";
+
+const nextConfig: NextConfig = {
+  turbopack: {
+    root: path.join(__dirname),
+  },
   images: {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "static.wikia.nocookie.net",
-        pathname: "/**", // allows all paths under this domain
+        hostname: "a.storyblok.com",
+        pathname: "/**",
       },
       {
         protocol: "https",
-        hostname: "upload.wikimedia.org",
+        hostname: "static.wikia.nocookie.net",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "m.media-amazon.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "i.redd.it",
         pathname: "/**",
       },
     ],
   },
 };
 
-module.exports = nextConfig;
+export default nextConfig;
