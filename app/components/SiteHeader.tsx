@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { COINS_EVENT_NAME, COINS_STORAGE_KEY } from "../lib/siteData";
 
 type TrailPoint = {
   id: number;
@@ -15,12 +16,27 @@ type DriftPixel = {
   size: number;
 };
 
+type AttackPixel = {
+  id: number;
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  size: number;
+  life: number;
+};
+
 type GamePhase = "idle" | "intro" | "countdown" | "playing" | "gameover";
 
 const PARTICLE_SPEED = 18;
 const MIN_SPEED = 1;
 const MAX_SPEED = 100;
 const PLAYER_SIZE = 8;
+const ABILITY_CHARGE_SECONDS = 15;
+const COIN_AWARD_SECONDS = 5;
+const ATTACK_PIXEL_COUNT = 24;
+const ATTACK_SPEED = 150;
+const ATTACK_LIFE_SECONDS = 0.4;
 
 function speedToPixelsPerSecond(speed: number) {
   const clamped = Math.min(Math.max(speed, MIN_SPEED), MAX_SPEED);
@@ -35,16 +51,34 @@ function isFrozen(phase: GamePhase) {
   return phase === "intro" || phase === "countdown";
 }
 
+function formatElapsedTime(seconds: number) {
+  const totalSeconds = Math.floor(seconds);
+  const minutes = Math.floor(totalSeconds / 60);
+  const remainingSeconds = totalSeconds % 60;
+  return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
+}
+
+function readStoredCoins() {
+  if (typeof window === "undefined") {
+    return 0;
+  }
+
+  const savedCoins = Number(window.localStorage.getItem(COINS_STORAGE_KEY) ?? "0");
+  return Number.isFinite(savedCoins) ? savedCoins : 0;
+}
+
 export default function SiteHeader() {
   const [trail, setTrail] = useState<TrailPoint[]>([]);
   const [driftPixels, setDriftPixels] = useState<DriftPixel[]>([]);
+  const [attackPixels, setAttackPixels] = useState<AttackPixel[]>([]);
   const [phase, setPhase] = useState<GamePhase>("idle");
   const [overlayText, setOverlayText] = useState<string | null>(null);
   const [overlayKey, setOverlayKey] = useState(0);
   const [timerKey, setTimerKey] = useState(0);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
-  const [earnedCoins, setEarnedCoins] = useState(0);
+  const [coins, setCoins] = useState(() => readStoredCoins());
   const [timerFlash, setTimerFlash] = useState(false);
+  const [abilityReady, setAbilityReady] = useState(false);
 
   const nextId = useRef(0);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -53,25 +87,63 @@ export default function SiteHeader() {
   const marqueeRef = useRef<HTMLDivElement | null>(null);
   const phaseRef = useRef<GamePhase>("idle");
   const cursorRef = useRef<{ x: number; y: number } | null>(null);
+  const driftPixelsRef = useRef<DriftPixel[]>([]);
+  const attackPixelsRef = useRef<AttackPixel[]>([]);
+  const abilityReadyRef = useRef(false);
   const timeoutsRef = useRef<Array<ReturnType<typeof setTimeout>>>([]);
+  const coinIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const abilityTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const gameStartRef = useRef<number | null>(null);
-  const awardedMilestonesRef = useRef(0);
+  const lastCoinAwardRef = useRef<number | null>(null);
 
   useEffect(() => {
     phaseRef.current = phase;
   }, [phase]);
+
+  useEffect(() => {
+    driftPixelsRef.current = driftPixels;
+  }, [driftPixels]);
+
+  useEffect(() => {
+    attackPixelsRef.current = attackPixels;
+  }, [attackPixels]);
+
+  useEffect(() => {
+    abilityReadyRef.current = abilityReady;
+  }, [abilityReady]);
 
   const clearGameTimeouts = () => {
     for (const timeout of timeoutsRef.current) {
       window.clearTimeout(timeout);
     }
     timeoutsRef.current = [];
+    if (coinIntervalRef.current) {
+      window.clearInterval(coinIntervalRef.current);
+      coinIntervalRef.current = null;
+    }
+    if (abilityTimeoutRef.current) {
+      window.clearTimeout(abilityTimeoutRef.current);
+      abilityTimeoutRef.current = null;
+    }
   };
 
   const flashTimer = () => {
     setTimerFlash(true);
     const timeout = window.setTimeout(() => setTimerFlash(false), 500);
     timeoutsRef.current.push(timeout);
+  };
+
+  const awardCoins = (amount: number) => {
+    setCoins((currentCoins) => {
+      const nextCoins = currentCoins + amount;
+      window.localStorage.setItem(COINS_STORAGE_KEY, String(nextCoins));
+      window.dispatchEvent(
+        new CustomEvent(COINS_EVENT_NAME, {
+          detail: { amount, total: nextCoins },
+        })
+      );
+      return nextCoins;
+    });
   };
 
   const triggerOverlay = (text: string | null) => {
@@ -87,16 +159,20 @@ export default function SiteHeader() {
     setOverlayText(null);
     setPhase("playing");
     setTimerKey((current) => current + 1);
-    gameStartRef.current = performance.now();
-    awardedMilestonesRef.current = 0;
+    const now = performance.now();
+    gameStartRef.current = now;
+    lastCoinAwardRef.current = now;
+    setAbilityReady(false);
   };
 
   const gameStart = () => {
     clearGameTimeouts();
     setElapsedSeconds(0);
     setTimerFlash(false);
-    awardedMilestonesRef.current = 0;
+    setAbilityReady(false);
+    setAttackPixels([]);
     gameStartRef.current = null;
+    lastCoinAwardRef.current = null;
     pause();
     triggerOverlay("GAME START");
 
@@ -112,7 +188,6 @@ export default function SiteHeader() {
 
     schedule(1800, () => triggerOverlay("2"));
     schedule(2600, () => triggerOverlay("1"));
-
     schedule(3400, continueGame);
   };
 
@@ -134,15 +209,14 @@ export default function SiteHeader() {
       const topPadding = 4;
       const maxY = Math.max(topPadding, bounds.height - pixelSize - topPadding);
 
-      setDriftPixels((current) => [
-        ...current,
-        {
-          id: nextId.current++,
-          x: bounds.width + pixelSize,
-          y: topPadding + Math.random() * (maxY - topPadding),
-          size: pixelSize,
-        },
-      ]);
+      const nextPixel = {
+        id: nextId.current++,
+        x: bounds.width + pixelSize,
+        y: topPadding + Math.random() * (maxY - topPadding),
+        size: pixelSize,
+      };
+      driftPixelsRef.current = [...driftPixelsRef.current, nextPixel];
+      setDriftPixels(driftPixelsRef.current);
 
       timeoutRef.current = window.setTimeout(spawnPixel, randomSpawnDelay());
     };
@@ -161,22 +235,47 @@ export default function SiteHeader() {
       const pixelsPerSecond = speedToPixelsPerSecond(PARTICLE_SPEED);
       const frozen = isFrozen(phaseRef.current);
 
-      setDriftPixels((current) => {
-        const nextPixels = frozen
-          ? current
-          : current
-              .map((pixel) => ({
-                ...pixel,
-                x: pixel.x - pixelsPerSecond * deltaSeconds,
-              }))
-              .filter((pixel) => pixel.x + pixel.size > -12);
+      const nextAttacks = frozen
+        ? attackPixelsRef.current
+        : attackPixelsRef.current
+            .map((pixel) => ({
+              ...pixel,
+              x: pixel.x + pixel.vx * deltaSeconds,
+              y: pixel.y + pixel.vy * deltaSeconds,
+              life: pixel.life - deltaSeconds,
+            }))
+            .filter((pixel) => pixel.life > 0);
 
-        if (phaseRef.current === "playing" && cursorRef.current) {
+      let nextPixels = frozen
+        ? driftPixelsRef.current
+        : driftPixelsRef.current
+            .map((pixel) => ({
+              ...pixel,
+              x: pixel.x - pixelsPerSecond * deltaSeconds,
+            }))
+            .filter((pixel) => pixel.x + pixel.size > -12);
+
+      if (nextAttacks.length > 0) {
+        nextPixels = nextPixels.filter((pixel) => {
+          return !nextAttacks.some((attack) => {
+            const pixelCenterX = pixel.x + pixel.size / 2;
+            const pixelCenterY = pixel.y + pixel.size / 2;
+            const attackCenterX = attack.x + attack.size / 2;
+            const attackCenterY = attack.y + attack.size / 2;
+            const dx = pixelCenterX - attackCenterX;
+            const dy = pixelCenterY - attackCenterY;
+            return Math.sqrt(dx * dx + dy * dy) <= attack.size + pixel.size;
+          });
+        });
+      }
+
+      if (phaseRef.current === "playing") {
+        if (cursorRef.current) {
           const hit = nextPixels.some((pixel) => {
             const pixelRight = pixel.x + pixel.size;
             const pixelBottom = pixel.y + pixel.size;
-            const playerLeft = cursorRef.current.x - PLAYER_SIZE / 2;
-            const playerTop = cursorRef.current.y - PLAYER_SIZE / 2;
+            const playerLeft = cursorRef.current!.x - PLAYER_SIZE / 2;
+            const playerTop = cursorRef.current!.y - PLAYER_SIZE / 2;
             const playerRight = playerLeft + PLAYER_SIZE;
             const playerBottom = playerTop + PLAYER_SIZE;
 
@@ -192,22 +291,19 @@ export default function SiteHeader() {
             setPhase("gameover");
             triggerOverlay("GAME OVER");
             gameStartRef.current = null;
-          } else if (gameStartRef.current != null) {
-            const survivedSeconds = (time - gameStartRef.current) / 1000;
-            setElapsedSeconds(survivedSeconds);
-            const milestones = Math.floor(survivedSeconds / 5);
-
-            if (milestones > awardedMilestonesRef.current) {
-              const earnedNow = milestones - awardedMilestonesRef.current;
-              awardedMilestonesRef.current = milestones;
-              setEarnedCoins((currentCoins) => currentCoins + earnedNow);
-              flashTimer();
-            }
           }
         }
 
-        return nextPixels;
-      });
+        if (gameStartRef.current != null) {
+          const survivedSeconds = (time - gameStartRef.current) / 1000;
+          setElapsedSeconds(survivedSeconds);
+        }
+      }
+
+      attackPixelsRef.current = nextAttacks;
+      driftPixelsRef.current = nextPixels;
+      setAttackPixels(nextAttacks);
+      setDriftPixels(nextPixels);
 
       frameRef.current = window.requestAnimationFrame(step);
     };
@@ -226,6 +322,51 @@ export default function SiteHeader() {
       }
     };
   }, []);
+
+  useEffect(() => {
+    if (phase !== "playing") {
+      if (coinIntervalRef.current) {
+        window.clearInterval(coinIntervalRef.current);
+        coinIntervalRef.current = null;
+      }
+      if (abilityTimeoutRef.current) {
+        window.clearTimeout(abilityTimeoutRef.current);
+        abilityTimeoutRef.current = null;
+      }
+      return;
+    }
+
+    coinIntervalRef.current = window.setInterval(() => {
+      awardCoins(5);
+      flashTimer();
+      lastCoinAwardRef.current = performance.now();
+    }, COIN_AWARD_SECONDS * 1000);
+
+    const armAbility = () => {
+      if (abilityTimeoutRef.current) {
+        window.clearTimeout(abilityTimeoutRef.current);
+      }
+      abilityTimeoutRef.current = window.setTimeout(() => {
+        setAbilityReady(true);
+        abilityTimeoutRef.current = null;
+      }, ABILITY_CHARGE_SECONDS * 1000);
+    };
+
+    if (!abilityReadyRef.current) {
+      armAbility();
+    }
+
+    return () => {
+      if (coinIntervalRef.current) {
+        window.clearInterval(coinIntervalRef.current);
+        coinIntervalRef.current = null;
+      }
+      if (abilityTimeoutRef.current) {
+        window.clearTimeout(abilityTimeoutRef.current);
+        abilityTimeoutRef.current = null;
+      }
+    };
+  }, [phase]);
 
   return (
     <header className="masthead">
@@ -257,12 +398,46 @@ export default function SiteHeader() {
         onMouseLeave={() => {
           clearGameTimeouts();
           setTrail([]);
+          setAttackPixels([]);
           cursorRef.current = null;
           setPhase("idle");
           setOverlayText(null);
           setElapsedSeconds(0);
           setTimerFlash(false);
+          setAbilityReady(false);
           gameStartRef.current = null;
+          lastCoinAwardRef.current = null;
+        }}
+        onClick={() => {
+          if (phaseRef.current !== "playing" || !abilityReadyRef.current || !cursorRef.current) {
+            return;
+          }
+
+          const originX = cursorRef.current.x;
+          const originY = cursorRef.current.y;
+          const newAttackPixels: AttackPixel[] = Array.from({ length: ATTACK_PIXEL_COUNT }, (_, index) => {
+            const angle = (Math.PI * 2 * index) / ATTACK_PIXEL_COUNT;
+            return {
+              id: nextId.current++,
+              x: originX,
+              y: originY,
+              vx: Math.cos(angle) * ATTACK_SPEED,
+              vy: Math.sin(angle) * ATTACK_SPEED,
+              size: 8,
+              life: ATTACK_LIFE_SECONDS,
+            };
+          });
+
+          attackPixelsRef.current = newAttackPixels;
+          setAttackPixels(newAttackPixels);
+          setAbilityReady(false);
+          if (abilityTimeoutRef.current) {
+            window.clearTimeout(abilityTimeoutRef.current);
+          }
+          abilityTimeoutRef.current = window.setTimeout(() => {
+            setAbilityReady(true);
+            abilityTimeoutRef.current = null;
+          }, ABILITY_CHARGE_SECONDS * 1000);
         }}
       >
         <div className="slime-track">
@@ -288,11 +463,25 @@ export default function SiteHeader() {
           {trail.map((point, index) => (
             <span
               key={point.id}
-              className="cursor-pixel"
+              className={`cursor-pixel${index === trail.length - 1 && abilityReady ? " cursor-pixel-ability" : ""}`}
               style={{
                 left: point.x,
                 top: point.y,
                 opacity: (index + 1) / trail.length,
+              }}
+              aria-hidden="true"
+            />
+          ))}
+
+          {attackPixels.map((pixel) => (
+            <span
+              key={pixel.id}
+              className="attack-pixel"
+              style={{
+                left: pixel.x,
+                top: pixel.y,
+                width: pixel.size,
+                height: pixel.size,
               }}
               aria-hidden="true"
             />
@@ -315,16 +504,9 @@ export default function SiteHeader() {
             </div>
           ) : null}
 
-          <div className="game-coins">Slop Coins Won: {earnedCoins}</div>
+          <div className="game-coins">Coins: {coins}</div>
         </div>
       </div>
     </header>
   );
-}
-
-function formatElapsedTime(seconds: number) {
-  const totalSeconds = Math.floor(seconds);
-  const minutes = Math.floor(totalSeconds / 60);
-  const remainingSeconds = totalSeconds % 60;
-  return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
 }

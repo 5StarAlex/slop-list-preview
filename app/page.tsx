@@ -1,15 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import SiteHeader from "./components/SiteHeader";
+import SlopCoinsDisplay from "./components/SlopCoinsDisplay";
 import SlopOfTheWeek from "./components/SlopOfTheWeek";
-
-const navItems = [
-  { href: "/", label: "Home Page" },
-  { href: "/catalog", label: "Catalog" },
-  { href: "/create", label: "Create Slop" },
-  { href: "/rules", label: "Slop Rules" },
-  { href: "/profile", label: "Profile" },
-];
+import SiteNav from "./components/SiteNav";
 
 const discussionPosts = [
   {
@@ -58,7 +52,7 @@ export default function Home() {
             <h2>
               <FloatingWord text="Slop Coins" />
             </h2>
-            <div className="count-chip">5820 {"\u{1FA99}"}</div>
+            <SlopCoinsDisplay />
             <p>Post, react, and keep the board alive to stack more coins.</p>
           </section>
 
@@ -94,21 +88,15 @@ export default function Home() {
           </div>
 
           <div className="footer-links">
-            <Link href="/rules">Terms &amp; Conditions</Link>
+            <Link href="/about">Terms &amp; Conditions</Link>
             <Link href="/profile">Privacy Policy</Link>
-            <Link href="/catalog">JittyBoyz Labs</Link>
+            <Link href="/shop">JittyBoyz Labs</Link>
           </div>
         </aside>
 
         <section className="main-column">
           <div className="main-shell">
-            <nav className="pixel-nav" aria-label="Main navigation">
-              {navItems.map((item) => (
-                <Link key={item.href} href={item.href} className="pixel-tab">
-                  {item.label}
-                </Link>
-              ))}
-            </nav>
+            <SiteNav />
 
             <div className="board-grid">
               <div id="slop-of-the-week">
@@ -123,7 +111,7 @@ export default function Home() {
 
                   <div className="discussion-list">
                     {discussionPosts.map((post) => (
-                      <article key={post.title} className="discussion-card">
+                      <article key={post.title} className="discussion-card hover-grow-panel">
                         <div className="discussion-image-frame">
                           <div className="emoji-float-row" aria-hidden="true">
                             {post.emojis.map((emoji, index) => (
@@ -165,11 +153,14 @@ export default function Home() {
                     <Link href="/create" className="route-button">
                       Open Create
                     </Link>
-                    <Link href="/rules" className="route-button">
-                      Read Rules
+                    <Link href="/shop" className="route-button">
+                      Open Shop
                     </Link>
                     <Link href="/profile" className="route-button">
                       View Profile
+                    </Link>
+                    <Link href="/about" className="route-button">
+                      Read About
                     </Link>
                   </div>
                 </section>
