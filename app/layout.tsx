@@ -1,6 +1,7 @@
 import "./globals.css";
 import type { ReactNode } from "react";
 import GlobalMouseTrail from "./components/GlobalMouseTrail";
+import PageTransition from "./components/PageTransition";
 
 export default function RootLayout({
   children,
@@ -11,7 +12,9 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <GlobalMouseTrail />
-        <main>{children}</main>
+        <main>
+          <PageTransition>{children}</PageTransition>
+        </main>
       </body>
     </html>
   );

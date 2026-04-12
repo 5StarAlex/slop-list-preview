@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { CSSProperties, FormEvent, useEffect, useState } from "react";
+import CreateASlop from "../components/CreateASlop";
 import SiteHeader from "../components/SiteHeader";
 import SiteNav from "../components/SiteNav";
 
@@ -293,115 +294,118 @@ export default function ProfilePage() {
     <div className="route-page profile-theme-page" style={currentTheme as CSSProperties}>
       <SiteHeader />
 
-      <div className="profile-modern-shell">
+      <div className="route-shell profile-modern-shell">
         <SiteNav variant="profile" />
-
-        <section className="profile-modern-card">
-          <div
-            className="profile-modern-banner"
-            style={{
-              backgroundImage: `${currentTheme["--profile-banner-overlay"]}, url("${profile.bannerImage}")`,
-            }}
-          >
-            <div className="profile-banner-actions" aria-label="Profile actions">
-              <button type="button" className="profile-icon-action" aria-label="Add friend">
-                +
-              </button>
-              <button type="button" className="profile-icon-action" aria-label="Open profile editor" onClick={openEditModal}>
-                ...
-              </button>
+        <div className="profile-content-grid">
+          <section className="profile-modern-card">
+            <div
+              className="profile-modern-banner"
+              style={{
+                backgroundImage: `${currentTheme["--profile-banner-overlay"]}, url("${profile.bannerImage}")`,
+              }}
+            >
+              <div className="profile-banner-actions" aria-label="Profile actions">
+                <button type="button" className="profile-icon-action" aria-label="Add friend">
+                  +
+                </button>
+                <button type="button" className="profile-icon-action" aria-label="Open profile editor" onClick={openEditModal}>
+                  ...
+                </button>
+              </div>
             </div>
-          </div>
 
-          <div className="profile-modern-body">
-            <div className="profile-modern-avatar-wrap">
-              <button
-                type="button"
-                className="profile-modern-avatar-button"
-                aria-label="Open profile editor"
-                onClick={openEditModal}
-              >
-                <div className="profile-modern-avatar-frame">
-                  <Image
-                    src={profile.profileImage}
-                    alt={`${profile.displayName} profile picture`}
-                    width={240}
-                    height={240}
-                    className="profile-modern-avatar"
-                    unoptimized
-                  />
+            <div className="profile-modern-body">
+              <div className="profile-modern-avatar-wrap">
+                <button
+                  type="button"
+                  className="profile-modern-avatar-button"
+                  aria-label="Open profile editor"
+                  onClick={openEditModal}
+                >
+                  <div className="profile-modern-avatar-frame">
+                    <Image
+                      src={profile.profileImage}
+                      alt={`${profile.displayName} profile picture`}
+                      width={240}
+                      height={240}
+                      className="profile-modern-avatar"
+                      unoptimized
+                    />
+                  </div>
+                </button>
+                <span className="profile-modern-status" aria-hidden="true" />
+              </div>
+
+              <div className="profile-modern-identity">
+                <h1 className="profile-modern-name">{profile.displayName}</h1>
+                <div className="profile-modern-meta-row">
+                  <span className="profile-modern-handle">{profile.username}</span>
+                  <span className="profile-modern-tag">IRL</span>
+                  <span
+                    className="profile-modern-tag"
+                    style={{
+                      color: profile.affiliationTextColor,
+                      background: profile.affiliationBoxColor,
+                    }}
+                  >
+                    {profile.affiliation}
+                  </span>
                 </div>
-              </button>
-              <span className="profile-modern-status" aria-hidden="true" />
-            </div>
 
-            <div className="profile-modern-identity">
-              <h1 className="profile-modern-name">{profile.displayName}</h1>
-              <div className="profile-modern-meta-row">
-                <span className="profile-modern-handle">{profile.username}</span>
-                <span className="profile-modern-tag">IRL</span>
-                <span
-                  className="profile-modern-tag"
-                  style={{
-                    color: profile.affiliationTextColor,
-                    background: profile.affiliationBoxColor,
+                <div className="profile-modern-socials" aria-label="Earned icons and badges">
+                  {socialBadges.map((badge) => (
+                    <span key={badge.label} className={`profile-social-badge ${badge.colorClass}`} title={badge.label}>
+                      <span
+                        className="profile-badge-icon profile-badge-image"
+                        style={{ backgroundImage: `url("${badge.iconUrl}")` }}
+                        aria-hidden="true"
+                      />
+                    </span>
+                  ))}
+                </div>
+
+                <button type="button" className="profile-text-link" onClick={() => setIsBioOpen(true)}>
+                  View Full Bio
+                </button>
+
+                <p className="profile-modern-description">{profile.description}</p>
+
+                <section className="profile-modern-panel">
+                  <div className="profile-panel-head">
+                    <span>Game Collection</span>
+                    <div className="profile-game-grid" aria-label="Collected games">
+                      {gameCollection.map((game) => (
+                        <span key={game} className="profile-game-pill">
+                          {game}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </section>
+
+                <form
+                  className="profile-modern-message"
+                  onSubmit={(event) => {
+                    event.preventDefault();
                   }}
                 >
-                  {profile.affiliation}
-                </span>
+                  <input
+                    type="text"
+                    className="profile-modern-input"
+                    value={message}
+                    onChange={(event) => setMessage(event.target.value)}
+                    aria-label={`Message ${profile.displayName}`}
+                  />
+                  <button type="submit" className="profile-message-emoji" aria-label="Open emoji picker">
+                    :)
+                  </button>
+                </form>
               </div>
-
-              <div className="profile-modern-socials" aria-label="Earned icons and badges">
-                {socialBadges.map((badge) => (
-                  <span key={badge.label} className={`profile-social-badge ${badge.colorClass}`} title={badge.label}>
-                    <span
-                      className="profile-badge-icon profile-badge-image"
-                      style={{ backgroundImage: `url("${badge.iconUrl}")` }}
-                      aria-hidden="true"
-                    />
-                  </span>
-                ))}
-              </div>
-
-              <button type="button" className="profile-text-link" onClick={() => setIsBioOpen(true)}>
-                View Full Bio
-              </button>
-
-              <p className="profile-modern-description">{profile.description}</p>
-
-              <section className="profile-modern-panel">
-                <div className="profile-panel-head">
-                  <span>Game Collection</span>
-                  <div className="profile-game-grid" aria-label="Collected games">
-                    {gameCollection.map((game) => (
-                      <span key={game} className="profile-game-pill">
-                        {game}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </section>
-
-              <form
-                className="profile-modern-message"
-                onSubmit={(event) => {
-                  event.preventDefault();
-                }}
-              >
-                <input
-                  type="text"
-                  className="profile-modern-input"
-                  value={message}
-                  onChange={(event) => setMessage(event.target.value)}
-                  aria-label={`Message ${profile.displayName}`}
-                />
-                <button type="submit" className="profile-message-emoji" aria-label="Open emoji picker">
-                  :)
-                </button>
-              </form>
             </div>
-          </div>
-        </section>
+          </section>
+
+          <CreateASlop />
+        </div>
       </div>
 
       {isEditMounted ? (

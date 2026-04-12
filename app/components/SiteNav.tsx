@@ -14,12 +14,12 @@ export default function SiteNav({ variant = "default" }: SiteNavProps) {
 
   if (variant === "profile") {
     return (
-      <nav className="profile-top-actions profile-nav-row" aria-label="Profile navigation">
+      <nav className="pixel-nav profile-nav-row" aria-label="Profile navigation">
         {navItems.map((item) => (
           <Link
             key={item.href}
             href={item.href}
-            className={`profile-home-button${pathname === item.href ? " is-active" : ""}`}
+            className={`pixel-tab profile-home-button${pathname === item.href ? " is-active" : ""}`}
           >
             {item.label}
           </Link>
