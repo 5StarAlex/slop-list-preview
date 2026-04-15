@@ -48,10 +48,10 @@ const defaultProfile: ProfileData = {
   profileImage: "https://i.redd.it/6c8d5tlwsfpb1.jpg",
   bannerImage:
     "https://as1.ftcdn.net/v2/jpg/05/22/33/10/1000_F_522331099_Ha6ktAQY8ghcAR8PAqAqeKZZLRPm5g5W.jpg",
-  displayName: "Jacari D",
-  username: "captdavis",
+  displayName: "Aerial Ace",
+  username: "5staralex",
   description:
-    "Team principal of chaos, catalog raider, and survival grinder. I keep the profile clean, the rankings loud, and the game collection stacked while I chase better runs and find more slop to archive.",
+    "Top slop sargent.",
   affiliation: "Jitty Boys",
   affiliationTextColor: "#f8d899",
   affiliationBoxColor: "rgba(255, 248, 230, 0.1)",
@@ -211,6 +211,51 @@ const themeStyles: Record<ProfileTheme, Record<string, string>> = {
   },
 };
 
+const creatorThemeStyles: Record<ProfileTheme, Record<string, string>> = {
+  black: {
+    "--creator-shell-bg": "linear-gradient(180deg, #11151d, #090d14 100%)",
+    "--creator-sidebar-bg": "linear-gradient(180deg, #24314f, #131a2c 100%)",
+    "--creator-accent": "#f8d899",
+    "--creator-stage-bg": "linear-gradient(180deg, #0d1524, #070c14 100%)",
+    "--creator-floor-bg": "linear-gradient(180deg, rgba(248, 216, 153, 0.18), rgba(248, 216, 153, 0.04))",
+  },
+  white: {
+    "--creator-shell-bg": "linear-gradient(180deg, #ffffff, #eef3f8 100%)",
+    "--creator-sidebar-bg": "linear-gradient(180deg, #f4efe7, #e3ebf3 100%)",
+    "--creator-accent": "#b37a20",
+    "--creator-stage-bg": "linear-gradient(180deg, #f8fbff, #e7edf5 100%)",
+    "--creator-floor-bg": "linear-gradient(180deg, rgba(179, 122, 32, 0.14), rgba(179, 122, 32, 0.03))",
+  },
+  red: {
+    "--creator-shell-bg": "linear-gradient(180deg, #331116, #18070a 100%)",
+    "--creator-sidebar-bg": "linear-gradient(180deg, #5a1d25, #2b0d12 100%)",
+    "--creator-accent": "#ffb38a",
+    "--creator-stage-bg": "linear-gradient(180deg, #2a0d13, #140509 100%)",
+    "--creator-floor-bg": "linear-gradient(180deg, rgba(255, 179, 138, 0.18), rgba(255, 179, 138, 0.04))",
+  },
+  blue: {
+    "--creator-shell-bg": "linear-gradient(180deg, #11203d, #07101f 100%)",
+    "--creator-sidebar-bg": "linear-gradient(180deg, #19396f, #102347 100%)",
+    "--creator-accent": "#8fd4ff",
+    "--creator-stage-bg": "linear-gradient(180deg, #0b1a34, #060d1b 100%)",
+    "--creator-floor-bg": "linear-gradient(180deg, rgba(143, 212, 255, 0.2), rgba(143, 212, 255, 0.05))",
+  },
+  gray: {
+    "--creator-shell-bg": "linear-gradient(180deg, #21252d, #111419 100%)",
+    "--creator-sidebar-bg": "linear-gradient(180deg, #434b59, #252b35 100%)",
+    "--creator-accent": "#e7d8ba",
+    "--creator-stage-bg": "linear-gradient(180deg, #1a2028, #0d1015 100%)",
+    "--creator-floor-bg": "linear-gradient(180deg, rgba(231, 216, 186, 0.16), rgba(231, 216, 186, 0.04))",
+  },
+  aurora: {
+    "--creator-shell-bg": "linear-gradient(135deg, #171426 0%, #0d2230 48%, #142a20 100%)",
+    "--creator-sidebar-bg": "linear-gradient(180deg, #234564, #163127 100%)",
+    "--creator-accent": "#9ef5d2",
+    "--creator-stage-bg": "linear-gradient(180deg, #0d1c2a, #081210 100%)",
+    "--creator-floor-bg": "linear-gradient(180deg, rgba(158, 245, 210, 0.2), rgba(158, 245, 210, 0.05))",
+  },
+};
+
 function readStoredProfile(): ProfileData {
   if (typeof window === "undefined") {
     return defaultProfile;
@@ -236,14 +281,28 @@ function readStoredProfile(): ProfileData {
 }
 
 export default function ProfilePage() {
-  const [profile, setProfile] = useState<ProfileData>(() => readStoredProfile());
-  const [draft, setDraft] = useState<ProfileData>(() => readStoredProfile());
-  const [message, setMessage] = useState(() => `Message @${readStoredProfile().displayName}`);
+  const [profile, setProfile] = useState<ProfileData>(defaultProfile);
+  const [draft, setDraft] = useState<ProfileData>(defaultProfile);
+  const [message, setMessage] = useState(`Message @${defaultProfile.displayName}`);
   const [isEditMounted, setIsEditMounted] = useState(false);
   const [isEditVisible, setIsEditVisible] = useState(false);
   const [isBioOpen, setIsBioOpen] = useState(false);
 
-  const currentTheme = themeStyles[profile.theme];
+  const currentTheme = {
+    ...themeStyles[profile.theme],
+    ...creatorThemeStyles[profile.theme],
+  };
+
+  useEffect(() => {
+    const hydrationTimeout = window.setTimeout(() => {
+      const storedProfile = readStoredProfile();
+      setProfile(storedProfile);
+      setDraft(storedProfile);
+      setMessage(`Message @${storedProfile.displayName}`);
+    }, 0);
+
+    return () => window.clearTimeout(hydrationTimeout);
+  }, []);
 
   useEffect(() => {
     window.localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profile));

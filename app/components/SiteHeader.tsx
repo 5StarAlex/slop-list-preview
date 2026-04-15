@@ -76,7 +76,7 @@ export default function SiteHeader() {
   const [overlayKey, setOverlayKey] = useState(0);
   const [timerKey, setTimerKey] = useState(0);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
-  const [coins, setCoins] = useState(() => readStoredCoins());
+  const [coins, setCoins] = useState(0);
   const [timerFlash, setTimerFlash] = useState(false);
   const [abilityReady, setAbilityReady] = useState(false);
 
@@ -95,6 +95,19 @@ export default function SiteHeader() {
   const abilityTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const gameStartRef = useRef<number | null>(null);
   const lastCoinAwardRef = useRef<number | null>(null);
+  const coinHydrationTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    coinHydrationTimeoutRef.current = window.setTimeout(() => {
+      setCoins(readStoredCoins());
+    }, 0);
+
+    return () => {
+      if (coinHydrationTimeoutRef.current) {
+        window.clearTimeout(coinHydrationTimeoutRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     phaseRef.current = phase;

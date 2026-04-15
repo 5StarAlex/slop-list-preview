@@ -2632,18 +2632,19 @@ textarea {
 .slop-creator-shell {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(250px, 0.72fr) minmax(0, 1.28fr);
+  grid-template-columns: 172px minmax(0, 1fr);
   gap: 0;
   min-height: 820px;
   overflow: hidden;
-  border: 3px solid #090f1b;
-  border-radius: 22px;
+  border: 2px solid rgba(77, 109, 191, 0.34);
+  border-radius: 26px;
   background:
-    linear-gradient(130deg, rgba(255, 126, 0, 0.86) 0 18%, transparent 18% 100%),
-    linear-gradient(145deg, #1b2029 0 36%, #11161e 36% 100%);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02)),
+    linear-gradient(180deg, #172235, #0d1523 100%);
   box-shadow:
-    0 18px 42px rgba(9, 16, 26, 0.34),
-    inset 0 0 0 2px rgba(255, 255, 255, 0.08);
+    0 24px 60px rgba(4, 10, 24, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(18px);
 }
 
 .slop-creator-shell::before {
@@ -2651,12 +2652,8 @@ textarea {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 12%),
-    repeating-linear-gradient(
-      135deg,
-      rgba(255, 119, 0, 0.2) 0 18px,
-      rgba(255, 119, 0, 0) 18px 42px
-    );
+    linear-gradient(180deg, rgba(255, 255, 255, 0.16), transparent 14%),
+    radial-gradient(circle at 18% 6%, rgba(255, 255, 255, 0.08), transparent 28%);
   pointer-events: none;
 }
 
@@ -2668,186 +2665,241 @@ textarea {
 
 .slop-creator-left {
   display: grid;
-  grid-template-rows: auto 1fr auto;
-  gap: 18px;
-  padding: 22px 16px 18px 18px;
-  border-right: 3px solid rgba(0, 0, 0, 0.78);
-  background:
-    linear-gradient(180deg, rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.34)),
-    linear-gradient(180deg, #168fe8 0%, #0e58d7 100%);
-}
-
-.slop-creator-name-wrap {
-  padding-top: 2px;
-}
-
-.slop-creator-name-input {
-  width: 100%;
-  padding: 0;
-  border: 0;
-  outline: 0;
-  background: transparent;
-  color: #f8f4ef;
-  font-family: "Let's lowpoly", "256fes", Impact, Haettenschweiler, "Arial Black", sans-serif;
-  font-size: clamp(2.8rem, 2.2rem + 2vw, 4.5rem);
-  font-weight: 900;
-  letter-spacing: 0.01em;
-  text-transform: uppercase;
-  -webkit-text-stroke: 2px rgba(0, 0, 0, 0.2);
-  text-shadow:
-    0 3px 0 #ff6eaa,
-    0 6px 0 #ffffff,
-    4px 8px 0 rgba(15, 31, 76, 0.38);
-}
-
-.slop-creator-meta-block {
-  display: grid;
-  gap: 2px;
-  margin-top: -4px;
-  margin-bottom: 4px;
-}
-
-.slop-creator-meta-line {
-  color: #f9f3ea;
-  font-family: "256fes", var(--ui-font);
-  font-size: 1rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  text-shadow:
-    0 2px 0 #2a2a2a,
-    2px 0 0 #2a2a2a;
-}
-
-.slop-creator-name-input::selection {
-  background: rgba(255, 227, 70, 0.4);
-}
-
-.slop-creator-capsule-stack {
-  display: grid;
-  align-content: center;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
   gap: 12px;
-  padding: 8px 0;
+  padding: 14px 12px 14px;
+  border-right: 1px solid rgba(117, 168, 255, 0.18);
+  background:
+    linear-gradient(180deg, rgba(46, 77, 166, 0.96), rgba(22, 41, 97, 0.98)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 28%);
+  backdrop-filter: blur(26px);
 }
 
-.slop-creator-capsule {
+.slop-creator-brand-block {
+  display: grid;
+  gap: 10px;
+}
+
+.slop-creator-brand-mark {
+  color: rgba(252, 211, 77, 0.96);
+  font-family: "SF Pro Display", "SF Pro Text", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 1.08rem;
+  font-style: italic;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-align: center;
+  text-transform: uppercase;
+  text-shadow: 0 8px 24px rgba(252, 211, 77, 0.18);
+}
+
+.slop-creator-hud {
+  display: grid;
+  gap: 8px;
+  padding: 9px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+  background:
+    linear-gradient(180deg, rgba(62, 112, 204, 0.94), rgba(35, 75, 165, 0.86)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.02));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 10px 22px rgba(10, 18, 38, 0.18);
+}
+
+.slop-creator-hud-currency-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.slop-creator-hud-currency {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 18px;
+  border-radius: 7px;
+  background: rgba(150, 212, 255, 0.24);
+  color: rgba(242, 248, 255, 0.98);
+  font-family: "SF Pro Text", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 0.56rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.slop-creator-hud-currency-icon {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+}
+
+.slop-creator-hud-currency-icon-coin {
+  background: radial-gradient(circle at 35% 35%, #fff8bc, #facc15 72%);
+}
+
+.slop-creator-hud-currency-icon-gem {
+  clip-path: polygon(50% 0, 100% 40%, 74% 100%, 26% 100%, 0 40%);
+  background: linear-gradient(180deg, #f5b3ff, #8b5cf6);
+}
+
+.slop-creator-hud-power-card {
+  display: grid;
+  gap: 6px;
+  padding: 6px;
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.04)),
+    rgba(17, 39, 90, 0.54);
+}
+
+.slop-creator-hud-power-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: center;
+}
+
+.slop-creator-hud-power-kicker,
+.slop-creator-hud-power-meta {
+  color: #eef7ff;
+  font-family: "SF Pro Display", "SF Pro Text", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 0.54rem;
+  font-style: italic;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.slop-creator-hud-power-meta {
+  color: rgba(255, 245, 180, 0.92);
+}
+
+.slop-creator-hud-power-meter {
+  position: relative;
+  overflow: hidden;
+  height: 14px;
+  border-radius: 999px;
+  background: rgba(8, 13, 26, 0.82);
+}
+
+.slop-creator-hud-power-fill,
+.slop-creator-hud-power-gloss {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+.slop-creator-hud-power-fill {
+  width: 76%;
+  background: linear-gradient(90deg, #f59e0b, #facc15 64%, #fef3c7);
+}
+
+.slop-creator-hud-power-gloss {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.44), rgba(255, 255, 255, 0));
+}
+
+.slop-creator-category-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-content: start;
+  gap: 8px;
+}
+
+.slop-creator-category-tile {
   position: relative;
   display: grid;
-  gap: 2px;
-  justify-items: start;
-  width: 100%;
-  padding: 12px 42px 10px 22px;
-  border: 3px solid #091120;
-  border-radius: 999px;
-  background: linear-gradient(180deg, #0f7bf2, #1240b3);
+  gap: 4px;
+  min-height: 68px;
+  padding: 10px 8px 8px;
+  border: 1px solid rgba(133, 194, 255, 0.35);
+  border-radius: 6px;
+  background:
+    linear-gradient(180deg, rgba(104, 144, 255, 0.34), rgba(35, 77, 172, 0.1)),
+    linear-gradient(180deg, rgba(46, 77, 166, 0.98), rgba(20, 40, 96, 0.98));
   box-shadow:
-    inset 0 3px 0 rgba(255, 255, 255, 0.14),
-    0 6px 0 rgba(0, 0, 0, 0.34);
+    inset 0 1px 0 rgba(255, 255, 255, 0.24),
+    inset 0 -10px 18px rgba(7, 17, 48, 0.32),
+    0 6px 14px rgba(3, 7, 18, 0.2);
   cursor: pointer;
   transition:
     transform 180ms ease,
     filter 180ms ease,
-    background 180ms ease;
+    background 180ms ease,
+    border-color 180ms ease;
+  backdrop-filter: blur(22px);
 }
 
-.slop-creator-capsule:hover {
+.slop-creator-category-tile:hover {
   filter: brightness(1.06);
+  transform: translateY(-1px);
 }
 
-.slop-creator-capsule.is-active {
-  background: linear-gradient(180deg, #fff64c, #f4d800);
-  transform: scale(1);
+.slop-creator-category-tile.is-active {
+  border-color: rgba(255, 246, 180, 0.52);
+  background:
+    linear-gradient(180deg, rgba(255, 240, 171, 0.92), rgba(232, 177, 56, 0.82)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.02));
+  transform: translateY(-1px);
 }
 
-.slop-creator-capsule.is-near {
-  transform: scale(0.94);
-}
-
-.slop-creator-capsule.is-mid {
-  transform: scale(0.88);
-}
-
-.slop-creator-capsule.is-far {
-  transform: scale(0.82);
-}
-
-.slop-creator-capsule-text,
-.slop-creator-capsule-sub {
+.slop-creator-category-tile-label,
+.slop-creator-category-tile-count {
   position: relative;
   z-index: 1;
-  font-family: Impact, Haettenschweiler, "Arial Black", sans-serif;
+  font-family: "SF Pro Display", "SF Pro Text", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-style: italic;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
-.slop-creator-capsule-text {
-  color: #ffaf12;
-  font-size: clamp(1.15rem, 0.98rem + 0.45vw, 1.75rem);
-  line-height: 0.95;
-  -webkit-text-stroke: 2px #101010;
-  text-shadow:
-    0 2px 0 #101010,
-    2px 0 0 #101010,
-    0 -2px 0 #101010,
-    -2px 0 0 #101010,
-    2px 2px 0 #101010;
+.slop-creator-category-tile-label {
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 0.7rem;
+  font-weight: 800;
+  line-height: 1.05;
 }
 
-.slop-creator-capsule.is-active .slop-creator-capsule-text {
-  color: #ffba20;
+.slop-creator-category-tile.is-active .slop-creator-category-tile-label,
+.slop-creator-category-tile.is-active .slop-creator-category-tile-count {
+  color: #78350f;
 }
 
-.slop-creator-capsule-sub {
-  color: #ffe15f;
-  font-size: 0.72rem;
-  -webkit-text-stroke: 1px rgba(0, 0, 0, 0.75);
-  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.8);
-}
-
-.slop-creator-capsule-arrow {
-  position: absolute;
-  top: 50%;
-  right: 16px;
-  width: 0;
-  height: 0;
-  border-top: 12px solid transparent;
-  border-bottom: 12px solid transparent;
-  border-left: 18px solid #1475e8;
-  transform: translateY(-50%);
-  filter: drop-shadow(2px 2px 0 #101010);
+.slop-creator-category-tile-count {
+  color: rgba(147, 197, 253, 0.96);
+  font-size: 0.55rem;
+  font-weight: 600;
 }
 
 .slop-creator-stats {
-  padding: 16px 14px 14px;
-  border: 3px solid #090f1b;
-  border-radius: 16px;
+  align-self: start;
+  padding: 14px 12px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.03)),
-    linear-gradient(180deg, #4f8ef2, #183ba0);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.03)),
+    linear-gradient(180deg, rgba(18, 58, 138, 0.54), rgba(15, 23, 42, 0.74));
   box-shadow:
-    inset 0 2px 0 rgba(255, 255, 255, 0.24),
-    0 6px 0 rgba(0, 0, 0, 0.25);
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    0 12px 28px rgba(2, 7, 18, 0.22);
+  backdrop-filter: blur(22px);
 }
 
 .slop-creator-stats-title {
-  margin-bottom: 12px;
-  color: #fff8f0;
-  font-family: Impact, Haettenschweiler, "Arial Black", sans-serif;
-  font-size: 1.9rem;
+  margin-bottom: 10px;
+  color: rgba(255, 255, 255, 0.96);
+  font-family: "SF Pro Display", "SF Pro Text", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 1.02rem;
   font-style: italic;
+  font-weight: 800;
   letter-spacing: 0.02em;
-  text-shadow:
-    0 2px 0 #121212,
-    2px 0 0 #121212,
-    0 -2px 0 #121212,
-    -2px 0 0 #121212;
 }
 
 .slop-creator-stats-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px 16px;
+  gap: 8px 12px;
 }
 
 .slop-creator-stat-row {
@@ -2856,33 +2908,272 @@ textarea {
 }
 
 .slop-creator-stat-label {
-  color: #fff8df;
-  font-family: var(--ui-font);
-  font-size: 0.92rem;
+  color: rgba(229, 238, 255, 0.94);
+  font-family: "SF Pro Text", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 0.66rem;
   font-weight: 700;
 }
 
 .slop-creator-stat-meter {
   overflow: hidden;
-  height: 16px;
-  border: 3px solid #080d18;
+  height: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 999px;
-  background: #070c14;
+  background: rgba(7, 12, 20, 0.92);
 }
 
 .slop-creator-stat-fill {
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, #ffe800, #ffba12);
+  background: linear-gradient(90deg, #facc15, #eab308);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.slop-creator-progress-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.slop-creator-option-panel {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.03)),
+    linear-gradient(180deg, rgba(19, 46, 105, 0.46), rgba(15, 23, 42, 0.76));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    0 12px 28px rgba(2, 7, 18, 0.18);
+  backdrop-filter: blur(22px);
+}
+
+.slop-creator-option-header,
+.slop-creator-option-copy {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+}
+
+.slop-creator-option-copy {
+  display: grid;
+  gap: 4px;
+  align-items: start;
+}
+
+.slop-creator-option-kicker,
+.slop-creator-option-count,
+.slop-creator-option-sub {
+  color: rgba(214, 230, 255, 0.82);
+  font-family: "SF Pro Text", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.slop-creator-option-picker {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) 28px;
+  gap: 8px;
+  align-items: center;
+}
+
+.slop-creator-cycle-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 34px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.05)),
+    rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.94);
+  font-family: "SF Pro Display", "SF Pro Text", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 140ms ease, filter 140ms ease;
+  backdrop-filter: blur(18px);
+}
+
+.slop-creator-cycle-button:hover,
+.slop-creator-expression-pill:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+}
+
+.slop-creator-option-window {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 8px;
+  align-items: center;
+  min-height: 58px;
+  padding: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.05)),
+    rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
+}
+
+.slop-creator-option-swatch {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 12px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.05)),
+    rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
+}
+
+.slop-creator-option-swatch-shape {
+  display: block;
+  background: linear-gradient(180deg, #ffffff, rgba(255, 255, 255, 0.62));
+}
+
+.slop-creator-option-swatch-eyes {
+  width: 28px;
+  height: 12px;
+  border-radius: 999px;
+  background: #1d2f58;
+  box-shadow: inset 8px 0 0 rgba(255, 255, 255, 0.95), inset -8px 0 0 rgba(255, 255, 255, 0.95);
+}
+
+.slop-creator-option-swatch-mouth {
+  width: 24px;
+  height: 12px;
+  border-radius: 0 0 16px 16px;
+  background: linear-gradient(180deg, #ffd7e5, #ff8fb2);
+}
+
+.slop-creator-option-swatch-pose {
+  width: 24px;
+  height: 28px;
+  border-radius: 999px 999px 10px 10px;
+  background:
+    radial-gradient(circle at 50% 24%, rgba(255, 255, 255, 0.88) 0 22%, transparent 24%),
+    linear-gradient(180deg, #93c5fd, #2563eb);
+}
+
+.slop-creator-option-swatch-shirt {
+  width: 28px;
+  height: 22px;
+  clip-path: polygon(16% 0, 84% 0, 100% 30%, 83% 100%, 17% 100%, 0 30%);
+  background: linear-gradient(180deg, #a7c8ff, #6aa4ff);
+}
+
+.slop-creator-option-swatch-pants {
+  width: 24px;
+  height: 24px;
+  clip-path: polygon(14% 0, 86% 0, 100% 26%, 73% 100%, 54% 100%, 50% 54%, 46% 100%, 27% 100%, 0 26%);
+  background: linear-gradient(180deg, #a5b4d6, #7383ac);
+}
+
+.slop-creator-option-swatch-accessories {
+  width: 28px;
+  height: 28px;
+  clip-path: polygon(50% 0, 61% 37%, 100% 50%, 61% 63%, 50% 100%, 39% 63%, 0 50%, 39% 37%);
+  background: linear-gradient(180deg, #ffe090, #f4ae53);
+}
+
+.slop-creator-option-swatch-color {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 30% 30%, #ffffff, rgba(255, 255, 255, 0.34));
+}
+
+.slop-creator-option-swatch-color.theme-original {
+  background: radial-gradient(circle at 30% 30%, #ffe7ef, #f788a4 72%);
+}
+
+.slop-creator-option-swatch-color.theme-rose {
+  background: radial-gradient(circle at 30% 30%, #fff0f5, #ff6fa8 72%);
+}
+
+.slop-creator-option-swatch-color.theme-ocean {
+  background: radial-gradient(circle at 30% 30%, #eef9ff, #4aa8ff 72%);
+}
+
+.slop-creator-option-swatch-color.theme-sunset {
+  background: radial-gradient(circle at 30% 30%, #fff0d6, #ff8f5a 72%);
+}
+
+.slop-creator-option-swatch-color.theme-mint {
+  background: radial-gradient(circle at 30% 30%, #effff7, #46d39a 72%);
+}
+
+.slop-creator-option-swatch-color.theme-violet {
+  background: radial-gradient(circle at 30% 30%, #f5efff, #9a6dff 72%);
+}
+
+.slop-creator-option-name {
+  color: rgba(255, 255, 255, 0.96);
+  font-family: "SF Pro Display", "SF Pro Text", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 0.82rem;
+  font-style: italic;
+  font-weight: 800;
+}
+
+.slop-creator-expression-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.slop-creator-expression-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 28px;
+  padding: 0 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.05)),
+    rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.92);
+  font-family: "SF Pro Text", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 140ms ease, filter 140ms ease;
+  backdrop-filter: blur(18px);
+}
+
+.slop-creator-progress-dot {
+  width: 8px;
+  height: 8px;
+  border: 1px solid rgba(56, 189, 248, 0.38);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.slop-creator-progress-dot.is-active {
+  width: 10px;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(56, 189, 248, 0.8);
 }
 
 .slop-creator-stage-shell {
   display: block;
+  position: relative;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0)),
-    #505257;
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0)),
+    linear-gradient(180deg, #1e293b, #0f172a);
 }
 
 .slop-creator-stage {
@@ -2891,57 +3182,302 @@ textarea {
   min-height: 820px;
 }
 
+.slop-creator-stage-orb {
+  position: absolute;
+  z-index: 0;
+  --slop-drift-rotate: 0deg;
+  border-radius: 999px;
+  filter: blur(2px);
+  pointer-events: none;
+  animation: slop-stage-drift-left var(--slop-drift-duration, 46s) linear infinite;
+  will-change: transform;
+}
+
+.slop-creator-stage-orb-blue {
+  top: 34px;
+  left: -48px;
+  width: 280px;
+  height: 240px;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.5), rgba(30, 58, 138, 0));
+  --slop-drift-duration: 54s;
+  animation-delay: -6s;
+}
+
+.slop-creator-stage-orb-violet {
+  top: 248px;
+  right: -38px;
+  width: 240px;
+  height: 240px;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.34), rgba(76, 29, 149, 0));
+  --slop-drift-duration: 66s;
+  animation-delay: -21s;
+}
+
+.slop-creator-stage-orb-cyan {
+  bottom: 88px;
+  left: 170px;
+  width: 240px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.26), rgba(22, 78, 99, 0));
+  --slop-drift-duration: 47s;
+  animation-delay: -31s;
+}
+
+.slop-creator-stage-triangle {
+  position: absolute;
+  z-index: 0;
+  --slop-drift-rotate: 0deg;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.02)),
+    linear-gradient(180deg, rgba(110, 196, 255, 0.14), rgba(110, 196, 255, 0.02));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 18px 34px rgba(6, 10, 22, 0.12);
+  opacity: 0.46;
+  pointer-events: none;
+  animation: slop-stage-drift-left var(--slop-drift-duration, 58s) linear infinite;
+  will-change: transform;
+}
+
+.slop-creator-stage-triangle-one {
+  top: 28px;
+  left: 82px;
+  width: 142px;
+  height: 126px;
+  --slop-drift-rotate: -8deg;
+  --slop-drift-duration: 62s;
+  animation-delay: -14s;
+}
+
+.slop-creator-stage-triangle-two {
+  top: 120px;
+  right: 54px;
+  width: 168px;
+  height: 148px;
+  --slop-drift-rotate: 18deg;
+  --slop-drift-duration: 78s;
+  animation-delay: -37s;
+}
+
+.slop-creator-stage-triangle-three {
+  top: 262px;
+  left: 34px;
+  width: 104px;
+  height: 92px;
+  --slop-drift-rotate: -20deg;
+  --slop-drift-duration: 49s;
+  animation-delay: -18s;
+}
+
+.slop-creator-stage-triangle-four {
+  right: 146px;
+  bottom: 238px;
+  width: 134px;
+  height: 118px;
+  --slop-drift-rotate: 10deg;
+  --slop-drift-duration: 70s;
+  animation-delay: -42s;
+}
+
+.slop-creator-stage-triangle-five {
+  right: -12px;
+  bottom: 106px;
+  width: 96px;
+  height: 86px;
+  --slop-drift-rotate: 28deg;
+  --slop-drift-duration: 57s;
+  animation-delay: -23s;
+}
+
+.slop-creator-stage-triangle-six {
+  top: 54px;
+  left: 226px;
+  width: 120px;
+  height: 104px;
+  --slop-drift-rotate: 9deg;
+  --slop-drift-duration: 61s;
+  animation-delay: -9s;
+}
+
+.slop-creator-stage-triangle-seven {
+  top: 92px;
+  right: 214px;
+  width: 88px;
+  height: 74px;
+  --slop-drift-rotate: -14deg;
+  --slop-drift-duration: 44s;
+  animation-delay: -28s;
+}
+
+.slop-creator-stage-triangle-eight {
+  top: 174px;
+  left: 132px;
+  width: 154px;
+  height: 136px;
+  --slop-drift-rotate: 21deg;
+  --slop-drift-duration: 73s;
+  animation-delay: -41s;
+}
+
+.slop-creator-stage-triangle-nine {
+  top: 222px;
+  right: -18px;
+  width: 128px;
+  height: 110px;
+  --slop-drift-rotate: -6deg;
+  --slop-drift-duration: 55s;
+  animation-delay: -12s;
+}
+
+.slop-creator-stage-triangle-ten {
+  top: 336px;
+  left: 248px;
+  width: 116px;
+  height: 102px;
+  --slop-drift-rotate: 32deg;
+  --slop-drift-duration: 68s;
+  animation-delay: -34s;
+}
+
+.slop-creator-stage-triangle-eleven {
+  top: 404px;
+  left: -24px;
+  width: 148px;
+  height: 132px;
+  --slop-drift-rotate: -18deg;
+  --slop-drift-duration: 63s;
+  animation-delay: -19s;
+}
+
+.slop-creator-stage-triangle-twelve {
+  top: 454px;
+  right: 160px;
+  width: 112px;
+  height: 98px;
+  --slop-drift-rotate: 11deg;
+  --slop-drift-duration: 52s;
+  animation-delay: -46s;
+}
+
+.slop-creator-stage-triangle-thirteen {
+  bottom: 182px;
+  left: 108px;
+  width: 168px;
+  height: 146px;
+  --slop-drift-rotate: -27deg;
+  --slop-drift-duration: 81s;
+  animation-delay: -57s;
+}
+
+.slop-creator-stage-triangle-fourteen {
+  bottom: 54px;
+  left: 284px;
+  width: 102px;
+  height: 88px;
+  --slop-drift-rotate: 18deg;
+  --slop-drift-duration: 48s;
+  animation-delay: -26s;
+}
+
+@keyframes slop-stage-drift-left {
+  from {
+    transform: translateX(26vw) rotate(var(--slop-drift-rotate));
+  }
+
+  to {
+    transform: translateX(-142vw) rotate(var(--slop-drift-rotate));
+  }
+}
+
 .slop-creator-stage-grid,
 .slop-creator-stage-floor {
   position: absolute;
   inset: 0;
+  z-index: 1;
 }
 
 .slop-creator-stage-grid {
   background:
-    linear-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.12) 1px, transparent 1px),
-    linear-gradient(180deg, #7d7f86, #6b6d73);
-  background-size: 34px 34px, 34px 34px, 100% 100%;
+    linear-gradient(rgba(148, 163, 184, 0.2) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.2) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(30, 41, 59, 0.96), rgba(15, 23, 42, 0.98));
+  background-size: 24px 24px, 24px 24px, 100% 100%;
 }
 
 .slop-creator-stage-floor {
   top: auto;
-  height: 22%;
+  height: 28%;
   background:
-    linear-gradient(rgba(255, 255, 255, 0.24) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.24) 1px, transparent 1px),
-    linear-gradient(180deg, rgba(80, 180, 255, 0.16), rgba(32, 126, 246, 0.65));
+    linear-gradient(rgba(125, 211, 252, 0.24) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(125, 211, 252, 0.24) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(14, 165, 233, 0.28), rgba(3, 105, 161, 0.12));
   background-size: 26px 26px, 26px 26px, 100% 100%;
-  box-shadow: inset 0 10px 20px rgba(255, 255, 255, 0.24);
+  box-shadow:
+    inset 0 1px 0 rgba(56, 189, 248, 0.28),
+    inset 0 16px 24px rgba(255, 255, 255, 0.08);
 }
 
 .slop-creator-stage-tools {
   position: absolute;
-  top: 210px;
-  right: 18px;
+  top: 176px;
+  right: 12px;
   z-index: 2;
   display: grid;
-  gap: 12px;
+  gap: 14px;
 }
 
 .slop-creator-stage-tool {
-  width: 42px;
-  height: 42px;
-  border: 2px solid rgba(255, 255, 255, 0.14);
+  position: relative;
+  width: 26px;
+  height: 26px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.18);
-  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.14);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.04)),
+    rgba(255, 255, 255, 0.04);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 12px 22px rgba(6, 10, 20, 0.18);
+  backdrop-filter: blur(18px);
+}
+
+.slop-creator-stage-tool::before {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  opacity: 0.9;
+}
+
+.slop-creator-stage-tool:nth-child(2)::before {
+  inset: 10px 8px;
+  border-radius: 999px 999px 6px 6px;
+}
+
+.slop-creator-stage-tool:nth-child(3)::before {
+  inset: 8px;
+  border-radius: 4px;
+}
+
+.slop-creator-stage-tool:nth-child(4)::before {
+  inset: 9px 7px;
+  border-radius: 10px 10px 4px 4px;
 }
 
 .slop-creator-character {
   position: absolute;
-  bottom: 1%;
+  bottom: 5%;
   left: 50%;
   z-index: 1;
-  width: min(92%, 620px);
+  width: min(86%, 540px);
   aspect-ratio: 1 / 1;
   transform: translateX(-50%);
+  --slop-body-fill: #f2f2f2;
+  --slop-body-stroke: #b2b2b2;
+  --slop-body-highlight: #f2f2f2;
   filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.28));
 }
 
@@ -2950,11 +3486,36 @@ textarea {
   inset: 0;
   --part-x: 0px;
   --part-y: 0px;
-  transform: translate(var(--part-x), var(--part-y));
+  --part-rotate: 0deg;
+  transform: translate(var(--part-x), var(--part-y)) rotate(var(--part-rotate));
+  transform-origin: center center;
+}
+
+.slop-creator-part-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
 }
 
 .slop-creator-part-image {
   object-fit: contain;
+}
+
+.slop-creator-face-layer {
+  position: absolute;
+  inset: 0;
+  transform: scaleY(1);
+  transform-origin: center top;
+  transition: transform 85ms ease;
+}
+
+.slop-creator-face-layer.is-blinking {
+  transform: scaleY(0.08);
+}
+
+.slop-creator-face-layer-lashes {
+  z-index: 1;
 }
 
 .slop-creator-part-leg1,
@@ -2963,19 +3524,20 @@ textarea {
 }
 
 .slop-creator-part-leg1 {
-  --part-x: -34px;
+  --part-x: -24px;
   --part-y: 0px;
 }
 
 .slop-creator-part-leg2 {
-  --part-x: 34px;
+  --part-x: 24px;
   --part-y: 0px;
 }
 
 .slop-creator-part-arm1 {
   z-index: 2;
-  --part-x: -50px;
-  --part-y: -80px;
+  --part-x: -55px;
+  --part-y: -76px;
+  transform-origin: 73% 18%;
 }
 
 .slop-creator-part-body {
@@ -2984,16 +3546,29 @@ textarea {
   --part-y: -80px;
 }
 
+.slop-creator-part-shirt {
+  z-index: 4;
+  --part-x: 0px;
+  --part-y: -76px;
+}
+
+.slop-creator-part-pants {
+  z-index: 4;
+  --part-x: 0px;
+  --part-y: -76px;
+}
+
 .slop-creator-part-arm2 {
   z-index: 4;
-  --part-x: 50px;
-  --part-y: -80px;
+  --part-x: 55px;
+  --part-y: -76px;
+  transform-origin: 27% 18%;
 }
 
 .slop-creator-part-head {
   z-index: 5;
   --part-x: 0px;
-  --part-y: -170px;
+  --part-y: -167px;
 }
 
 .slop-creator-part-eyes,
@@ -3002,14 +3577,310 @@ textarea {
 }
 
 .slop-creator-part-eyes,
-.slop-creator-part-lashes,
+.slop-creator-part-lashes {
+  --part-x: 0px;
+  --part-y: -164px;
+}
+
 .slop-creator-part-mouth {
   --part-x: 0px;
-  --part-y: -170px;
+  --part-y: -142px;
 }
 
 .slop-creator-part-lashes {
   z-index: 7;
+}
+
+.slop-creator-part-accessory {
+  z-index: 8;
+  --part-x: 0px;
+  --part-y: -164px;
+}
+
+.slop-creator-bottom-dock {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 3;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: end;
+  min-height: 102px;
+  padding: 16px 22px 22px;
+  border-top: 1px solid rgba(96, 165, 250, 0.18);
+  background:
+    linear-gradient(180deg, rgba(30, 58, 138, 0.22), rgba(15, 23, 42, 0.72)),
+    rgba(15, 23, 42, 0.48);
+  backdrop-filter: blur(24px);
+}
+
+.slop-creator-dock-item {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.42);
+  font-family: "SF Pro Text", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.slop-creator-dock-label {
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+}
+
+.slop-creator-dock-item.is-active {
+  color: #38bdf8;
+}
+
+.slop-creator-dock-item.is-active .slop-creator-dock-label {
+  font-weight: 700;
+}
+
+.slop-creator-dock-icon {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03)),
+    rgba(255, 255, 255, 0.04);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
+}
+
+.slop-creator-dock-item.is-active .slop-creator-dock-icon {
+  width: 36px;
+  height: 36px;
+  border-color: rgba(56, 189, 248, 0.5);
+  background:
+    linear-gradient(180deg, rgba(56, 189, 248, 0.2), rgba(56, 189, 248, 0.08)),
+    rgba(56, 189, 248, 0.08);
+}
+
+.slop-creator-dock-icon::before,
+.slop-creator-dock-icon::after {
+  content: "";
+  position: absolute;
+}
+
+.slop-creator-dock-icon-home::before {
+  top: 8px;
+  left: 9px;
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  border: 2px solid currentColor;
+  border-top: 0;
+  opacity: 0.8;
+}
+
+.slop-creator-dock-icon-home::after {
+  top: 6px;
+  left: 8px;
+  width: 14px;
+  height: 14px;
+  border-top: 2px solid currentColor;
+  border-left: 2px solid currentColor;
+  transform: rotate(45deg);
+  opacity: 0.8;
+}
+
+.slop-creator-dock-icon-character::before {
+  top: 8px;
+  left: 12px;
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: currentColor;
+}
+
+.slop-creator-dock-icon-character::after {
+  bottom: 7px;
+  left: 8px;
+  width: 18px;
+  height: 8px;
+  border: 2px solid currentColor;
+  border-top: 0;
+  border-radius: 0 0 10px 10px;
+}
+
+.slop-creator-dock-icon-store::before {
+  top: 10px;
+  left: 9px;
+  width: 14px;
+  height: 10px;
+  border: 2px solid currentColor;
+  border-radius: 2px;
+  opacity: 0.8;
+}
+
+.slop-creator-dock-icon-store::after {
+  top: 6px;
+  left: 11px;
+  width: 10px;
+  height: 6px;
+  border: 2px solid currentColor;
+  border-bottom: 0;
+  border-radius: 8px 8px 0 0;
+  opacity: 0.8;
+}
+
+.profile-theme-page .slop-creator-shell {
+  border-color: color-mix(in srgb, var(--creator-accent) 28%, var(--profile-card-border));
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01)),
+    var(--creator-shell-bg);
+  box-shadow:
+    0 24px 60px color-mix(in srgb, var(--profile-overlay) 58%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.profile-theme-page .slop-creator-shell::before {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.1), transparent 14%),
+    radial-gradient(circle at 18% 6%, color-mix(in srgb, var(--creator-accent) 24%, transparent), transparent 28%);
+}
+
+.profile-theme-page .slop-creator-left {
+  border-right-color: color-mix(in srgb, var(--creator-accent) 18%, var(--profile-panel-border));
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0)),
+    var(--creator-sidebar-bg);
+}
+
+.profile-theme-page .slop-creator-brand-mark,
+.profile-theme-page .slop-creator-stats-title,
+.profile-theme-page .slop-creator-option-name {
+  color: var(--creator-accent);
+  text-shadow: 0 8px 24px color-mix(in srgb, var(--creator-accent) 22%, transparent);
+}
+
+.profile-theme-page .slop-creator-hud,
+.profile-theme-page .slop-creator-stats,
+.profile-theme-page .slop-creator-option-panel,
+.profile-theme-page .slop-creator-option-window,
+.profile-theme-page .slop-creator-option-swatch,
+.profile-theme-page .slop-creator-stage-tool,
+.profile-theme-page .slop-creator-dock-icon {
+  border-color: color-mix(in srgb, var(--profile-panel-border) 100%, rgba(255, 255, 255, 0.08));
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.03)),
+    var(--profile-panel-bg);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    0 12px 28px color-mix(in srgb, var(--profile-overlay) 42%, transparent);
+}
+
+.profile-theme-page .slop-creator-hud-currency,
+.profile-theme-page .slop-creator-hud-power-card,
+.profile-theme-page .slop-creator-category-tile,
+.profile-theme-page .slop-creator-expression-pill,
+.profile-theme-page .slop-creator-cycle-button {
+  border-color: color-mix(in srgb, var(--profile-panel-border) 100%, rgba(255, 255, 255, 0.08));
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.04)),
+    var(--profile-panel-bg);
+  color: var(--profile-text-main);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    0 10px 22px color-mix(in srgb, var(--profile-overlay) 32%, transparent);
+}
+
+.profile-theme-page .slop-creator-category-tile.is-active {
+  border-color: color-mix(in srgb, var(--creator-accent) 54%, var(--profile-panel-border));
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--creator-accent) 30%, rgba(255, 255, 255, 0.12)), rgba(255, 255, 255, 0.03)),
+    var(--profile-panel-bg);
+}
+
+.profile-theme-page .slop-creator-category-tile-label,
+.profile-theme-page .slop-creator-hud-power-kicker,
+.profile-theme-page .slop-creator-hud-power-meta,
+.profile-theme-page .slop-creator-hud-currency,
+.profile-theme-page .slop-creator-stat-label,
+.profile-theme-page .slop-creator-option-kicker,
+.profile-theme-page .slop-creator-option-count,
+.profile-theme-page .slop-creator-option-sub,
+.profile-theme-page .slop-creator-expression-pill,
+.profile-theme-page .slop-creator-dock-item,
+.profile-theme-page .slop-creator-dock-label {
+  color: var(--profile-text-soft);
+}
+
+.profile-theme-page .slop-creator-category-tile-count,
+.profile-theme-page .slop-creator-progress-dot {
+  color: var(--profile-text-muted);
+  border-color: color-mix(in srgb, var(--profile-panel-border) 90%, transparent);
+}
+
+.profile-theme-page .slop-creator-category-tile.is-active .slop-creator-category-tile-label,
+.profile-theme-page .slop-creator-category-tile.is-active .slop-creator-category-tile-count,
+.profile-theme-page .slop-creator-dock-item.is-active,
+.profile-theme-page .slop-creator-dock-item.is-active .slop-creator-dock-label {
+  color: var(--creator-accent);
+}
+
+.profile-theme-page .slop-creator-hud-power-meter,
+.profile-theme-page .slop-creator-stat-meter {
+  border-color: color-mix(in srgb, var(--profile-panel-border) 90%, transparent);
+  background: color-mix(in srgb, var(--profile-pill-bg) 88%, #000000 12%);
+}
+
+.profile-theme-page .slop-creator-hud-power-fill,
+.profile-theme-page .slop-creator-stat-fill {
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--creator-accent) 72%, #f59e0b 28%),
+    color-mix(in srgb, var(--creator-accent) 86%, #facc15 14%),
+    color-mix(in srgb, var(--creator-accent) 26%, #ffffff 74%)
+  );
+}
+
+.profile-theme-page .slop-creator-progress-dot.is-active,
+.profile-theme-page .slop-creator-dock-item.is-active .slop-creator-dock-icon {
+  border-color: color-mix(in srgb, var(--creator-accent) 60%, transparent);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--creator-accent) 18%, rgba(255, 255, 255, 0.08)), rgba(255, 255, 255, 0.04)),
+    var(--profile-panel-bg);
+}
+
+.profile-theme-page .slop-creator-stage-shell {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0)),
+    var(--creator-stage-bg);
+}
+
+.profile-theme-page .slop-creator-stage-grid {
+  background:
+    linear-gradient(color-mix(in srgb, var(--profile-panel-border) 70%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--profile-panel-border) 70%, transparent) 1px, transparent 1px),
+    linear-gradient(180deg, color-mix(in srgb, var(--creator-stage-bg) 96%, #ffffff 4%), color-mix(in srgb, var(--creator-stage-bg) 82%, #020617 18%));
+  background-size: 24px 24px, 24px 24px, 100% 100%;
+}
+
+.profile-theme-page .slop-creator-stage-floor {
+  border-top: 0;
+  background:
+    linear-gradient(rgba(125, 211, 252, 0.24) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(125, 211, 252, 0.24) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(14, 165, 233, 0.28), rgba(3, 105, 161, 0.12));
+  background-size: 26px 26px, 26px 26px, 100% 100%;
+  box-shadow:
+    inset 0 1px 0 rgba(56, 189, 248, 0.28),
+    inset 0 16px 24px rgba(255, 255, 255, 0.06);
+}
+
+.profile-theme-page .slop-creator-bottom-dock {
+  border-top-color: color-mix(in srgb, var(--profile-panel-border) 90%, transparent);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--profile-panel-bg) 35%, transparent), color-mix(in srgb, var(--profile-overlay) 24%, transparent)),
+    color-mix(in srgb, var(--profile-card-bg) 78%, transparent);
 }
 
 .profile-modal-overlay {
@@ -3378,11 +4249,15 @@ textarea {
 
   .slop-creator-left {
     border-right: 0;
-    border-bottom: 3px solid rgba(0, 0, 0, 0.78);
+    border-bottom: 1px solid rgba(117, 168, 255, 0.18);
   }
 
   .slop-creator-stage {
     min-height: 620px;
+  }
+
+  .slop-creator-bottom-dock {
+    min-height: 92px;
   }
 }
 
@@ -3511,13 +4386,8 @@ textarea {
     padding: 16px 12px 14px;
   }
 
-  .slop-creator-name-input {
-    font-size: 2.7rem;
-    -webkit-text-stroke: 3px #1164d4;
-  }
-
-  .slop-creator-capsule {
-    padding: 11px 38px 9px 18px;
+  .slop-creator-brand-mark {
+    font-size: 1.3rem;
   }
 
   .slop-creator-stats-grid {
@@ -3533,9 +4403,19 @@ textarea {
     right: 10px;
   }
 
+  .slop-creator-bottom-dock {
+    min-height: 86px;
+    padding: 14px 12px 16px;
+  }
+
+  .slop-creator-dock-label {
+    font-size: 0.58rem;
+    letter-spacing: 0.12em;
+  }
+
   .slop-creator-character {
     bottom: 4%;
-    transform: translateX(-50%) scale(0.78);
+    transform: translateX(-50%) scale(0.82);
     transform-origin: center bottom;
   }
 
