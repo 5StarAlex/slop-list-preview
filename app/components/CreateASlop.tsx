@@ -1,17 +1,17 @@
 "use client";
 
 import Image from "next/image";
-import { CSSProperties, useEffect, useMemo, useState } from "react";
+import { CSSProperties, useEffect, useMemo, useRef, useState } from "react";
 import {
   creatorCategories,
   customizationOptions,
-  defaultCharacterConfig,
   expressionPresets,
-  type CharacterConfig,
   type ConfigurableCategoryKey,
   type CreatorCategoryKey,
 } from "./slopOptions";
+import { useAccount } from "./AccountProvider";
 import { SlopArmSvg, SlopBodySvg, SlopHeadSvg, SlopLegSvg } from "./SlopBodyParts";
+import SlopCreatorShopStage, { type ShopTabKey } from "./SlopCreatorShopStage";
 
 const statRows = [
   { label: "Speed", values: { eyes: 88, mouth: 74, pose: 82, shirt: 62, pants: 68, accessories: 80, color: 56 } },
@@ -22,7 +22,7 @@ const statRows = [
 
 const dockItems = [
   { key: "home", label: "Home" },
-  { key: "character", label: "Character", isActive: true },
+  { key: "character", label: "Character" },
   { key: "store", label: "Store" },
 ] as const;
 
@@ -39,6 +39,8 @@ const swatchClassMap = {
 const IDLE_AMPLITUDE = 4;
 const IDLE_FREQUENCY = 0.0019;
 const ARM_SWING_DEGREES = 2;
+const STAGE_EXIT_MS = 180;
+const STAGE_ENTER_MS = 340;
 
 const basePose = {
   leg1: { x: -24, y: 0 },
@@ -69,12 +71,14 @@ const idleWeights = {
 } as const;
 
 type PosePartKey = keyof typeof basePose;
+type CreatorStageView = "character" | "store";
+type CreatorStagePhase = "idle" | "exiting" | "entering";
 
 function isConfigurableCategoryKey(categoryKey: CreatorCategoryKey): categoryKey is ConfigurableCategoryKey {
   return categoryKey !== "stats";
 }
 
-function getCategoryCount(categoryKey: CreatorCategoryKey, characterConfig: CharacterConfig) {
+function getCategoryCount(categoryKey: CreatorCategoryKey, characterConfig: ReturnType<typeof useAccount>["account"]["characterConfig"]) {
   if (!isConfigurableCategoryKey(categoryKey)) {
     return "Layer Type";
   }
@@ -95,10 +99,18 @@ function getOptionSubLabel(categoryKey: ConfigurableCategoryKey) {
 }
 
 export default function CreateASlop() {
+  const { account, updateCharacterConfig } = useAccount();
   const [activeIndex, setActiveIndex] = useState(2);
-  const [characterConfig, setCharacterConfig] = useState<CharacterConfig>(defaultCharacterConfig);
   const [idleOffset, setIdleOffset] = useState(0);
   const [isBlinking, setIsBlinking] = useState(false);
+  const [activeStageView, setActiveStageView] = useState<CreatorStageView>("character");
+  const [renderedStageView, setRenderedStageView] = useState<CreatorStageView>("character");
+  const [stagePhase, setStagePhase] = useState<CreatorStagePhase>("idle");
+  const [activeShopTab, setActiveShopTab] = useState<ShopTabKey>("home");
+  const characterConfig = account.characterConfig;
+
+  const exitTimeoutRef = useRef<number | null>(null);
+  const enterTimeoutRef = useRef<number | null>(null);
 
   const activeCategoryKey = creatorCategories[activeIndex].key;
   const isStatsView = activeCategoryKey === "stats";
@@ -111,11 +123,11 @@ export default function CreateASlop() {
 
   const selectedEyes = customizationOptions.eyes[characterConfig.eyes];
   const selectedMouth = customizationOptions.mouth[characterConfig.mouth];
-  const selectedPose = customizationOptions.pose[characterConfig.pose];
   const selectedShirt = customizationOptions.shirt[characterConfig.shirt];
   const selectedPants = customizationOptions.pants[characterConfig.pants];
   const selectedAccessory = customizationOptions.accessories[characterConfig.accessories];
   const selectedColor = customizationOptions.color[characterConfig.color];
+  const levelProgress = Math.min(100, (account.progression.xp / account.progression.xpToNextLevel) * 100);
 
   const characterThemeClass = useMemo(() => `slop-creator-character ${selectedColor.className}`, [selectedColor.className]);
   const characterThemeStyle = useMemo(
@@ -127,6 +139,18 @@ export default function CreateASlop() {
       }) as CSSProperties,
     [selectedColor.fill, selectedColor.highlight, selectedColor.stroke],
   );
+
+  useEffect(() => {
+    return () => {
+      if (exitTimeoutRef.current) {
+        window.clearTimeout(exitTimeoutRef.current);
+      }
+
+      if (enterTimeoutRef.current) {
+        window.clearTimeout(enterTimeoutRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     let frameId = 0;
@@ -168,6 +192,49 @@ export default function CreateASlop() {
     };
   }, []);
 
+  function requestStageView(nextView: CreatorStageView) {
+    if (nextView === activeStageView && stagePhase === "idle") {
+      return;
+    }
+
+    if (exitTimeoutRef.current) {
+      window.clearTimeout(exitTimeoutRef.current);
+    }
+
+    if (enterTimeoutRef.current) {
+      window.clearTimeout(enterTimeoutRef.current);
+    }
+
+    setActiveStageView(nextView);
+    setStagePhase("exiting");
+
+    exitTimeoutRef.current = window.setTimeout(() => {
+      setRenderedStageView(nextView);
+      setStagePhase("entering");
+
+      enterTimeoutRef.current = window.setTimeout(() => {
+        setStagePhase("idle");
+      }, STAGE_ENTER_MS);
+    }, STAGE_EXIT_MS);
+  }
+
+  function handleDockSelect(dockKey: (typeof dockItems)[number]["key"]) {
+    if (dockKey === "character") {
+      requestStageView("character");
+      return;
+    }
+
+    if (dockKey === "home") {
+      setActiveShopTab("home");
+    }
+
+    if (dockKey === "store" && activeShopTab === "home") {
+      setActiveShopTab("eyes");
+    }
+
+    requestStageView("store");
+  }
+
   function getIdlePartStyle(partKey: PosePartKey): CSSProperties {
     const partBasePose = basePose[partKey];
     const weightedOffset = idleOffset * idleWeights[partKey];
@@ -192,21 +259,32 @@ export default function CreateASlop() {
     const currentIndex = characterConfig[categoryKey];
     const nextIndex = (currentIndex + direction + options.length) % options.length;
 
-    setCharacterConfig((prev) => ({
-      ...prev,
+    updateCharacterConfig({
+      ...characterConfig,
       [categoryKey]: nextIndex,
-    }));
+    });
   }
 
   function applyExpression(name: keyof typeof expressionPresets) {
     const preset = expressionPresets[name];
 
-    setCharacterConfig((prev) => ({
-      ...prev,
+    updateCharacterConfig({
+      ...characterConfig,
       eyes: preset.eyes,
       mouth: preset.mouth,
-    }));
+    });
   }
+
+  const characterStageClassName = `slop-creator-stage-animatable${
+    renderedStageView !== "character" ? " is-hidden" : ""
+  }${stagePhase === "exiting" && renderedStageView === "character" ? " is-exiting" : ""}${
+    stagePhase === "entering" && renderedStageView === "character" ? " is-entering" : ""
+  }`;
+  const shopStageClassName = `slop-creator-stage-panel slop-creator-stage-animatable${
+    renderedStageView !== "store" ? " is-hidden" : ""
+  }${stagePhase === "exiting" && renderedStageView === "store" ? " is-exiting" : ""}${
+    stagePhase === "entering" && renderedStageView === "store" ? " is-entering" : ""
+  }`;
 
   return (
     <section className="slop-creator-shell" aria-labelledby="create-a-slop-heading">
@@ -220,21 +298,23 @@ export default function CreateASlop() {
             <div className="slop-creator-hud-currency-row">
               <div className="slop-creator-hud-currency">
                 <span className="slop-creator-hud-currency-icon slop-creator-hud-currency-icon-coin" aria-hidden="true" />
-                <span>666531</span>
+                <span>{account.economy.coins}</span>
               </div>
               <div className="slop-creator-hud-currency">
                 <span className="slop-creator-hud-currency-icon slop-creator-hud-currency-icon-gem" aria-hidden="true" />
-                <span>652</span>
+                <span>{account.economy.gems}</span>
               </div>
             </div>
 
             <div className="slop-creator-hud-power-card">
               <div className="slop-creator-hud-power-head">
                 <span className="slop-creator-hud-power-kicker">Level</span>
-                <span className="slop-creator-hud-power-meta">{selectedPose.label}</span>
+                <span className="slop-creator-hud-power-meta">
+                  LVL {account.progression.level} · {account.progression.xp}/{account.progression.xpToNextLevel} XP
+                </span>
               </div>
               <div className="slop-creator-hud-power-meter" aria-hidden="true">
-                <span className="slop-creator-hud-power-fill" />
+                <span className="slop-creator-hud-power-fill" style={{ width: `${levelProgress}%` }} />
                 <span className="slop-creator-hud-power-gloss" />
               </div>
             </div>
@@ -366,7 +446,7 @@ export default function CreateASlop() {
           <div className="slop-creator-stage-grid" aria-hidden="true" />
           <div className="slop-creator-stage-floor" aria-hidden="true" />
 
-          <div className="slop-creator-stage-tools" aria-hidden="true">
+          <div className={`slop-creator-stage-tools ${characterStageClassName}`} aria-hidden="true">
             <span className="slop-creator-stage-tool" />
             <span className="slop-creator-stage-tool" />
             <span className="slop-creator-stage-tool" />
@@ -374,7 +454,7 @@ export default function CreateASlop() {
           </div>
 
           <div
-            className={characterThemeClass}
+            className={`${characterThemeClass} ${characterStageClassName}`}
             style={characterThemeStyle}
             aria-label="Character preview built from uploaded SVG parts"
           >
@@ -424,20 +504,34 @@ export default function CreateASlop() {
               </div>
             ) : null}
           </div>
+
+          <div className={shopStageClassName}>
+            {renderedStageView === "store" ? <SlopCreatorShopStage activeTab={activeShopTab} onTabChange={setActiveShopTab} /> : null}
+          </div>
         </div>
 
         <div className="slop-creator-bottom-dock" aria-label="Primary creator navigation">
-          {dockItems.map((item) => (
-            <button
-              key={item.key}
-              type="button"
-              className={`slop-creator-dock-item${item.isActive ? " is-active" : ""}`}
-              aria-pressed={item.isActive ? true : undefined}
-            >
-              <span className={`slop-creator-dock-icon slop-creator-dock-icon-${item.key}`} aria-hidden="true" />
-              <span className="slop-creator-dock-label">{item.label}</span>
-            </button>
-          ))}
+          {dockItems.map((item) => {
+            const isActive =
+              item.key === "character"
+                ? activeStageView === "character"
+                : item.key === "home"
+                  ? activeStageView === "store" && activeShopTab === "home"
+                  : activeStageView === "store" && activeShopTab !== "home";
+
+            return (
+              <button
+                key={item.key}
+                type="button"
+                className={`slop-creator-dock-item${isActive ? " is-active" : ""}`}
+                aria-pressed={isActive || undefined}
+                onClick={() => handleDockSelect(item.key)}
+              >
+                <span className={`slop-creator-dock-icon slop-creator-dock-icon-${item.key}`} aria-hidden="true" />
+                <span className="slop-creator-dock-label">{item.label}</span>
+              </button>
+            );
+          })}
         </div>
       </div>
     </section>

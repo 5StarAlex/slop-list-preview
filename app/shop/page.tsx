@@ -1,54 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useAccount } from "../components/AccountProvider";
 import SiteHeader from "../components/SiteHeader";
 import SiteNav from "../components/SiteNav";
-import {
-  COINS_EVENT_NAME,
-  COINS_STORAGE_KEY,
-  SHOP_EVENT_NAME,
-  WHITE_TRAIL_COST,
-  WHITE_TRAIL_STORAGE_KEY,
-} from "../lib/siteData";
-
-function readCoins() {
-  if (typeof window === "undefined") {
-    return 0;
-  }
-
-  const stored = Number(window.localStorage.getItem(COINS_STORAGE_KEY) ?? "0");
-  return Number.isFinite(stored) ? stored : 0;
-}
-
-function readTrailUnlocked() {
-  if (typeof window === "undefined") {
-    return false;
-  }
-
-  return window.localStorage.getItem(WHITE_TRAIL_STORAGE_KEY) === "true";
-}
+import { WHITE_TRAIL_COST } from "../lib/siteData";
 
 export default function ShopPage() {
-  const [coins, setCoins] = useState(() => readCoins());
-  const [trailUnlocked, setTrailUnlocked] = useState(() => readTrailUnlocked());
+  const { account, spendCoins, setWhiteTrailEnabled } = useAccount();
   const [message, setMessage] = useState("Spend your coins on an upgrade that follows you across the whole site.");
-
-  useEffect(() => {
-    const syncCoins = (event: Event) => {
-      const customEvent = event as CustomEvent<{ total?: number }>;
-      setCoins(customEvent.detail?.total ?? readCoins());
-    };
-
-    const syncTrail = () => setTrailUnlocked(readTrailUnlocked());
-
-    window.addEventListener(COINS_EVENT_NAME, syncCoins as EventListener);
-    window.addEventListener(SHOP_EVENT_NAME, syncTrail as EventListener);
-
-    return () => {
-      window.removeEventListener(COINS_EVENT_NAME, syncCoins as EventListener);
-      window.removeEventListener(SHOP_EVENT_NAME, syncTrail as EventListener);
-    };
-  }, []);
+  const coins = account.economy.coins;
+  const trailUnlocked = account.unlocks.whiteTrailEnabled;
 
   const buyWhiteTrail = () => {
     if (trailUnlocked) {
@@ -61,13 +23,12 @@ export default function ShopPage() {
       return;
     }
 
-    const nextCoins = coins - WHITE_TRAIL_COST;
-    window.localStorage.setItem(COINS_STORAGE_KEY, String(nextCoins));
-    window.localStorage.setItem(WHITE_TRAIL_STORAGE_KEY, "true");
-    window.dispatchEvent(new CustomEvent(COINS_EVENT_NAME, { detail: { amount: 0, total: nextCoins } }));
-    window.dispatchEvent(new CustomEvent(SHOP_EVENT_NAME));
-    setCoins(nextCoins);
-    setTrailUnlocked(true);
+    if (!spendCoins(WHITE_TRAIL_COST)) {
+      setMessage("That purchase could not be completed.");
+      return;
+    }
+
+    setWhiteTrailEnabled(true);
     setMessage("White mouse trail unlocked. It now follows your cursor across the full website.");
   };
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { SHOP_EVENT_NAME, WHITE_TRAIL_STORAGE_KEY } from "../lib/siteData";
+import { useAccount } from "./AccountProvider";
 
 type TrailPoint = {
   id: number;
@@ -9,29 +9,10 @@ type TrailPoint = {
   y: number;
 };
 
-function readTrailEnabled() {
-  if (typeof window === "undefined") {
-    return false;
-  }
-
-  return window.localStorage.getItem(WHITE_TRAIL_STORAGE_KEY) === "true";
-}
-
 export default function GlobalMouseTrail() {
-  const [enabled, setEnabled] = useState(() => readTrailEnabled());
+  const { account } = useAccount();
   const [trail, setTrail] = useState<TrailPoint[]>([]);
-
-  useEffect(() => {
-    const syncEnabled = () => setEnabled(readTrailEnabled());
-
-    window.addEventListener("storage", syncEnabled);
-    window.addEventListener(SHOP_EVENT_NAME, syncEnabled as EventListener);
-
-    return () => {
-      window.removeEventListener("storage", syncEnabled);
-      window.removeEventListener(SHOP_EVENT_NAME, syncEnabled as EventListener);
-    };
-  }, []);
+  const enabled = account.unlocks.whiteTrailEnabled;
 
   useEffect(() => {
     if (!enabled) {

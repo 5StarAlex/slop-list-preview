@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { COINS_EVENT_NAME, COINS_STORAGE_KEY } from "../lib/siteData";
+import { useAccount } from "./AccountProvider";
 
 type TrailPoint = {
   id: number;
@@ -58,16 +58,8 @@ function formatElapsedTime(seconds: number) {
   return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
 }
 
-function readStoredCoins() {
-  if (typeof window === "undefined") {
-    return 0;
-  }
-
-  const savedCoins = Number(window.localStorage.getItem(COINS_STORAGE_KEY) ?? "0");
-  return Number.isFinite(savedCoins) ? savedCoins : 0;
-}
-
 export default function SiteHeader() {
+  const { account, addCoins } = useAccount();
   const [trail, setTrail] = useState<TrailPoint[]>([]);
   const [driftPixels, setDriftPixels] = useState<DriftPixel[]>([]);
   const [attackPixels, setAttackPixels] = useState<AttackPixel[]>([]);
@@ -76,7 +68,6 @@ export default function SiteHeader() {
   const [overlayKey, setOverlayKey] = useState(0);
   const [timerKey, setTimerKey] = useState(0);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
-  const [coins, setCoins] = useState(0);
   const [timerFlash, setTimerFlash] = useState(false);
   const [abilityReady, setAbilityReady] = useState(false);
 
@@ -95,20 +86,11 @@ export default function SiteHeader() {
   const abilityTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const gameStartRef = useRef<number | null>(null);
   const lastCoinAwardRef = useRef<number | null>(null);
-  const coinHydrationTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const addCoinsRef = useRef(addCoins);
 
   useEffect(() => {
-    coinHydrationTimeoutRef.current = window.setTimeout(() => {
-      setCoins(readStoredCoins());
-    }, 0);
-
-    return () => {
-      if (coinHydrationTimeoutRef.current) {
-        window.clearTimeout(coinHydrationTimeoutRef.current);
-      }
-    };
-  }, []);
-
+    addCoinsRef.current = addCoins;
+  }, [addCoins]);
   useEffect(() => {
     phaseRef.current = phase;
   }, [phase]);
@@ -144,19 +126,6 @@ export default function SiteHeader() {
     setTimerFlash(true);
     const timeout = window.setTimeout(() => setTimerFlash(false), 500);
     timeoutsRef.current.push(timeout);
-  };
-
-  const awardCoins = (amount: number) => {
-    setCoins((currentCoins) => {
-      const nextCoins = currentCoins + amount;
-      window.localStorage.setItem(COINS_STORAGE_KEY, String(nextCoins));
-      window.dispatchEvent(
-        new CustomEvent(COINS_EVENT_NAME, {
-          detail: { amount, total: nextCoins },
-        })
-      );
-      return nextCoins;
-    });
   };
 
   const triggerOverlay = (text: string | null) => {
@@ -350,7 +319,7 @@ export default function SiteHeader() {
     }
 
     coinIntervalRef.current = window.setInterval(() => {
-      awardCoins(5);
+      addCoinsRef.current(5);
       flashTimer();
       lastCoinAwardRef.current = performance.now();
     }, COIN_AWARD_SECONDS * 1000);
@@ -517,7 +486,7 @@ export default function SiteHeader() {
             </div>
           ) : null}
 
-          <div className="game-coins">Coins: {coins}</div>
+          <div className="game-coins">Coins: {account.economy.coins}</div>
         </div>
       </div>
     </header>

@@ -1,23 +1,21 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { COINS_EVENT_NAME, COINS_STORAGE_KEY } from "../lib/siteData";
+import { COINS_EVENT_NAME } from "../lib/siteData";
+import { useAccount } from "./AccountProvider";
 
 type CoinPopup = {
   amount: number;
 };
 
 export default function SlopCoinsDisplay() {
-  const [coins, setCoins] = useState(() => readStoredCoins());
+  const { account } = useAccount();
   const [popups, setPopups] = useState<CoinPopup[]>([]);
 
   useEffect(() => {
     const onAward = (event: Event) => {
       const customEvent = event as CustomEvent<{ amount?: number; total?: number }>;
       const amount = customEvent.detail?.amount ?? 0;
-      const total = customEvent.detail?.total ?? 0;
-
-      setCoins(total);
 
       if (amount > 0) {
         setPopups([{ amount }]);
@@ -41,17 +39,8 @@ export default function SlopCoinsDisplay() {
         ))}
       </div>
       <div className="count-chip">
-        {coins} {"\u{1FA99}"}
+        {account.economy.coins} {"\u{1FA99}"}
       </div>
     </div>
   );
-}
-
-function readStoredCoins() {
-  if (typeof window === "undefined") {
-    return 0;
-  }
-
-  const stored = Number(window.localStorage.getItem(COINS_STORAGE_KEY) ?? "0");
-  return Number.isFinite(stored) ? stored : 0;
 }

@@ -1,24 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import { CSSProperties, FormEvent, useEffect, useState } from "react";
+import { CSSProperties, FormEvent, type ChangeEvent, useEffect, useMemo, useState } from "react";
+import { useAccount } from "../components/AccountProvider";
 import CreateASlop from "../components/CreateASlop";
 import SiteHeader from "../components/SiteHeader";
 import SiteNav from "../components/SiteNav";
-
-type ProfileTheme = "black" | "white" | "red" | "blue" | "gray" | "aurora";
-
-type ProfileData = {
-  profileImage: string;
-  bannerImage: string;
-  displayName: string;
-  username: string;
-  description: string;
-  affiliation: string;
-  affiliationTextColor: string;
-  affiliationBoxColor: string;
-  theme: ProfileTheme;
-};
+import { DEMO_LOGIN_EMAIL, DEMO_LOGIN_PASSWORD, defaultProfile, type ProfileData, type ProfileTheme } from "../lib/accountData";
 
 const socialBadges = [
   {
@@ -42,21 +30,6 @@ const socialBadges = [
 ];
 
 const gameCollection = ["F1", "DBD", "WF", "+2"];
-const PROFILE_STORAGE_KEY = "slop-list-profile-settings";
-
-const defaultProfile: ProfileData = {
-  profileImage: "https://i.redd.it/6c8d5tlwsfpb1.jpg",
-  bannerImage:
-    "https://as1.ftcdn.net/v2/jpg/05/22/33/10/1000_F_522331099_Ha6ktAQY8ghcAR8PAqAqeKZZLRPm5g5W.jpg",
-  displayName: "Aerial Ace",
-  username: "5staralex",
-  description:
-    "Top slop sargent.",
-  affiliation: "Jitty Boys",
-  affiliationTextColor: "#f8d899",
-  affiliationBoxColor: "rgba(255, 248, 230, 0.1)",
-  theme: "black",
-};
 
 const themeStyles: Record<ProfileTheme, Record<string, string>> = {
   black: {
@@ -256,59 +229,68 @@ const creatorThemeStyles: Record<ProfileTheme, Record<string, string>> = {
   },
 };
 
-function readStoredProfile(): ProfileData {
-  if (typeof window === "undefined") {
-    return defaultProfile;
-  }
-
-  const savedProfile = window.localStorage.getItem(PROFILE_STORAGE_KEY);
-
-  if (!savedProfile) {
-    return defaultProfile;
-  }
-
-  try {
-    const parsedProfile = JSON.parse(savedProfile) as Partial<ProfileData>;
-
-    return {
-      ...defaultProfile,
-      ...parsedProfile,
-    };
-  } catch {
-    window.localStorage.removeItem(PROFILE_STORAGE_KEY);
-    return defaultProfile;
-  }
-}
-
 export default function ProfilePage() {
-  const [profile, setProfile] = useState<ProfileData>(defaultProfile);
+  const { isHydrated, isAuthenticated, sessionEmail, account, login, logout, updateProfile, completeProfileSetup, dismissWelcome } =
+    useAccount();
+  const profile = account.profile;
   const [draft, setDraft] = useState<ProfileData>(defaultProfile);
+  const [setupDraft, setSetupDraft] = useState<ProfileData>(defaultProfile);
   const [message, setMessage] = useState(`Message @${defaultProfile.displayName}`);
   const [isEditMounted, setIsEditMounted] = useState(false);
   const [isEditVisible, setIsEditVisible] = useState(false);
   const [isBioOpen, setIsBioOpen] = useState(false);
+  const [isSetupMounted, setIsSetupMounted] = useState(false);
+  const [isSetupVisible, setIsSetupVisible] = useState(false);
+  const [isWelcomeOpen, setIsWelcomeOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<"login" | "signup">("login");
+  const [authEmail, setAuthEmail] = useState(DEMO_LOGIN_EMAIL);
+  const [authPassword, setAuthPassword] = useState(DEMO_LOGIN_PASSWORD);
+  const [authError, setAuthError] = useState("");
 
   const currentTheme = {
     ...themeStyles[profile.theme],
     ...creatorThemeStyles[profile.theme],
   };
+  const isLocked = isHydrated && !isAuthenticated;
+  const featureList = useMemo(
+    () => [
+      "Edit and save your profile card across visits",
+      "Customize your slop character and keep those changes",
+      "Collect slop coins from the header game across pages",
+      "Spend coins on site upgrades like the white mouse trail",
+      "Use the full profile, creator, shop, and mini-game flow under one account",
+    ],
+    [],
+  );
 
   useEffect(() => {
-    const hydrationTimeout = window.setTimeout(() => {
-      const storedProfile = readStoredProfile();
-      setProfile(storedProfile);
-      setDraft(storedProfile);
-      setMessage(`Message @${storedProfile.displayName}`);
-    }, 0);
-
-    return () => window.clearTimeout(hydrationTimeout);
-  }, []);
-
-  useEffect(() => {
-    window.localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profile));
+    setDraft(profile);
+    setSetupDraft(profile);
+    setMessage(`Message @${profile.displayName}`);
   }, [profile]);
 
+  useEffect(() => {
+    if (!isAuthenticated || !account.onboarding.needsProfileSetup) {
+      return;
+    }
+
+    setSetupDraft(profile);
+    setIsSetupMounted(true);
+  }, [account.onboarding.needsProfileSetup, isAuthenticated, profile]);
+
+  useEffect(() => {
+    if (!isAuthenticated || account.onboarding.needsProfileSetup || account.onboarding.hasSeenWelcome) {
+      return;
+    }
+
+    setIsWelcomeOpen(true);
+  }, [account.onboarding.hasSeenWelcome, account.onboarding.needsProfileSetup, isAuthenticated]);
+
   const openEditModal = () => {
+    if (!isAuthenticated) {
+      return;
+    }
+
     setDraft(profile);
     setIsEditMounted(true);
   };
@@ -320,9 +302,51 @@ export default function ProfilePage() {
 
   const saveProfile = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setProfile(draft);
+    updateProfile(draft);
     setMessage(`Message @${draft.displayName}`);
     setIsEditVisible(false);
+  };
+
+  const handleLogin = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const result = login(authEmail, authPassword);
+    if (!result.ok) {
+      setAuthError(result.error ?? "Unable to sign in.");
+      return;
+    }
+
+    setAuthError("");
+  };
+
+  const saveSetupProfile = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    completeProfileSetup(setupDraft);
+    setMessage(`Message @${setupDraft.displayName}`);
+    setIsSetupVisible(false);
+  };
+
+  const handleProfileImageUpload = (event: ChangeEvent<HTMLInputElement>, target: "setup" | "edit") => {
+    const file = event.target.files?.[0];
+    if (!file) {
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = typeof reader.result === "string" ? reader.result : "";
+      if (!result) {
+        return;
+      }
+
+      if (target === "setup") {
+        setSetupDraft((current) => ({ ...current, profileImage: result }));
+        return;
+      }
+
+      setDraft((current) => ({ ...current, profileImage: result }));
+    };
+    reader.readAsDataURL(file);
   };
 
   useEffect(() => {
@@ -349,13 +373,37 @@ export default function ProfilePage() {
     return () => window.clearTimeout(timeout);
   }, [isEditMounted, isEditVisible]);
 
+  useEffect(() => {
+    if (!isSetupMounted) {
+      return;
+    }
+
+    const frame = window.requestAnimationFrame(() => {
+      setIsSetupVisible(true);
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [isSetupMounted]);
+
+  useEffect(() => {
+    if (isSetupVisible || !isSetupMounted) {
+      return;
+    }
+
+    const timeout = window.setTimeout(() => {
+      setIsSetupMounted(false);
+    }, 220);
+
+    return () => window.clearTimeout(timeout);
+  }, [isSetupMounted, isSetupVisible]);
+
   return (
     <div className="route-page profile-theme-page" style={currentTheme as CSSProperties}>
       <SiteHeader />
 
       <div className="route-shell profile-modern-shell">
         <SiteNav variant="profile" />
-        <div className="profile-content-grid">
+        <div className={`profile-content-grid${isLocked ? " profile-locked-view" : ""}`}>
           <section className="profile-modern-card">
             <div
               className="profile-modern-banner"
@@ -370,6 +418,11 @@ export default function ProfilePage() {
                 <button type="button" className="profile-icon-action" aria-label="Open profile editor" onClick={openEditModal}>
                   ...
                 </button>
+                {isAuthenticated ? (
+                  <button type="button" className="profile-icon-action" aria-label="Log out" onClick={logout}>
+                    -
+                  </button>
+                ) : null}
               </div>
             </div>
 
@@ -467,6 +520,90 @@ export default function ProfilePage() {
         </div>
       </div>
 
+      {isLocked ? (
+        <div className="profile-modal-overlay is-visible">
+          <div className="profile-modal-card profile-editor-modal profile-auth-card" role="dialog" aria-modal="true">
+            <div className="profile-auth-decor profile-auth-decor-star" aria-hidden="true" />
+            <div className="profile-auth-decor profile-auth-decor-heart" aria-hidden="true" />
+            <div className="profile-auth-decor profile-auth-decor-ring" aria-hidden="true" />
+
+            <div className="profile-auth-hero">
+              <div className="profile-auth-avatar-shell" aria-hidden="true">
+                <div className="profile-auth-avatar-core" />
+              </div>
+
+              <div className="profile-auth-title-block">
+                <p className="profile-auth-kicker">Profile Load Dream</p>
+                <h2 className="profile-auth-title">Log In To Unlock Your Slop World</h2>
+                <div className="profile-auth-mode-row">
+                  <button
+                    type="button"
+                    className={`profile-auth-mode-button${authMode === "login" ? " is-active" : ""}`}
+                    onClick={() => {
+                      setAuthMode("login");
+                      setAuthError("");
+                    }}
+                  >
+                    Log In
+                  </button>
+                  <button
+                    type="button"
+                    className={`profile-auth-mode-button${authMode === "signup" ? " is-active" : ""}`}
+                    onClick={() => {
+                      setAuthMode("signup");
+                      setAuthError("");
+                    }}
+                  >
+                    Sign Up
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <form className="profile-editor-form profile-auth-form" onSubmit={handleLogin}>
+              <div className="profile-auth-copy-box">
+                <p className="profile-auth-copy">
+                {authMode === "login"
+                  ? "Use the prototype demo account to unlock the profile, creator save state, coins, and shop upgrades."
+                  : "This prototype does not create new accounts yet. Use the demo credentials below to sign in and continue."}
+                </p>
+              </div>
+
+              <label className="profile-editor-field profile-auth-field">
+                <span>Email</span>
+                <input
+                  type="email"
+                  className="profile-editor-input profile-auth-input"
+                  value={authEmail}
+                  onChange={(event) => setAuthEmail(event.target.value)}
+                />
+              </label>
+
+              <label className="profile-editor-field profile-auth-field">
+                <span>Password</span>
+                <input
+                  type="password"
+                  className="profile-editor-input profile-auth-input"
+                  value={authPassword}
+                  onChange={(event) => setAuthPassword(event.target.value)}
+                />
+              </label>
+
+              <div className="profile-auth-helper-card">
+                <p className="profile-auth-helper">Demo login: {DEMO_LOGIN_EMAIL} / {DEMO_LOGIN_PASSWORD}</p>
+              </div>
+              {authError ? <p className="profile-auth-error">{authError}</p> : null}
+
+              <div className="profile-editor-actions profile-auth-actions">
+                <button type="submit" className="profile-primary-button profile-auth-submit">
+                  {authMode === "login" ? "Enter Profile" : "Continue With Demo Account"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      ) : null}
+
       {isEditMounted ? (
         <div
           className={`profile-modal-overlay${isEditVisible ? " is-visible" : ""}`}
@@ -501,6 +638,11 @@ export default function ProfilePage() {
                   value={draft.profileImage}
                   onChange={(event) => setDraft((current) => ({ ...current, profileImage: event.target.value }))}
                 />
+              </label>
+
+              <label className="profile-editor-field">
+                <span>Upload Profile Image</span>
+                <input type="file" accept="image/*" className="profile-editor-input profile-editor-file" onChange={(event) => handleProfileImageUpload(event, "edit")} />
               </label>
 
               <label className="profile-editor-field">
@@ -607,6 +749,186 @@ export default function ProfilePage() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      ) : null}
+
+      {isSetupMounted ? (
+        <div
+          className={`profile-modal-overlay${isSetupVisible ? " is-visible" : ""}`}
+          role="presentation"
+        >
+          <div
+            className="profile-modal-card profile-editor-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="profile-setup-title"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="profile-modal-head">
+              <div>
+                <p className="profile-modal-kicker">First-Time Setup</p>
+                <h2 id="profile-setup-title" className="profile-modal-title">
+                  Create Your Profile Card
+                </h2>
+              </div>
+            </div>
+
+            <form className="profile-editor-form" onSubmit={saveSetupProfile}>
+              <label className="profile-editor-field">
+                <span>Profile Image URL</span>
+                <input
+                  type="url"
+                  className="profile-editor-input"
+                  value={setupDraft.profileImage}
+                  onChange={(event) => setSetupDraft((current) => ({ ...current, profileImage: event.target.value }))}
+                />
+              </label>
+
+              <label className="profile-editor-field">
+                <span>Upload Profile Image</span>
+                <input type="file" accept="image/*" className="profile-editor-input profile-editor-file" onChange={(event) => handleProfileImageUpload(event, "setup")} />
+              </label>
+
+              <label className="profile-editor-field">
+                <span>Banner Image URL</span>
+                <input
+                  type="url"
+                  className="profile-editor-input"
+                  value={setupDraft.bannerImage}
+                  onChange={(event) => setSetupDraft((current) => ({ ...current, bannerImage: event.target.value }))}
+                />
+              </label>
+
+              <div className="profile-editor-grid">
+                <label className="profile-editor-field">
+                  <span>Display Name</span>
+                  <input
+                    type="text"
+                    className="profile-editor-input"
+                    value={setupDraft.displayName}
+                    onChange={(event) => setSetupDraft((current) => ({ ...current, displayName: event.target.value }))}
+                  />
+                </label>
+
+                <label className="profile-editor-field">
+                  <span>User Name</span>
+                  <input
+                    type="text"
+                    className="profile-editor-input"
+                    value={setupDraft.username}
+                    onChange={(event) => setSetupDraft((current) => ({ ...current, username: event.target.value }))}
+                  />
+                </label>
+              </div>
+
+              <label className="profile-editor-field">
+                <span>Description</span>
+                <textarea
+                  className="profile-editor-textarea"
+                  value={setupDraft.description}
+                  onChange={(event) => setSetupDraft((current) => ({ ...current, description: event.target.value }))}
+                />
+              </label>
+
+              <div className="profile-editor-grid">
+                <label className="profile-editor-field">
+                  <span>Affiliation</span>
+                  <input
+                    type="text"
+                    className="profile-editor-input"
+                    value={setupDraft.affiliation}
+                    onChange={(event) => setSetupDraft((current) => ({ ...current, affiliation: event.target.value }))}
+                  />
+                </label>
+
+                <label className="profile-editor-field">
+                  <span>Affiliation Text Color</span>
+                  <input
+                    type="text"
+                    className="profile-editor-input"
+                    value={setupDraft.affiliationTextColor}
+                    onChange={(event) =>
+                      setSetupDraft((current) => ({ ...current, affiliationTextColor: event.target.value }))
+                    }
+                  />
+                </label>
+              </div>
+
+              <label className="profile-editor-field">
+                <span>Affiliation Box Color</span>
+                <input
+                  type="text"
+                  className="profile-editor-input"
+                  value={setupDraft.affiliationBoxColor}
+                  onChange={(event) =>
+                    setSetupDraft((current) => ({ ...current, affiliationBoxColor: event.target.value }))
+                  }
+                />
+              </label>
+
+              <fieldset className="profile-editor-theme-group">
+                <legend>Profile Theme</legend>
+                <div className="profile-theme-options">
+                  {(Object.keys(themeStyles) as ProfileTheme[]).map((theme) => (
+                    <label key={theme} className={`profile-theme-option${setupDraft.theme === theme ? " is-active" : ""}`}>
+                      <input
+                        type="radio"
+                        name="profile-setup-theme"
+                        value={theme}
+                        checked={setupDraft.theme === theme}
+                        onChange={() => setSetupDraft((current) => ({ ...current, theme }))}
+                      />
+                      <span>{theme}</span>
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+
+              <div className="profile-editor-actions">
+                <button type="submit" className="profile-primary-button">
+                  Save Profile Card
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      ) : null}
+
+      {isWelcomeOpen ? (
+        <div className="profile-modal-overlay is-visible" role="presentation">
+          <div className="profile-modal-card profile-editor-modal" role="dialog" aria-modal="true" onClick={(event) => event.stopPropagation()}>
+            <div className="profile-modal-head">
+              <div>
+                <p className="profile-modal-kicker">All Set</p>
+                <h2 className="profile-modal-title">Enjoy Everything You Can Do Now</h2>
+              </div>
+            </div>
+
+            <div className="profile-editor-form">
+              <p className="profile-auth-copy">
+                Your account is now active for {sessionEmail}. Anything you change on this profile, in the creator, or in your coin balance will stay with this account across pages.
+              </p>
+              <div className="profile-feature-list">
+                {featureList.map((feature) => (
+                  <p key={feature} className="profile-feature-item">
+                    {feature}
+                  </p>
+                ))}
+              </div>
+              <div className="profile-editor-actions">
+                <button
+                  type="button"
+                  className="profile-primary-button"
+                  onClick={() => {
+                    dismissWelcome();
+                    setIsWelcomeOpen(false);
+                  }}
+                >
+                  Start Exploring
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       ) : null}
