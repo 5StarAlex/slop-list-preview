@@ -1,5 +1,4 @@
 import SiteHeader from "../components/SiteHeader";
-import SiteNav from "../components/SiteNav";
 
 const rules = [
   "Get involved with discussion posts if you want your slop coin total to move.",
@@ -13,7 +12,6 @@ export default function AboutPage() {
     <div className="route-page">
       <SiteHeader />
       <div className="route-shell">
-        <SiteNav />
         <div className="route-page-head">
           <p className="route-page-subtitle">About</p>
           <h1 className="route-page-title">About The Slop List</h1>

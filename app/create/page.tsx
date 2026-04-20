@@ -1,13 +1,11 @@
 import Link from "next/link";
 import SiteHeader from "../components/SiteHeader";
-import SiteNav from "../components/SiteNav";
 
 export default function CreatePage() {
   return (
     <div className="route-page">
       <SiteHeader />
       <div className="route-shell">
-        <SiteNav />
         <div className="route-page-head">
           <p className="route-page-subtitle">Create Slop</p>
           <h1 className="route-page-title">Build A Fresh Entry</h1>

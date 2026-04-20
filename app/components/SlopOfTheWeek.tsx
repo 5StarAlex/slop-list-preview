@@ -276,7 +276,7 @@ function DescriptionCarousel({
           }`}
           aria-hidden={motionDirection ? "true" : undefined}
         >
-          <h2 className="slop-name">{currentEntry.title}</h2>
+          <h2 className="slop-name slop-poster-title">{currentEntry.title}</h2>
           <p className="slop-copy">{currentEntry.description}</p>
         </article>
 
@@ -286,7 +286,7 @@ function DescriptionCarousel({
               motionDirection ? ` animate-description-in-${motionDirection}` : ""
             }`}
           >
-            <h2 className="slop-name">{incomingEntry.title}</h2>
+            <h2 className="slop-name slop-poster-title">{incomingEntry.title}</h2>
             <p className="slop-copy">{incomingEntry.description}</p>
           </article>
         ) : null}
@@ -327,7 +327,7 @@ export default function SlopOfTheWeek() {
 
   return (
     <section className="slop-panel">
-      <h1 className="slop-title">Slop Of The Week</h1>
+      <h1 className="slop-title slop-sticker-title">Slop Of The Week</h1>
 
       <div className="slop-showcase">
         <Posters

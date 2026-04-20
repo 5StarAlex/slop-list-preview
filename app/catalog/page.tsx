@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import SiteHeader from "../components/SiteHeader";
-import SiteNav from "../components/SiteNav";
 import CatalogCarousel, { CatalogEntry } from "../components/CatalogCarousel";
 
 const slopPool: CatalogEntry[] = [
@@ -107,8 +106,6 @@ export default function CatalogPage() {
     <div className="route-page">
       <SiteHeader />
       <div className="route-shell catalog-page-shell">
-        <SiteNav />
-
         <div className="route-page-head">
           <p className="route-page-subtitle">Catalog</p>
           <h1 className="route-page-title">Slop Catalog</h1>

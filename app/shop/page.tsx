@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useAccount } from "../components/AccountProvider";
 import SiteHeader from "../components/SiteHeader";
-import SiteNav from "../components/SiteNav";
 import { WHITE_TRAIL_COST } from "../lib/siteData";
 
 export default function ShopPage() {
@@ -36,7 +35,6 @@ export default function ShopPage() {
     <div className="route-page">
       <SiteHeader />
       <div className="route-shell">
-        <SiteNav />
         <div className="route-page-head">
           <p className="route-page-subtitle">Slop Shop</p>
           <h1 className="route-page-title">Spend Your Slop Coins</h1>

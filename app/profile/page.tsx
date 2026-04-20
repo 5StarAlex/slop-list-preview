@@ -5,7 +5,6 @@ import { CSSProperties, FormEvent, type ChangeEvent, useEffect, useMemo, useStat
 import { useAccount } from "../components/AccountProvider";
 import CreateASlop from "../components/CreateASlop";
 import SiteHeader from "../components/SiteHeader";
-import SiteNav from "../components/SiteNav";
 import { DEMO_LOGIN_EMAIL, DEMO_LOGIN_PASSWORD, defaultProfile, type ProfileData, type ProfileTheme } from "../lib/accountData";
 
 const socialBadges = [
@@ -399,10 +398,9 @@ export default function ProfilePage() {
 
   return (
     <div className="route-page profile-theme-page" style={currentTheme as CSSProperties}>
-      <SiteHeader />
+      <SiteHeader navVariant="profile" />
 
       <div className="route-shell profile-modern-shell">
-        <SiteNav variant="profile" />
         <div className={`profile-content-grid${isLocked ? " profile-locked-view" : ""}`}>
           <section className="profile-modern-card">
             <div

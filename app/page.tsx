@@ -3,7 +3,7 @@ import Link from "next/link";
 import SiteHeader from "./components/SiteHeader";
 import SlopCoinsDisplay from "./components/SlopCoinsDisplay";
 import SlopOfTheWeek from "./components/SlopOfTheWeek";
-import SiteNav from "./components/SiteNav";
+import SpaceGamePanel from "./components/SpaceGamePanel";
 
 const discussionPosts = [
   {
@@ -96,14 +96,14 @@ export default function Home() {
 
         <section className="main-column">
           <div className="main-shell">
-            <SiteNav />
-
             <div className="board-grid">
               <div id="slop-of-the-week">
                 <SlopOfTheWeek />
               </div>
 
               <aside className="news-column">
+                <SpaceGamePanel />
+
                 <section className="news-card">
                   <h3 className="board-title">
                     <FloatingWord text="Slop Board" className="glow-floating-word" />
