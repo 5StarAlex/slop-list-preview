@@ -8266,9 +8266,7 @@ body {
   border: 2px solid #6a44d3;
   border-bottom-color: #27267a;
   border-radius: 10px 10px 3px 3px;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.58) 0 17%, transparent 18%),
-    linear-gradient(180deg, #ff7bc8 0%, #de36b5 42%, #5944c9 72%, #1c3d95 100%);
+  background: transparent;
   box-shadow:
     inset 0 1px 0 rgba(255, 249, 255, 0.86),
     inset 0 -3px 0 rgba(25, 23, 106, 0.68),
@@ -8280,22 +8278,30 @@ body {
 .pixel-tab::before {
   content: "";
   position: absolute;
-  inset: 3px 7px auto;
+  inset: 0;
   z-index: -1;
-  height: 9px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.42);
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.34);
+  border-radius: inherit;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.42) 0 17%, transparent 18%),
+    linear-gradient(
+      180deg,
+      rgba(255, 123, 200, 0.76) 0%,
+      rgba(222, 54, 181, 0.72) 42%,
+      rgba(89, 68, 201, 0.68) 72%,
+      rgba(28, 61, 149, 0.72) 100%
+    );
+  box-shadow: inset 0 9px 0 rgba(255, 255, 255, 0.18);
 }
 
 .pixel-tab::after {
   content: "";
   position: absolute;
-  inset: auto 8px 4px;
+  inset: 3px 7px auto;
   z-index: -1;
-  height: 3px;
+  height: 9px;
   border-radius: 999px;
-  background: rgba(97, 224, 255, 0.55);
+  background: rgba(255, 255, 255, 0.36);
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.28);
 }
 
 .pixel-tab-skin {
@@ -8303,6 +8309,8 @@ body {
 }
 
 .pixel-tab-label {
+  position: relative;
+  z-index: 1;
   width: 100%;
   height: 100%;
   padding: 2px 4px 0;
