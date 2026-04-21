@@ -327,7 +327,7 @@ export default function SlopOfTheWeek() {
 
   return (
     <section className="slop-panel">
-      <h1 className="slop-title slop-sticker-title">Slop Of The Week</h1>
+      <h1 className="slop-title slop-sticker-title">SLOP OF THE WEEK</h1>
 
       <div className="slop-showcase">
         <Posters
