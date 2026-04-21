@@ -72,7 +72,7 @@ export default function SiteHeader() {
   const [abilityReady, setAbilityReady] = useState(false);
 
   const nextId = useRef(0);
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const timeoutRef = useRef<number | null>(null);
   const frameRef = useRef<number | null>(null);
   const lastFrameTime = useRef<number | null>(null);
   const marqueeRef = useRef<HTMLDivElement | null>(null);
@@ -81,9 +81,9 @@ export default function SiteHeader() {
   const driftPixelsRef = useRef<DriftPixel[]>([]);
   const attackPixelsRef = useRef<AttackPixel[]>([]);
   const abilityReadyRef = useRef(false);
-  const timeoutsRef = useRef<Array<ReturnType<typeof setTimeout>>>([]);
-  const coinIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const abilityTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const timeoutsRef = useRef<number[]>([]);
+  const coinIntervalRef = useRef<number | null>(null);
+  const abilityTimeoutRef = useRef<number | null>(null);
   const gameStartRef = useRef<number | null>(null);
   const lastCoinAwardRef = useRef<number | null>(null);
   const addCoinsRef = useRef(addCoins);
