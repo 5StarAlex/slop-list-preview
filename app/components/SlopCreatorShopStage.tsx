@@ -7,6 +7,7 @@ import {
   type ConfigurableCategoryKey,
   type CustomizationOption,
 } from "./slopOptions";
+import SlopTitle from "./SlopTitle";
 
 export type ShopTabKey = "home" | "eyes" | "mouth" | "color" | "shirt" | "accessories";
 type ShopRarity = "common" | "rare" | "epic";
@@ -163,7 +164,7 @@ export default function SlopCreatorShopStage({
   return (
     <section className="slop-creator-shop" aria-label="Creator shop stage">
       <header className="slop-creator-shop-header">
-        <h2 className="slop-creator-shop-title">Shop</h2>
+        <SlopTitle as="h2" size="md" className="slop-creator-shop-title">Shop</SlopTitle>
         <div className="slop-creator-shop-tabs" role="tablist" aria-label="Shop categories">
           {shopTabs.map((tab) => (
             <button
@@ -185,7 +186,7 @@ export default function SlopCreatorShopStage({
         <>
           <section className="slop-creator-shop-section">
             <div className="slop-creator-shop-section-head">
-              <h3 className="slop-creator-shop-section-title">Featured Items</h3>
+              <SlopTitle as="h3" size="sm" className="slop-creator-shop-section-title">Featured Items</SlopTitle>
               <span className="slop-creator-shop-timer">02d 18h</span>
             </div>
             <div className="slop-creator-shop-featured-grid">
@@ -197,7 +198,7 @@ export default function SlopCreatorShopStage({
 
           <section className="slop-creator-shop-section">
             <div className="slop-creator-shop-section-head">
-              <h3 className="slop-creator-shop-section-title">Regular Items</h3>
+              <SlopTitle as="h3" size="sm" className="slop-creator-shop-section-title">Regular Items</SlopTitle>
               <span className="slop-creator-shop-timer">18h 25m</span>
             </div>
             <div className="slop-creator-shop-regular-grid">
@@ -210,7 +211,9 @@ export default function SlopCreatorShopStage({
       ) : (
         <section className="slop-creator-shop-section is-category-only">
           <div className="slop-creator-shop-section-head">
-            <h3 className="slop-creator-shop-section-title">{shopTabs.find((tab) => tab.key === activeTab)?.label} Items</h3>
+            <SlopTitle as="h3" size="sm" className="slop-creator-shop-section-title">
+              {`${shopTabs.find((tab) => tab.key === activeTab)?.label} Items`}
+            </SlopTitle>
             <span className="slop-creator-shop-timer">Fresh Drop</span>
           </div>
           <div className="slop-creator-shop-regular-grid">

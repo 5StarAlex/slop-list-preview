@@ -3,6 +3,7 @@
 import { useState } from "react";
 import SiteHeader from "../components/SiteHeader";
 import CatalogCarousel, { CatalogEntry } from "../components/CatalogCarousel";
+import SlopTitle from "../components/SlopTitle";
 
 const slopPool: CatalogEntry[] = [
   {
@@ -108,7 +109,7 @@ export default function CatalogPage() {
       <div className="route-shell catalog-page-shell">
         <div className="route-page-head">
           <p className="route-page-subtitle">Catalog</p>
-          <h1 className="route-page-title">Slop Catalog</h1>
+          <SlopTitle className="route-page-title">Slop Catalog</SlopTitle>
         </div>
 
         <div className="catalog-search-shell">
@@ -142,7 +143,7 @@ export default function CatalogPage() {
               <CatalogCarousel title="Search" entries={filteredEntries} />
             ) : (
               <section className="route-card catalog-empty-state">
-                <h2 className="catalog-row-title">Search</h2>
+                <SlopTitle as="h2" size="md" className="catalog-row-title">Search</SlopTitle>
                 <p className="route-copy">No slop titles start with &quot;{searchTerm}&quot; right now.</p>
               </section>
             )

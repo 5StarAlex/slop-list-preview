@@ -1,10 +1,12 @@
+import SlopTitle from "../../components/SlopTitle";
+
 export default function SlopDetailPage() {
   return (
     <div className="page-stack">
       <section className="section-heading">
         <div className="stack-sm">
           <span className="section-kicker">Detail View</span>
-          <h1 className="section-title">Akiba Maid War</h1>
+          <SlopTitle className="section-title">Akiba Maid War</SlopTitle>
           <p className="section-copy">
             The focused detail page keeps the same glossy system while trimming
             away unnecessary interactivity.
@@ -30,7 +32,7 @@ export default function SlopDetailPage() {
 
         <aside className="glass-panel stack-lg">
           <div className="stack-sm">
-            <h2 className="card-title">Why it landed here</h2>
+            <SlopTitle as="h2" size="md" className="card-title">Why it landed here</SlopTitle>
             <ul className="plain-list">
               <li>Ridiculously sharp visual identity.</li>
               <li>Every episode escalates in the funniest possible direction.</li>
@@ -39,7 +41,7 @@ export default function SlopDetailPage() {
           </div>
 
           <div className="stack-sm">
-            <h2 className="card-title">Community meter</h2>
+            <SlopTitle as="h2" size="md" className="card-title">Community meter</SlopTitle>
             <div className="meter-row">
               <div className="meter-chip">
                 <strong>7.3</strong>

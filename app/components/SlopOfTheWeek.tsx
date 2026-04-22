@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { CSSProperties, useEffect, useState } from "react";
+import SlopTitle from "./SlopTitle";
 
 const emojiRanks = [
   { emoji: "\u{2639}\u{FE0F}", label: "Frown Face" },
@@ -276,7 +277,7 @@ function DescriptionCarousel({
           }`}
           aria-hidden={motionDirection ? "true" : undefined}
         >
-          <h2 className="slop-name slop-poster-title">{currentEntry.title}</h2>
+          <SlopTitle as="h2" size="sm" className="slop-name slop-poster-title">{currentEntry.title}</SlopTitle>
           <p className="slop-copy">{currentEntry.description}</p>
         </article>
 
@@ -286,7 +287,7 @@ function DescriptionCarousel({
               motionDirection ? ` animate-description-in-${motionDirection}` : ""
             }`}
           >
-            <h2 className="slop-name slop-poster-title">{incomingEntry.title}</h2>
+            <SlopTitle as="h2" size="sm" className="slop-name slop-poster-title">{incomingEntry.title}</SlopTitle>
             <p className="slop-copy">{incomingEntry.description}</p>
           </article>
         ) : null}
@@ -327,7 +328,7 @@ export default function SlopOfTheWeek() {
 
   return (
     <section className="slop-panel">
-      <h1 className="slop-title slop-sticker-title">SLOP OF THE WEEK</h1>
+      <SlopTitle className="slop-sticker-title">SLOP OF THE WEEK</SlopTitle>
 
       <div className="slop-showcase">
         <Posters
@@ -349,7 +350,7 @@ export default function SlopOfTheWeek() {
       </div>
 
       <div className="rank-panel">
-        <h3>Rank It</h3>
+        <SlopTitle as="h3" size="sm">Rank It</SlopTitle>
         <div className="emoji-row" role="list" aria-label="Emoji ranking options">
           {emojiRanks.map((rank) => (
             <button

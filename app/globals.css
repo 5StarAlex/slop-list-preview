@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@700;800;900&display=swap");
 @import "tailwindcss";
 
 :root {
@@ -8169,7 +8170,7 @@ body {
 }
 
 .space-banner {
-  min-height: 132px;
+  min-height: 88px;
   margin-bottom: 0;
   border: 0;
   border-radius: 0;
@@ -8183,10 +8184,11 @@ body {
 }
 
 .space-banner-shell {
-  grid-template-columns: 302px minmax(0, 1fr);
-  min-height: 132px;
+  grid-template-columns: 1fr;
+  min-height: 88px;
   gap: 2px;
   padding: 2px 8px 0 9px;
+  overflow: hidden;
 }
 
 .space-banner-layers .star-layer-back {
@@ -8214,53 +8216,89 @@ body {
 }
 
 .logo-stack {
+  position: absolute;
+  left: 2px;
+  top: 2px;
+  z-index: 1;
   align-self: start;
   align-content: start;
   gap: 0;
-  transform: translateY(-2px);
+  transform: none;
+  pointer-events: none;
 }
 
 .logo-image-wrap {
+  position: relative;
+  display: inline-block;
+  line-height: 0;
+  overflow: hidden;
   filter:
     drop-shadow(0 0 2px rgba(255, 255, 255, 0.95))
     drop-shadow(0 0 9px rgba(91, 178, 255, 0.88))
     drop-shadow(0 0 22px rgba(72, 74, 255, 0.48));
 }
 
+.logo-image-wrap::after {
+  content: none !important;
+}
+
 .logo-image {
-  width: min(304px, 100%);
+  width: 390px;
+  max-width: none;
   height: auto;
 }
 
+.logo-image-gleam {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: block;
+  background:
+    linear-gradient(
+      118deg,
+      transparent 31%,
+      rgba(255, 255, 255, 0.18) 43%,
+      rgba(255, 255, 255, 0.92) 49%,
+      rgba(119, 225, 255, 0.38) 54%,
+      transparent 66%
+    );
+  transform: translateX(-145%) skewX(-16deg);
+  animation: logo-gleam 4.8s ease-in-out infinite;
+  -webkit-mask-image: var(--logo-mask);
+  mask-image: var(--logo-mask);
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
 .logo-subtitle {
-  margin-top: -18px;
-  margin-left: 126px;
-  color: #ffe86f;
-  font-size: 0.82rem;
-  line-height: 1;
-  text-shadow:
-    -1px -1px 0 #742d98,
-    1px -1px 0 #742d98,
-    -1px 1px 0 #742d98,
-    1px 1px 0 #742d98,
-    0 0 8px rgba(255, 84, 229, 0.5);
+  display: none;
 }
 
 .pixel-nav {
+  position: relative;
+  z-index: 3;
   align-self: end;
   justify-content: flex-start;
   align-items: end;
-  gap: 5px;
+  flex-wrap: nowrap;
+  width: 100%;
+  gap: 4px;
   margin: 0;
-  padding: 0 2px 8px 0;
+  padding: 0 2px 0 170px;
 }
 
 .pixel-tab {
   position: relative;
   isolation: isolate;
-  width: clamp(108px, 10.5vw, 128px);
+  width: clamp(96px, 9.4vw, 122px);
   min-width: 0;
-  height: 38px;
+  height: 36px;
   min-height: 0;
   padding: 0 8px;
   border: 2px solid #6a44d3;
@@ -8313,13 +8351,13 @@ body {
   z-index: 1;
   width: 100%;
   height: 100%;
-  padding: 2px 4px 0;
+  padding: 1px 2px 0;
   color: #fff58b;
   font-family: var(--bubble-font);
-  font-size: clamp(0.58rem, 0.56rem + 0.15vw, 0.7rem);
+  font-size: clamp(0.78rem, 0.72rem + 0.28vw, 0.96rem);
   font-weight: 900;
-  line-height: 1;
-  letter-spacing: -0.03em;
+  line-height: 0.9;
+  letter-spacing: -0.08em;
   text-align: center;
   text-transform: uppercase;
   text-shadow:
@@ -8645,14 +8683,20 @@ body {
   }
 
   .space-banner-shell {
-    grid-template-columns: minmax(174px, 32vw) minmax(0, 1fr);
+    grid-template-columns: 1fr;
     justify-items: stretch;
-    min-height: 88px;
+    min-height: 70px;
     padding: 1px 5px 0;
   }
 
+  .logo-stack {
+    left: 0;
+    top: 2px;
+  }
+
   .logo-image {
-    width: clamp(166px, 31vw, 224px);
+    width: clamp(260px, 49vw, 330px);
+    max-width: none;
   }
 
   .logo-subtitle {
@@ -8665,18 +8709,18 @@ body {
     flex-wrap: nowrap;
     justify-content: flex-start;
     gap: 3px;
-    padding-bottom: 7px;
+    padding: 0 2px 0 clamp(118px, 24vw, 150px);
   }
 
   .pixel-tab {
-    width: clamp(57px, 10.4vw, 92px);
+    width: clamp(54px, 10.1vw, 88px);
     height: 29px;
     padding-inline: 3px;
     border-radius: 7px 7px 2px 2px;
   }
 
   .pixel-tab-label {
-    font-size: clamp(0.43rem, 1.05vw, 0.58rem);
+    font-size: clamp(0.54rem, 1.44vw, 0.78rem);
   }
 
   .retro-layout {
@@ -8724,6 +8768,15 @@ body {
     justify-items: center;
     min-height: 0;
     padding: 5px 6px 8px;
+    overflow: visible;
+  }
+
+  .logo-stack {
+    position: relative;
+    left: auto;
+    top: auto;
+    bottom: auto;
+    pointer-events: auto;
   }
 
   .logo-image {
@@ -8738,6 +8791,7 @@ body {
   .pixel-nav {
     justify-content: center;
     flex-wrap: wrap;
+    padding: 0 0 6px;
   }
 
   .pixel-tab {
@@ -8753,4 +8807,207 @@ body {
     --slop-side-offset: 162px;
     --slop-hidden-offset: 298px;
   }
+}
+
+/* Reusable glossy anime display title system */
+
+:root {
+  --slop-title-fill-top: #ff7bd8;
+  --slop-title-fill-upper: #f3a4ff;
+  --slop-title-fill-lower: #8fdcff;
+  --slop-title-fill-bottom: #3e86ff;
+  --slop-title-outline: #6b2dbd;
+}
+
+.slop-title,
+.slop-display-title {
+  position: relative;
+  z-index: 2;
+  display: inline-block;
+  margin: 0;
+  color: transparent;
+  font-family: "Fredoka", "Trebuchet MS", sans-serif;
+  font-weight: 900;
+  line-height: 0.9;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  background:
+    linear-gradient(
+      to bottom,
+      var(--slop-title-fill-top) 0%,
+      var(--slop-title-fill-upper) 34%,
+      var(--slop-title-fill-lower) 68%,
+      var(--slop-title-fill-bottom) 100%
+    );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 1px var(--slop-title-outline);
+  paint-order: stroke fill;
+  text-shadow:
+    -2px 0 var(--slop-title-outline),
+    2px 0 var(--slop-title-outline),
+    0 -2px var(--slop-title-outline),
+    0 2px var(--slop-title-outline),
+    -2px -2px var(--slop-title-outline),
+    2px -2px var(--slop-title-outline),
+    -2px 2px var(--slop-title-outline),
+    2px 2px var(--slop-title-outline);
+}
+
+.slop-title--lg,
+.slop-display-title--lg {
+  font-size: 36px;
+}
+
+.slop-title--md,
+.slop-display-title--md {
+  font-size: 28px;
+}
+
+.slop-title--sm,
+.slop-display-title--sm {
+  font-size: 20px;
+}
+
+.slop-display-title--profile {
+  font-size: 42px;
+  line-height: 0.94;
+}
+
+.slop-sticker-title.slop-title,
+.slop-sticker-title.slop-display-title,
+.board-title.slop-title,
+.board-title.slop-display-title,
+.route-page-title.slop-title,
+.route-page-title.slop-display-title,
+.profile-modern-name.slop-title,
+.profile-modern-name.slop-display-title,
+.profile-modal-title.slop-title,
+.profile-modal-title.slop-display-title,
+.profile-auth-title.slop-title,
+.profile-auth-title.slop-display-title {
+  background:
+    linear-gradient(
+      to bottom,
+      var(--slop-title-fill-top) 0%,
+      var(--slop-title-fill-upper) 34%,
+      var(--slop-title-fill-lower) 68%,
+      var(--slop-title-fill-bottom) 100%
+    );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.slop-sticker-title.slop-title {
+  background:
+    linear-gradient(
+      to bottom,
+      #ff7bd8 0%,
+      #f3a4ff 34%,
+      #8fdcff 68%,
+      #3e86ff 100%
+    ) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  -webkit-text-stroke: 1px #6b2dbd !important;
+  text-shadow:
+    -2px 0 #6b2dbd,
+    2px 0 #6b2dbd,
+    0 -2px #6b2dbd,
+    0 2px #6b2dbd,
+    -2px -2px #6b2dbd,
+    2px -2px #6b2dbd,
+    -2px 2px #6b2dbd,
+    2px 2px #6b2dbd !important;
+}
+
+.pixel-card h2.slop-title,
+.pixel-card h2.slop-display-title,
+.paper-panel h3.slop-title,
+.paper-panel h3.slop-display-title,
+.news-card h3.slop-title,
+.news-card h3.slop-display-title,
+.mini-card h3.slop-title,
+.mini-card h3.slop-display-title,
+.nav-box h3.slop-title,
+.nav-box h3.slop-display-title {
+  margin: 0;
+}
+
+.slop-composite-title {
+  --slop-composite-outline: #5450bf;
+  --slop-composite-cyan-edge: #67d8f7;
+  position: relative;
+  z-index: 5;
+  display: inline-block;
+  margin: 0;
+  color: transparent;
+  font-family: "Fredoka", "Trebuchet MS", sans-serif;
+  font-weight: 900;
+  line-height: 0.9;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  isolation: isolate;
+  background: none !important;
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 0 !important;
+  text-shadow: none !important;
+}
+
+.slop-composite-title__outline {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  color: var(--slop-composite-outline);
+  -webkit-text-fill-color: var(--slop-composite-outline);
+  -webkit-text-stroke: 0;
+  filter:
+    drop-shadow(0 2px 0 var(--slop-composite-cyan-edge))
+    drop-shadow(0 3px 3px rgba(103, 216, 247, 0.42));
+  text-shadow:
+    -2px 0 var(--slop-composite-outline),
+    2px 0 var(--slop-composite-outline),
+    0 -2px var(--slop-composite-outline),
+    0 2px var(--slop-composite-outline),
+    -2px -2px var(--slop-composite-outline),
+    2px -2px var(--slop-composite-outline),
+    -2px 2px var(--slop-composite-outline),
+    2px 2px var(--slop-composite-outline);
+}
+
+.slop-composite-title__fill {
+  position: relative;
+  z-index: 1;
+  display: inline-block;
+  background:
+    linear-gradient(
+      to bottom,
+      #fff0a3 0%,
+      #ffe3a0 24%,
+      #f9fdff 46%,
+      #b8eaff 74%,
+      #62cfff 100%
+    );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 0;
+  paint-order: stroke fill;
+  text-shadow: none !important;
+}
+
+.slop-composite-title--lg {
+  font-size: 38px;
+}
+
+.slop-composite-title--md {
+  font-size: 28px;
+}
+
+.slop-composite-title--sm {
+  font-size: 20px;
 }

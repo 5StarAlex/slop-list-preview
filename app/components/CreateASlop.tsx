@@ -12,6 +12,7 @@ import {
 import { useAccount } from "./AccountProvider";
 import { SlopArmSvg, SlopBodySvg, SlopHeadSvg, SlopLegSvg } from "./SlopBodyParts";
 import SlopCreatorShopStage, { type ShopTabKey } from "./SlopCreatorShopStage";
+import SlopTitle from "./SlopTitle";
 
 const statRows = [
   { label: "Speed", values: { eyes: 88, mouth: 74, pose: 82, shirt: 62, pants: 68, accessories: 80, color: 56 } },
@@ -290,9 +291,7 @@ export default function CreateASlop() {
     <section className="slop-creator-shell" aria-labelledby="create-a-slop-heading">
       <div className="slop-creator-left">
         <div className="slop-creator-brand-block">
-          <div className="slop-creator-brand-mark" id="create-a-slop-heading">
-            SLOP.IO
-          </div>
+          <SlopTitle as="h2" size="md" className="slop-creator-brand-mark" id="create-a-slop-heading">SLOP.IO</SlopTitle>
 
           <section className="slop-creator-hud" aria-label="Creator HUD">
             <div className="slop-creator-hud-currency-row">
@@ -323,7 +322,7 @@ export default function CreateASlop() {
 
         {isStatsView ? (
           <section className="slop-creator-stats" aria-label="Current category stats">
-            <div className="slop-creator-stats-title">Layer Type</div>
+            <SlopTitle as="h3" size="sm" className="slop-creator-stats-title">Layer Type</SlopTitle>
             <div className="slop-creator-stats-grid">
               {statRows.map((row) => (
                 <div key={row.label} className="slop-creator-stat-row">

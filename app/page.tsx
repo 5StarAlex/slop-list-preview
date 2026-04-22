@@ -3,6 +3,7 @@ import Link from "next/link";
 import SiteHeader from "./components/SiteHeader";
 import SlopCoinsDisplay from "./components/SlopCoinsDisplay";
 import SlopOfTheWeek from "./components/SlopOfTheWeek";
+import SlopTitle from "./components/SlopTitle";
 import SpaceGamePanel from "./components/SpaceGamePanel";
 
 const discussionPosts = [
@@ -24,23 +25,6 @@ const discussionPosts = [
   },
 ];
 
-function FloatingWord({ text, className = "" }: { text: string; className?: string }) {
-  return (
-    <span className={`floating-word ${className}`.trim()} aria-label={text}>
-      {text.split("").map((letter, index) => (
-        <span
-          key={`${text}-${index}`}
-          className={`floating-letter${letter === " " ? " is-space" : ""}`}
-          style={{ animationDelay: `${index * 0.14}s` }}
-          aria-hidden="true"
-        >
-          {letter === " " ? "\u00A0" : letter}
-        </span>
-      ))}
-    </span>
-  );
-}
-
 export default function Home() {
   return (
     <div className="habbo-page">
@@ -49,17 +33,13 @@ export default function Home() {
       <div className="retro-layout">
         <aside className="left-column">
           <section className="pixel-card">
-            <h2>
-              <FloatingWord text="Slop Coins" />
-            </h2>
+            <SlopTitle as="h2" size="md">Slop Coins</SlopTitle>
             <SlopCoinsDisplay />
             <p>Post, react, and keep the board alive to stack more coins.</p>
           </section>
 
           <section className="paper-panel">
-            <h3>
-              <FloatingWord text="Get Yo Slop Coins Up" className="mini-floating-word" />
-            </h3>
+            <SlopTitle as="h3" size="sm">Get Yo Slop Coins Up</SlopTitle>
             <p>
               Wanna be the king of slop? to stack them coins up get involved with
               discussion posts, rank shows, or engagement bait for all I care.
@@ -73,7 +53,7 @@ export default function Home() {
 
           <div className="pixel-card">
             <div className="mini-title-wrap">
-              <FloatingWord text="Top Meme" className="mini-floating-word" />
+              <SlopTitle as="h3" size="sm">Top Meme</SlopTitle>
             </div>
             <div className="meme-frame">
               <Image
@@ -105,9 +85,7 @@ export default function Home() {
                 <SpaceGamePanel />
 
                 <section className="news-card">
-                  <h3 className="board-title">
-                    <FloatingWord text="Slop Board" className="glow-floating-word" />
-                  </h3>
+                  <SlopTitle as="h3" size="md" className="board-title">Slop Board</SlopTitle>
 
                   <div className="discussion-list">
                     {discussionPosts.map((post) => (
@@ -144,7 +122,7 @@ export default function Home() {
                 </section>
 
                 <section className="nav-box">
-                  <h3>Travel Pages</h3>
+                  <SlopTitle as="h3" size="sm">Travel Pages</SlopTitle>
                   <p>The middle box handles all the page jumps, just like the reference.</p>
                   <div className="route-list">
                     <Link href="/catalog" className="route-button">
@@ -166,7 +144,7 @@ export default function Home() {
                 </section>
 
                 <section className="mini-card">
-                  <h3>Hotel Happenings</h3>
+                  <SlopTitle as="h3" size="sm">Hotel Happenings</SlopTitle>
                   <p>
                     Slime is active in the top bar, stat chips bounce on hover, and
                     the board is starting to feel way more alive.

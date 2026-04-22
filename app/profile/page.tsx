@@ -5,6 +5,7 @@ import { CSSProperties, FormEvent, type ChangeEvent, useEffect, useMemo, useStat
 import { useAccount } from "../components/AccountProvider";
 import CreateASlop from "../components/CreateASlop";
 import SiteHeader from "../components/SiteHeader";
+import SlopTitle from "../components/SlopTitle";
 import { DEMO_LOGIN_EMAIL, DEMO_LOGIN_PASSWORD, defaultProfile, type ProfileData, type ProfileTheme } from "../lib/accountData";
 
 const socialBadges = [
@@ -447,7 +448,7 @@ export default function ProfilePage() {
               </div>
 
               <div className="profile-modern-identity">
-                <h1 className="profile-modern-name">{profile.displayName}</h1>
+                <SlopTitle className="profile-modern-name">{profile.displayName}</SlopTitle>
                 <div className="profile-modern-meta-row">
                   <span className="profile-modern-handle">{profile.username}</span>
                   <span className="profile-modern-tag">IRL</span>
@@ -532,7 +533,7 @@ export default function ProfilePage() {
 
               <div className="profile-auth-title-block">
                 <p className="profile-auth-kicker">Profile Load Dream</p>
-                <h2 className="profile-auth-title">Log In To Unlock Your Slop World</h2>
+                <SlopTitle as="h2" size="md" className="profile-auth-title">Log In To Unlock Your Slop World</SlopTitle>
                 <div className="profile-auth-mode-row">
                   <button
                     type="button"
@@ -621,9 +622,7 @@ export default function ProfilePage() {
               </button>
               <div>
                 <p className="profile-modal-kicker">Profile Settings</p>
-                <h2 id="profile-editor-title" className="profile-modal-title">
-                  Edit Your Profile
-                </h2>
+                <SlopTitle as="h2" size="md" className="profile-modal-title" id="profile-editor-title">Edit Your Profile</SlopTitle>
               </div>
             </div>
 
@@ -766,9 +765,7 @@ export default function ProfilePage() {
             <div className="profile-modal-head">
               <div>
                 <p className="profile-modal-kicker">First-Time Setup</p>
-                <h2 id="profile-setup-title" className="profile-modal-title">
-                  Create Your Profile Card
-                </h2>
+                <SlopTitle as="h2" size="md" className="profile-modal-title" id="profile-setup-title">Create Your Profile Card</SlopTitle>
               </div>
             </div>
 
@@ -899,7 +896,7 @@ export default function ProfilePage() {
             <div className="profile-modal-head">
               <div>
                 <p className="profile-modal-kicker">All Set</p>
-                <h2 className="profile-modal-title">Enjoy Everything You Can Do Now</h2>
+                <SlopTitle as="h2" size="md" className="profile-modal-title">Enjoy Everything You Can Do Now</SlopTitle>
               </div>
             </div>
 
@@ -943,9 +940,7 @@ export default function ProfilePage() {
             <div className="profile-modal-head">
               <div>
                 <p className="profile-modal-kicker">Full Bio</p>
-                <h2 id="profile-bio-title" className="profile-modal-title">
-                  {profile.displayName}
-                </h2>
+                <SlopTitle as="h2" size="md" className="profile-modal-title" id="profile-bio-title">{profile.displayName}</SlopTitle>
               </div>
               <button type="button" className="profile-modal-close" onClick={() => setIsBioOpen(false)} aria-label="Close full bio">
                 X

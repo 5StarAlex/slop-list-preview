@@ -1,4 +1,5 @@
 import SiteHeader from "../components/SiteHeader";
+import SlopTitle from "../components/SlopTitle";
 
 const rules = [
   "Get involved with discussion posts if you want your slop coin total to move.",
@@ -14,7 +15,7 @@ export default function AboutPage() {
       <div className="route-shell">
         <div className="route-page-head">
           <p className="route-page-subtitle">About</p>
-          <h1 className="route-page-title">About The Slop List</h1>
+          <SlopTitle className="route-page-title">About The Slop List</SlopTitle>
           <p className="route-copy">
             The board runs on loud opinions, dumb commitment, and just enough structure to keep the
             chaos readable.
@@ -23,7 +24,7 @@ export default function AboutPage() {
 
         <div className="route-grid">
           <article className="route-card">
-            <h3>What This Is</h3>
+            <SlopTitle as="h3" size="sm">What This Is</SlopTitle>
             <p>
               The Slop List is a pixel-chaos board for ranking, collecting, and rotating through the
               most watchable disasters and favorite guilty pleasures we can find.
@@ -31,7 +32,7 @@ export default function AboutPage() {
           </article>
 
           <article className="route-card">
-            <h3>Board Rules</h3>
+            <SlopTitle as="h3" size="sm">Board Rules</SlopTitle>
             <div className="about-rule-list">
               {rules.map((rule) => (
                 <p key={rule}>{rule}</p>

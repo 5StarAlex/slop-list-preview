@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useAccount } from "../components/AccountProvider";
 import SiteHeader from "../components/SiteHeader";
+import SlopTitle from "../components/SlopTitle";
 import { WHITE_TRAIL_COST } from "../lib/siteData";
 
 export default function ShopPage() {
@@ -37,7 +38,7 @@ export default function ShopPage() {
       <div className="route-shell">
         <div className="route-page-head">
           <p className="route-page-subtitle">Slop Shop</p>
-          <h1 className="route-page-title">Spend Your Slop Coins</h1>
+          <SlopTitle className="route-page-title">Spend Your Slop Coins</SlopTitle>
           <p className="route-copy">
             The shop keeps the same site styling, but this one actually gives you a global unlock
             instead of a local gimmick.
@@ -46,7 +47,7 @@ export default function ShopPage() {
 
         <div className="route-grid">
           <article className="route-card shop-card">
-            <h3>White Mouse Trail</h3>
+            <SlopTitle as="h3" size="sm">White Mouse Trail</SlopTitle>
             <p>Cost: {WHITE_TRAIL_COST} slop coins</p>
             <div className="shop-preview" aria-hidden="true">
               <span className="shop-preview-pixel pixel-one" />
@@ -60,7 +61,7 @@ export default function ShopPage() {
           </article>
 
           <article className="route-card shop-card">
-            <h3>Wallet + Status</h3>
+            <SlopTitle as="h3" size="sm">Wallet + Status</SlopTitle>
             <p>Current coins: {coins}</p>
             <p>{trailUnlocked ? "Global white trail is active." : "Global white trail is still locked."}</p>
             <p className="route-copy">{message}</p>

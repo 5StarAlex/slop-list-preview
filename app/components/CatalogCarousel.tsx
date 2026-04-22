@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { CSSProperties, useEffect, useState } from "react";
+import SlopTitle from "./SlopTitle";
 
 const transitionMs = 520;
 const visibleCount = 5;
@@ -76,7 +77,7 @@ export default function CatalogCarousel({
   return (
     <section className="catalog-row-section">
       <div className="catalog-row-head">
-        <h2 className="catalog-row-title">{title}</h2>
+        <SlopTitle as="h2" size="md" className="catalog-row-title">{title}</SlopTitle>
       </div>
 
       <div className="catalog-carousel-shell">
