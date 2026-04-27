@@ -8170,7 +8170,7 @@ body {
 }
 
 .space-banner {
-  min-height: 88px;
+  min-height: 37px;
   margin-bottom: 0;
   border: 0;
   border-radius: 0;
@@ -8184,8 +8184,9 @@ body {
 }
 
 .space-banner-shell {
+  position: relative;
   grid-template-columns: 1fr;
-  min-height: 88px;
+  min-height: 45px;
   gap: 2px;
   padding: 2px 8px 0 9px;
   overflow: hidden;
@@ -8243,6 +8244,7 @@ body {
 }
 
 .logo-image {
+  display: block;
   width: 390px;
   max-width: none;
   height: auto;
@@ -8268,6 +8270,8 @@ body {
   mask-image: var(--logo-mask);
   -webkit-mask-size: 100% 100%;
   mask-size: 100% 100%;
+  -webkit-mask-mode: alpha;
+  mask-mode: alpha;
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
   -webkit-mask-position: center;
@@ -8354,7 +8358,7 @@ body {
   padding: 1px 2px 0;
   color: #fff58b;
   font-family: var(--bubble-font);
-  font-size: clamp(0.78rem, 0.72rem + 0.28vw, 0.96rem);
+  font-size: clamp(0.72rem, 0.67rem + 0.2vw, 0.84rem);
   font-weight: 900;
   line-height: 0.9;
   letter-spacing: -0.08em;
@@ -8682,10 +8686,14 @@ body {
     width: min(calc(100vw - 2px), 1070px);
   }
 
+  .space-banner {
+    min-height: 36px;
+  }
+
   .space-banner-shell {
     grid-template-columns: 1fr;
     justify-items: stretch;
-    min-height: 70px;
+    min-height: 36px;
     padding: 1px 5px 0;
   }
 
@@ -8720,7 +8728,7 @@ body {
   }
 
   .pixel-tab-label {
-    font-size: clamp(0.54rem, 1.44vw, 0.78rem);
+    font-size: clamp(0.58rem, 1.5vw, 0.82rem);
   }
 
   .retro-layout {
@@ -8762,6 +8770,10 @@ body {
   .retro-layout,
   .board-grid {
     grid-template-columns: 1fr;
+  }
+
+  .space-banner {
+    min-height: 0;
   }
 
   .space-banner-shell {

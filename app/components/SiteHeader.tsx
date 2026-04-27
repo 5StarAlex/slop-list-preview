@@ -35,7 +35,6 @@ export default function SiteHeader({ navVariant = "default" }: SiteHeaderProps) 
             <Image src={slopListLogo} alt="Slop List" className="logo-image" priority />
             <span className="logo-image-gleam" aria-hidden="true" />
           </div>
-          <p className="logo-subtitle">jittyboyz.inc</p>
         </div>
 
         <SiteNav variant={navVariant} />

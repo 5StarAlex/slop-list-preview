@@ -1,20 +1,13 @@
 
 > slop-list-preview@0.1.0 dev
-> next dev --port 3001
+> next dev
 
 ▲ Next.js 16.1.4 (Turbopack)
-- Local:         http://localhost:3001
-- Network:       http://172.19.52.149:3001
+- Local:         http://localhost:3000
+- Network:       http://172.19.52.149:3000
 
 ✓ Starting...
 Creating turbopack project { dir: 'C:\\Users\\alexa\\slop-list-preview', testMode: true }
-✓ Ready in 2.1s
- GET / 200 in 69ms (compile: 12ms, render: 57ms)
- GET / 200 in 1869ms (compile: 1706ms, render: 163ms)
- GET / 200 in 83ms (compile: 4ms, render: 79ms)
- GET /catalog 200 in 805ms (compile: 783ms, render: 21ms)
- GET / 200 in 37ms (compile: 3ms, render: 34ms)
- GET /about 200 in 839ms (compile: 817ms, render: 22ms)
- GET / 200 in 30ms (compile: 6ms, render: 24ms)
- GET /catalog 200 in 19ms (compile: 3ms, render: 16ms)
- GET / 200 in 30ms (compile: 3ms, render: 27ms)
+✓ Ready in 2.6s
+○ Compiling / ...
+ GET / 200 in 4.8s (compile: 4.0s, render: 799ms)
