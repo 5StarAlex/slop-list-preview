@@ -42,6 +42,8 @@ export type AccountData = {
   progression: AccountProgression;
   unlocks: AccountUnlocks;
   onboarding: AccountOnboarding;
+  ownedShopItemIds: string[];
+  equippedShopItemIds: string[];
 };
 
 export const ACCOUNT_SESSION_STORAGE_KEY = "slop-list-session";
@@ -83,6 +85,8 @@ export function createDefaultAccountData(): AccountData {
       needsProfileSetup: true,
       hasSeenWelcome: false,
     },
+    ownedShopItemIds: [],
+    equippedShopItemIds: [],
   };
 }
 
@@ -116,6 +120,8 @@ export function sanitizeAccountData(value: Partial<AccountData> | null | undefin
       ...defaults.onboarding,
       ...value?.onboarding,
     },
+    ownedShopItemIds: Array.isArray(value?.ownedShopItemIds) ? value.ownedShopItemIds : defaults.ownedShopItemIds,
+    equippedShopItemIds: Array.isArray(value?.equippedShopItemIds) ? value.equippedShopItemIds : defaults.equippedShopItemIds,
   };
 }
 

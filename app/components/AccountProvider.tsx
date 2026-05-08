@@ -36,6 +36,8 @@ type AccountContextValue = {
   spendCoins: (amount: number) => boolean;
   setGems: (amount: number) => void;
   setWhiteTrailEnabled: (enabled: boolean) => void;
+  unlockShopItems: (itemIds: string[]) => void;
+  setEquippedShopItems: (itemIds: string[]) => void;
   completeProfileSetup: (profile: ProfileData) => void;
   dismissWelcome: () => void;
 };
@@ -193,6 +195,39 @@ export default function AccountProvider({ children }: { children: ReactNode }) {
           unlocks: {
             ...current.unlocks,
             whiteTrailEnabled: enabled,
+          },
+        }));
+        window.dispatchEvent(new CustomEvent(SHOP_EVENT_NAME));
+      },
+      unlockShopItems(itemIds) {
+        if (itemIds.length === 0) {
+          return;
+        }
+
+        setAccount((current) => {
+          const ownedShopItemIds = Array.from(new Set([...current.ownedShopItemIds, ...itemIds]));
+          const whiteTrailEnabled =
+            current.unlocks.whiteTrailEnabled || itemIds.includes("white-mouse-trail");
+
+          return {
+            ...current,
+            ownedShopItemIds,
+            unlocks: {
+              ...current.unlocks,
+              whiteTrailEnabled,
+            },
+          };
+        });
+        window.dispatchEvent(new CustomEvent(SHOP_EVENT_NAME));
+      },
+      setEquippedShopItems(itemIds) {
+        setAccount((current) => ({
+          ...current,
+          equippedShopItemIds: itemIds,
+          unlocks: {
+            ...current.unlocks,
+            whiteTrailEnabled:
+              current.unlocks.whiteTrailEnabled || itemIds.includes("white-mouse-trail"),
           },
         }));
         window.dispatchEvent(new CustomEvent(SHOP_EVENT_NAME));
