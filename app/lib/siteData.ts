@@ -7,9 +7,10 @@ export const WHITE_TRAIL_COST = 500;
 export const siteNavItems = [
   { href: "/", label: "Home Page" },
   { href: "/catalog", label: "Catalog" },
-  { href: "/create", label: "Create Slop" },
+  { href: "/games", label: "Games" },
+  { href: "/create", label: "New Entry" },
   { href: "/shop", label: "Slop Shop" },
-  { href: "/profile", label: "Profile" },
+  { href: "/profile", label: "Create-A-Slop" },
 ];
 
 export const aboutNavItem = { href: "/about", label: "About" };

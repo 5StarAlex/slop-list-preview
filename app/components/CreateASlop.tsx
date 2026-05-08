@@ -1,126 +1,131 @@
 "use client";
 
 import Image from "next/image";
-import { CSSProperties, useEffect, useMemo, useRef, useState } from "react";
-import {
-  creatorCategories,
-  customizationOptions,
-  expressionPresets,
-  type ConfigurableCategoryKey,
-  type CreatorCategoryKey,
-} from "./slopOptions";
+import Link from "next/link";
+import { CSSProperties, useMemo, useState } from "react";
 import { useAccount } from "./AccountProvider";
 import { SlopArmSvg, SlopBodySvg, SlopHeadSvg, SlopLegSvg } from "./SlopBodyParts";
-import SlopCreatorShopStage, { type ShopTabKey } from "./SlopCreatorShopStage";
-import SlopTitle from "./SlopTitle";
+import {
+  creationCategories,
+  customizationOptions,
+  inventoryCategories,
+  slopTypeOptions,
+  statsCategories,
+  type CharacterConfig,
+  type ConfigurableCategoryKey,
+  type CreationCategoryKey,
+  type CustomizationOption,
+  type InventoryCategoryKey,
+  type StatsCategoryKey,
+} from "./slopOptions";
 
-const statRows = [
-  { label: "Speed", values: { eyes: 88, mouth: 74, pose: 82, shirt: 62, pants: 68, accessories: 80, color: 56 } },
-  { label: "Dash", values: { eyes: 42, mouth: 58, pose: 90, shirt: 84, pants: 70, accessories: 64, color: 52 } },
-  { label: "Accent", values: { eyes: 66, mouth: 78, pose: 72, shirt: 55, pants: 90, accessories: 74, color: 95 } },
-  { label: "Skill", values: { eyes: 52, mouth: 68, pose: 86, shirt: 72, pants: 86, accessories: 79, color: 60 } },
+const pageOptions = [
+  { key: "inventory", label: "Inventory", icon: "bag" },
+  { key: "creation", label: "Creation", icon: "easel" },
+  { key: "stats", label: "Stats", icon: "bars" },
 ] as const;
 
-const dockItems = [
-  { key: "home", label: "Home" },
-  { key: "character", label: "Character" },
-  { key: "store", label: "Store" },
-] as const;
-
-const swatchClassMap = {
-  eyes: "slop-creator-option-swatch-eyes",
-  mouth: "slop-creator-option-swatch-mouth",
-  pose: "slop-creator-option-swatch-pose",
-  shirt: "slop-creator-option-swatch-shirt",
-  pants: "slop-creator-option-swatch-pants",
-  accessories: "slop-creator-option-swatch-accessories",
-  color: "slop-creator-option-swatch-color",
+const pageTitles = {
+  inventory: "INVENTORY",
+  creation: "CREATION",
+  stats: "STATS",
 } as const;
 
-const IDLE_AMPLITUDE = 4;
-const IDLE_FREQUENCY = 0.0019;
-const ARM_SWING_DEGREES = 2;
-const STAGE_EXIT_MS = 180;
-const STAGE_ENTER_MS = 340;
+const pageAmount = "14/100";
 
 const basePose = {
-  leg1: { x: -24, y: 0 },
-  leg2: { x: 24, y: 0 },
-  arm1: { x: -55, y: -76 },
-  body: { x: 0, y: -80 },
-  shirt: { x: 0, y: -76 },
-  pants: { x: 0, y: -76 },
-  arm2: { x: 55, y: -76 },
-  head: { x: 0, y: -167 },
-  eyes: { x: 0, y: -164 },
-  mouth: { x: 0, y: -142 },
-  accessory: { x: 0, y: -164 },
+  leg1: { x: -28, y: 10, rotate: 0, scale: 0.58 },
+  leg2: { x: 28, y: 10, rotate: 0, scale: 0.58 },
+  arm1: { x: -30, y: -66, rotate: -2, scale: 0.68 },
+  body: { x: 0, y: -70, rotate: 0, scale: 0.64 },
+  shirt: { x: 0, y: -70, rotate: 0, scale: 0.64 },
+  pants: { x: 0, y: -33, rotate: 0, scale: 0.58 },
+  arm2: { x: 30, y: -66, rotate: 2, scale: 0.68 },
+  head: { x: 0, y: -133, rotate: 0, scale: 0.56 },
+  eyes: { x: 0, y: -133, rotate: 0, scale: 0.56 },
+  mouth: { x: 0, y: -124, rotate: 0, scale: 0.56 },
+  accessory: { x: 0, y: -133, rotate: 0, scale: 0.56 },
 } as const;
 
-const idleWeights = {
-  leg1: 0,
-  leg2: 0,
-  arm1: 0.9,
-  body: 1,
-  shirt: 1,
-  pants: 0.85,
-  arm2: 0.9,
-  head: 1.2,
-  eyes: 1.15,
-  mouth: 1.1,
-  accessory: 1.18,
-} as const;
+const bubbleSlots = [
+  { key: "eyes", className: "is-left-top" },
+  { key: "mouth", className: "is-left-middle" },
+  { key: "color", className: "is-left-bottom" },
+  { key: "shirt", className: "is-right-top" },
+  { key: "pants", className: "is-right-middle" },
+  { key: "accessories", className: "is-right-bottom" },
+] as const;
 
+type CreatorPageKey = (typeof pageOptions)[number]["key"];
 type PosePartKey = keyof typeof basePose;
-type CreatorStageView = "character" | "store";
-type CreatorStagePhase = "idle" | "exiting" | "entering";
 
-function isConfigurableCategoryKey(categoryKey: CreatorCategoryKey): categoryKey is ConfigurableCategoryKey {
-  return categoryKey !== "stats";
+function getPanelOptions(page: CreatorPageKey, creationKey: CreationCategoryKey, inventoryKey: InventoryCategoryKey) {
+  if (page === "creation") {
+    return customizationOptions[creationKey];
+  }
+
+  if (page === "inventory") {
+    return customizationOptions[inventoryKey];
+  }
+
+  return [];
 }
 
-function getCategoryCount(categoryKey: CreatorCategoryKey, characterConfig: ReturnType<typeof useAccount>["account"]["characterConfig"]) {
-  if (!isConfigurableCategoryKey(categoryKey)) {
-    return "Layer Type";
+function getOptionLabel(categoryKey: ConfigurableCategoryKey, option: CustomizationOption) {
+  if (categoryKey === "color" && "className" in option) {
+    return `${option.label} Theme`;
   }
 
-  return `${characterConfig[categoryKey] + 1} / ${customizationOptions[categoryKey].length}`;
+  return option.label;
 }
 
-function getOptionSubLabel(categoryKey: ConfigurableCategoryKey) {
-  if (categoryKey === "color") {
-    return "Theme Layer";
+function PreviewGlyph({
+  option,
+  categoryKey,
+  colorClassName,
+}: {
+  option: CustomizationOption;
+  categoryKey: ConfigurableCategoryKey;
+  colorClassName: string;
+}) {
+  if ("className" in option) {
+    return (
+      <span className={`slop-create-swatch ${option.className}`} aria-hidden="true">
+        <span className="slop-create-swatch-core" />
+      </span>
+    );
   }
 
-  if (categoryKey === "pose") {
-    return "Rig Profile";
+  if (option.asset) {
+    return (
+      <span className="slop-create-asset-preview" aria-hidden="true">
+        <Image src={option.asset} alt="" fill unoptimized className="slop-create-asset-image" />
+      </span>
+    );
   }
 
-  return "Preview Layer";
+  return <span className={`slop-create-placeholder-icon is-${categoryKey} ${colorClassName}`} aria-hidden="true" />;
+}
+
+function WindowAction({ label }: { label: string }) {
+  return (
+    <button type="button" className="slop-create-window-button" aria-label={label}>
+      <span aria-hidden="true">{label}</span>
+    </button>
+  );
+}
+
+function CategoryIcon({ icon }: { icon: string }) {
+  return <span className={`slop-create-symbol is-${icon}`} aria-hidden="true" />;
 }
 
 export default function CreateASlop() {
   const { account, updateCharacterConfig } = useAccount();
-  const [activeIndex, setActiveIndex] = useState(2);
-  const [idleOffset, setIdleOffset] = useState(0);
-  const [isBlinking, setIsBlinking] = useState(false);
-  const [activeStageView, setActiveStageView] = useState<CreatorStageView>("character");
-  const [renderedStageView, setRenderedStageView] = useState<CreatorStageView>("character");
-  const [stagePhase, setStagePhase] = useState<CreatorStagePhase>("idle");
-  const [activeShopTab, setActiveShopTab] = useState<ShopTabKey>("home");
+  const [activePage, setActivePage] = useState<CreatorPageKey>("inventory");
+  const [activeCreationCategory, setActiveCreationCategory] = useState<CreationCategoryKey>("eyes");
+  const [activeInventoryCategory, setActiveInventoryCategory] = useState<InventoryCategoryKey>("shirt");
+  const [activeStatsCategory, setActiveStatsCategory] = useState<StatsCategoryKey>("type");
   const characterConfig = account.characterConfig;
-
-  const exitTimeoutRef = useRef<number | null>(null);
-  const enterTimeoutRef = useRef<number | null>(null);
-
-  const activeCategoryKey = creatorCategories[activeIndex].key;
-  const isStatsView = activeCategoryKey === "stats";
-  const activeOptionCategoryKey = isConfigurableCategoryKey(activeCategoryKey) ? activeCategoryKey : "pose";
-  const activeOptions = customizationOptions[activeOptionCategoryKey];
-  const activeOptionIndex = characterConfig[activeOptionCategoryKey];
-  const activeOption = activeOptions[activeOptionIndex];
-  const showExpressionPresets = activeOptionCategoryKey === "eyes" || activeOptionCategoryKey === "mouth";
-  const statProfileKey = isStatsView ? "pose" : activeOptionCategoryKey;
 
   const selectedEyes = customizationOptions.eyes[characterConfig.eyes];
   const selectedMouth = customizationOptions.mouth[characterConfig.mouth];
@@ -128,7 +133,7 @@ export default function CreateASlop() {
   const selectedPants = customizationOptions.pants[characterConfig.pants];
   const selectedAccessory = customizationOptions.accessories[characterConfig.accessories];
   const selectedColor = customizationOptions.color[characterConfig.color];
-  const levelProgress = Math.min(100, (account.progression.xp / account.progression.xpToNextLevel) * 100);
+  const selectedSlopType = slopTypeOptions[characterConfig.slopType];
 
   const characterThemeClass = useMemo(() => `slop-creator-character ${selectedColor.className}`, [selectedColor.className]);
   const characterThemeStyle = useMemo(
@@ -141,398 +146,321 @@ export default function CreateASlop() {
     [selectedColor.fill, selectedColor.highlight, selectedColor.stroke],
   );
 
-  useEffect(() => {
-    return () => {
-      if (exitTimeoutRef.current) {
-        window.clearTimeout(exitTimeoutRef.current);
-      }
-
-      if (enterTimeoutRef.current) {
-        window.clearTimeout(enterTimeoutRef.current);
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    let frameId = 0;
-    const startTime = performance.now();
-
-    const animate = (timestamp: number) => {
-      const elapsed = timestamp - startTime;
-      setIdleOffset(Math.sin(elapsed * IDLE_FREQUENCY) * IDLE_AMPLITUDE);
-      frameId = window.requestAnimationFrame(animate);
-    };
-
-    frameId = window.requestAnimationFrame(animate);
-
-    return () => window.cancelAnimationFrame(frameId);
-  }, []);
-
-  useEffect(() => {
-    let blinkTimeoutId = 0;
-    let blinkResetId = 0;
-
-    const scheduleBlink = () => {
-      const nextBlinkDelay = 4200 + Math.random() * 3200;
-
-      blinkTimeoutId = window.setTimeout(() => {
-        setIsBlinking(true);
-
-        blinkResetId = window.setTimeout(() => {
-          setIsBlinking(false);
-          scheduleBlink();
-        }, 110);
-      }, nextBlinkDelay);
-    };
-
-    scheduleBlink();
-
-    return () => {
-      window.clearTimeout(blinkTimeoutId);
-      window.clearTimeout(blinkResetId);
-    };
-  }, []);
-
-  function requestStageView(nextView: CreatorStageView) {
-    if (nextView === activeStageView && stagePhase === "idle") {
-      return;
-    }
-
-    if (exitTimeoutRef.current) {
-      window.clearTimeout(exitTimeoutRef.current);
-    }
-
-    if (enterTimeoutRef.current) {
-      window.clearTimeout(enterTimeoutRef.current);
-    }
-
-    setActiveStageView(nextView);
-    setStagePhase("exiting");
-
-    exitTimeoutRef.current = window.setTimeout(() => {
-      setRenderedStageView(nextView);
-      setStagePhase("entering");
-
-      enterTimeoutRef.current = window.setTimeout(() => {
-        setStagePhase("idle");
-      }, STAGE_ENTER_MS);
-    }, STAGE_EXIT_MS);
-  }
-
-  function handleDockSelect(dockKey: (typeof dockItems)[number]["key"]) {
-    if (dockKey === "character") {
-      requestStageView("character");
-      return;
-    }
-
-    if (dockKey === "home") {
-      setActiveShopTab("home");
-    }
-
-    if (dockKey === "store" && activeShopTab === "home") {
-      setActiveShopTab("eyes");
-    }
-
-    requestStageView("store");
-  }
+  const activePanelCategory = activePage === "creation" ? activeCreationCategory : activeInventoryCategory;
+  const activePanelOptions = getPanelOptions(activePage, activeCreationCategory, activeInventoryCategory);
 
   function getIdlePartStyle(partKey: PosePartKey): CSSProperties {
     const partBasePose = basePose[partKey];
-    const weightedOffset = idleOffset * idleWeights[partKey];
 
     return {
       "--part-x": `${partBasePose.x}px`,
-      "--part-y": `${partBasePose.y + weightedOffset}px`,
+      "--part-y": `${partBasePose.y}px`,
+      "--part-rotate": `${partBasePose.rotate}deg`,
+      "--part-scale": `${partBasePose.scale}`,
     } as CSSProperties;
   }
 
   function getArmSwingStyle(side: "left" | "right"): CSSProperties {
-    const downwardProgress = Math.max(0, idleOffset / IDLE_AMPLITUDE);
-    const armRotation = side === "left" ? ARM_SWING_DEGREES * downwardProgress : -ARM_SWING_DEGREES * downwardProgress;
-
     return {
-      "--arm-rotate": `${armRotation}deg`,
+      "--arm-rotate": side === "left" ? "-1.5deg" : "1.5deg",
     } as CSSProperties;
   }
 
-  function cycleOption(categoryKey: ConfigurableCategoryKey, direction: 1 | -1) {
-    const options = customizationOptions[categoryKey];
-    const currentIndex = characterConfig[categoryKey];
-    const nextIndex = (currentIndex + direction + options.length) % options.length;
-
+  function updateConfig(patch: Partial<CharacterConfig>) {
     updateCharacterConfig({
       ...characterConfig,
+      ...patch,
+    });
+  }
+
+  function selectOption(categoryKey: ConfigurableCategoryKey, nextIndex: number) {
+    updateConfig({
       [categoryKey]: nextIndex,
-    });
+    } as Partial<CharacterConfig>);
   }
 
-  function applyExpression(name: keyof typeof expressionPresets) {
-    const preset = expressionPresets[name];
-
-    updateCharacterConfig({
-      ...characterConfig,
-      eyes: preset.eyes,
-      mouth: preset.mouth,
-    });
-  }
-
-  const characterStageClassName = `slop-creator-stage-animatable${
-    renderedStageView !== "character" ? " is-hidden" : ""
-  }${stagePhase === "exiting" && renderedStageView === "character" ? " is-exiting" : ""}${
-    stagePhase === "entering" && renderedStageView === "character" ? " is-entering" : ""
-  }`;
-  const shopStageClassName = `slop-creator-stage-panel slop-creator-stage-animatable${
-    renderedStageView !== "store" ? " is-hidden" : ""
-  }${stagePhase === "exiting" && renderedStageView === "store" ? " is-exiting" : ""}${
-    stagePhase === "entering" && renderedStageView === "store" ? " is-entering" : ""
-  }`;
+  const bubbleOptions = {
+    eyes: selectedEyes,
+    mouth: selectedMouth,
+    color: selectedColor,
+    shirt: selectedShirt,
+    pants: selectedPants,
+    accessories: selectedAccessory,
+  } as const;
 
   return (
-    <section className="slop-creator-shell" aria-labelledby="create-a-slop-heading">
-      <div className="slop-creator-left">
-        <div className="slop-creator-brand-block">
-          <SlopTitle as="h2" size="md" className="slop-creator-brand-mark" id="create-a-slop-heading">SLOP.IO</SlopTitle>
+    <section className="slop-create-page">
+      <div className="slop-create-bg" aria-hidden="true">
+        <div className="slop-create-bg-sweep is-pink" />
+        <div className="slop-create-bg-sweep is-blue" />
+        <div className="slop-create-bg-grid" />
+        <div className="slop-create-bg-stars" />
+      </div>
 
-          <section className="slop-creator-hud" aria-label="Creator HUD">
-            <div className="slop-creator-hud-currency-row">
-              <div className="slop-creator-hud-currency">
-                <span className="slop-creator-hud-currency-icon slop-creator-hud-currency-icon-coin" aria-hidden="true" />
-                <span>{account.economy.coins}</span>
-              </div>
-              <div className="slop-creator-hud-currency">
-                <span className="slop-creator-hud-currency-icon slop-creator-hud-currency-icon-gem" aria-hidden="true" />
-                <span>{account.economy.gems}</span>
-              </div>
-            </div>
-
-            <div className="slop-creator-hud-power-card">
-              <div className="slop-creator-hud-power-head">
-                <span className="slop-creator-hud-power-kicker">Level</span>
-                <span className="slop-creator-hud-power-meta">
-                  LVL {account.progression.level} · {account.progression.xp}/{account.progression.xpToNextLevel} XP
-                </span>
-              </div>
-              <div className="slop-creator-hud-power-meter" aria-hidden="true">
-                <span className="slop-creator-hud-power-fill" style={{ width: `${levelProgress}%` }} />
-                <span className="slop-creator-hud-power-gloss" />
-              </div>
-            </div>
-          </section>
+      <div className="slop-create-topbar">
+        <div className="slop-create-topbar-left">
+          <Link href="/" className="slop-create-back-button" aria-label="Back to home">
+            <span aria-hidden="true">{"\u2190"}</span>
+          </Link>
+          <div className="slop-create-title-stack">
+            <h1 className="slop-create-title">Slop Studio</h1>
+            <p className="slop-create-subtitle">{pageTitles[activePage]}</p>
+          </div>
         </div>
 
-        {isStatsView ? (
-          <section className="slop-creator-stats" aria-label="Current category stats">
-            <SlopTitle as="h3" size="sm" className="slop-creator-stats-title">Layer Type</SlopTitle>
-            <div className="slop-creator-stats-grid">
-              {statRows.map((row) => (
-                <div key={row.label} className="slop-creator-stat-row">
-                  <span className="slop-creator-stat-label">{row.label}</span>
-                  <div className="slop-creator-stat-meter">
-                    <span
-                      className="slop-creator-stat-fill"
-                      style={{ width: `${row.values[statProfileKey]}%` }}
-                      aria-hidden="true"
-                    />
+        <div className="slop-create-topbar-right">
+          <div className="slop-create-coin-pill">
+            <span className="slop-create-coin-icon" aria-hidden="true">
+              {"\u2605"}
+            </span>
+            <strong>{account.economy.coins.toLocaleString()}</strong>
+          </div>
+          <div className="slop-create-window-actions" aria-label="Window actions">
+            <WindowAction label={"\u2212"} />
+            <WindowAction label={"\u00D7"} />
+            <WindowAction label={"\u00D7"} />
+          </div>
+        </div>
+      </div>
+
+      <div className="slop-create-layout">
+        <div className="slop-create-character-zone">
+          <div className="slop-create-character-backdrop" aria-hidden="true" />
+          <div className="slop-create-character-spotlight" aria-hidden="true" />
+
+          <div className="slop-create-character-preview">
+            <div className={characterThemeClass} style={characterThemeStyle} aria-label="Current slop character preview">
+              <div className="slop-creator-part slop-creator-part-leg1" style={getIdlePartStyle("leg1")}>
+                <SlopLegSvg variant="left" className="slop-creator-part-svg" />
+              </div>
+              <div className="slop-creator-part slop-creator-part-leg2" style={getIdlePartStyle("leg2")}>
+                <SlopLegSvg variant="right" className="slop-creator-part-svg" />
+              </div>
+              <div className="slop-creator-part slop-creator-part-arm1" style={getIdlePartStyle("arm1")}>
+                <div className="slop-creator-arm-swing slop-creator-arm-swing-left" style={getArmSwingStyle("left")}>
+                  <SlopArmSvg variant="right" className="slop-creator-part-svg" />
+                </div>
+              </div>
+              <div className="slop-creator-part slop-creator-part-body" style={getIdlePartStyle("body")}>
+                <SlopBodySvg className="slop-creator-part-svg" />
+              </div>
+              {selectedShirt.asset ? (
+                <div className="slop-creator-part slop-creator-part-shirt" style={getIdlePartStyle("shirt")}>
+                  <Image src={selectedShirt.asset} alt="" fill unoptimized className="slop-creator-part-image" />
+                </div>
+              ) : null}
+              {selectedPants.asset ? (
+                <div className="slop-creator-part slop-creator-part-pants" style={getIdlePartStyle("pants")}>
+                  <Image src={selectedPants.asset} alt="" fill unoptimized className="slop-creator-part-image" />
+                </div>
+              ) : null}
+              <div className="slop-creator-part slop-creator-part-arm2" style={getIdlePartStyle("arm2")}>
+                <div className="slop-creator-arm-swing slop-creator-arm-swing-right" style={getArmSwingStyle("right")}>
+                  <SlopArmSvg variant="left" className="slop-creator-part-svg" />
+                </div>
+              </div>
+              <div className="slop-creator-part slop-creator-part-head" style={getIdlePartStyle("head")}>
+                <SlopHeadSvg className="slop-creator-part-svg" />
+              </div>
+              <div className="slop-creator-part slop-creator-part-eyes" style={getIdlePartStyle("eyes")}>
+                {selectedEyes.asset ? (
+                  <span className="slop-creator-face-layer">
+                    <Image src={selectedEyes.asset} alt="" fill unoptimized className="slop-creator-part-image" />
+                  </span>
+                ) : null}
+              </div>
+              <div className="slop-creator-part slop-creator-part-mouth" style={getIdlePartStyle("mouth")}>
+                {selectedMouth.asset ? <Image src={selectedMouth.asset} alt="" fill unoptimized className="slop-creator-part-image" /> : null}
+              </div>
+              {selectedAccessory.asset ? (
+                <div className="slop-creator-part slop-creator-part-accessory" style={getIdlePartStyle("accessory")}>
+                  <Image src={selectedAccessory.asset} alt="" fill unoptimized className="slop-creator-part-image" />
+                </div>
+              ) : null}
+            </div>
+          </div>
+
+          <div className="slop-create-character-pedestal" aria-hidden="true" />
+
+          {bubbleSlots.map((bubble) => (
+            <div key={bubble.key} className={`slop-create-character-bubble ${bubble.className}`}>
+              <span className="slop-create-bubble-star" aria-hidden="true">
+                {"\u2605"}
+              </span>
+              <PreviewGlyph
+                option={bubbleOptions[bubble.key]}
+                categoryKey={bubble.key}
+                colorClassName={selectedColor.className}
+              />
+            </div>
+          ))}
+        </div>
+
+        <div className="slop-create-panel-shell">
+          <section className="slop-create-panel">
+            {activePage === "stats" ? (
+              <>
+                <div className="slop-create-stats-header">
+                  <div>
+                    <p className="slop-create-panel-kicker">Choose Your Type</p>
+                    <h2 className="slop-create-panel-title">Power Loadout</h2>
+                  </div>
+                  <span className="slop-create-mini-chip">Focus: {activeStatsCategory}</span>
+                </div>
+
+                <div className="slop-create-stats-type-grid">
+                  {slopTypeOptions.map((typeOption, index) => (
+                    <button
+                      key={typeOption.key}
+                      type="button"
+                      className={`slop-create-type-card ${typeOption.accentClass}${
+                        characterConfig.slopType === index ? " is-selected" : ""
+                      }`}
+                      onClick={() => updateConfig({ slopType: index as CharacterConfig["slopType"] })}
+                    >
+                      <span className="slop-create-type-badge" aria-hidden="true">
+                        {"\u2605"}
+                      </span>
+                      <div className="slop-create-type-illustration" aria-hidden="true" />
+                      <strong>{typeOption.label}</strong>
+                      <p>{typeOption.description}</p>
+                    </button>
+                  ))}
+                </div>
+
+                <div className="slop-create-stats-section">
+                  <h3 className="slop-create-stats-section-title">Abilities</h3>
+                  <div className="slop-create-ability-row">
+                    {selectedSlopType.abilities.map((ability) => (
+                      <article key={ability.id} className="slop-create-ability-card">
+                        <span className={`slop-create-ability-icon is-${ability.id}`} aria-hidden="true" />
+                        <strong>{ability.label}</strong>
+                        <span>Lv. {ability.level}</span>
+                      </article>
+                    ))}
+                    <article className="slop-create-ability-card is-locked">
+                      <span className="slop-create-ability-lock" aria-hidden="true">
+                        {"\u25A3"}
+                      </span>
+                      <strong>Locked</strong>
+                      <span>Slot</span>
+                    </article>
                   </div>
                 </div>
-              ))}
-            </div>
-          </section>
-        ) : (
-          <section className="slop-creator-option-panel" aria-label={`Editing ${creatorCategories[activeIndex].label}`}>
-            <div className="slop-creator-option-header">
-              <span className="slop-creator-option-kicker">{creatorCategories[activeIndex].label}</span>
-              <span className="slop-creator-option-count">
-                {activeOptionIndex + 1} / {activeOptions.length}
-              </span>
-            </div>
 
-            <div className="slop-creator-option-picker">
-              <button
-                type="button"
-                className="slop-creator-cycle-button"
-                onClick={() => cycleOption(activeOptionCategoryKey, -1)}
-                aria-label={`Previous ${creatorCategories[activeIndex].label} option`}
-              >
-                &lt;
-              </button>
+                <div className="slop-create-stats-footer">
+                  <div className="slop-create-stats-block">
+                    <h3 className="slop-create-stats-section-title">Stats</h3>
+                    {Object.entries(selectedSlopType.stats).map(([statKey, value]) => (
+                      <div key={statKey} className="slop-create-stat-row">
+                        <span className="slop-create-stat-label">{statKey}</span>
+                        <div className="slop-create-stat-bar">
+                          <span className={`slop-create-stat-fill is-${statKey}`} style={{ width: `${value}%` }} aria-hidden="true" />
+                        </div>
+                        <strong className="slop-create-stat-value">{value}</strong>
+                      </div>
+                    ))}
+                  </div>
 
-              <div className="slop-creator-option-window">
-                <div className="slop-creator-option-swatch">
-                  <span
-                    className={`slop-creator-option-swatch-shape ${swatchClassMap[activeOption.swatchType]} ${
-                      activeOption.swatchType === "color" ? selectedColor.className : ""
-                    }`}
-                    aria-hidden="true"
-                  />
+                  <div className="slop-create-points-card">
+                    <span className="slop-create-points-label">Points Available</span>
+                    <strong className="slop-create-points-value">{selectedSlopType.pointsAvailable}</strong>
+                    <button type="button" className="slop-create-points-button" aria-label="Add points">
+                      +
+                    </button>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="slop-create-panel-head">
+                  <div className="slop-create-amount-wrap">
+                    <span className="slop-create-amount-label">Amount</span>
+                    <strong className="slop-create-amount-value">{pageAmount}</strong>
+                  </div>
+                  <div className="slop-create-panel-rule" aria-hidden="true" />
                 </div>
 
-                <div className="slop-creator-option-copy">
-                  <div className="slop-creator-option-name">{activeOption.label}</div>
-                  <div className="slop-creator-option-sub">{getOptionSubLabel(activeOptionCategoryKey)}</div>
+                <div className="slop-create-grid">
+                  {activePanelOptions.map((option, index) => {
+                    const isSelected = characterConfig[activePanelCategory] === index;
+
+                    return (
+                      <button
+                        key={`${activePanelCategory}-${option.id}`}
+                        type="button"
+                        className={`slop-create-option-card${isSelected ? " is-selected" : ""}${
+                          activePage === "inventory" ? " is-inventory" : " is-creation"
+                        }`}
+                        onClick={() => selectOption(activePanelCategory, index)}
+                      >
+                        <span className={`slop-create-option-badge${activePage === "inventory" ? " is-check" : ""}`} aria-hidden="true">
+                          {activePage === "inventory" ? "\u2713" : "\u2605"}
+                        </span>
+                        <div className="slop-create-option-preview">
+                          <PreviewGlyph option={option} categoryKey={activePanelCategory} colorClassName={selectedColor.className} />
+                        </div>
+                        <strong className="slop-create-option-title">{getOptionLabel(activePanelCategory, option)}</strong>
+                      </button>
+                    );
+                  })}
                 </div>
-              </div>
-
-              <button
-                type="button"
-                className="slop-creator-cycle-button"
-                onClick={() => cycleOption(activeOptionCategoryKey, 1)}
-                aria-label={`Next ${creatorCategories[activeIndex].label} option`}
-              >
-                &gt;
-              </button>
-            </div>
-
-            {showExpressionPresets ? (
-              <div className="slop-creator-expression-row" aria-label="Expression presets">
-                <button type="button" className="slop-creator-expression-pill" onClick={() => applyExpression("angry")}>
-                  Angry
-                </button>
-                <button type="button" className="slop-creator-expression-pill" onClick={() => applyExpression("sad")}>
-                  Sad
-                </button>
-                <button type="button" className="slop-creator-expression-pill" onClick={() => applyExpression("whistle")}>
-                  Whistle
-                </button>
-              </div>
-            ) : null}
+              </>
+            )}
           </section>
-        )}
 
-        <div className="slop-creator-progress-dots" aria-hidden="true">
-          <span className={`slop-creator-progress-dot${activeIndex === 0 ? " is-active" : ""}`} />
-          <span className={`slop-creator-progress-dot${activeIndex > 0 && activeIndex < creatorCategories.length - 1 ? " is-active" : ""}`} />
-          <span className={`slop-creator-progress-dot${activeIndex === creatorCategories.length - 1 ? " is-active" : ""}`} />
-        </div>
+          <div className="slop-create-side-tabs" role="tablist" aria-label="Section tabs">
+            {(activePage === "creation" ? creationCategories : activePage === "inventory" ? inventoryCategories : statsCategories).map(
+              (category) => {
+                const isActive =
+                  activePage === "creation"
+                    ? activeCreationCategory === category.key
+                    : activePage === "inventory"
+                      ? activeInventoryCategory === category.key
+                      : activeStatsCategory === category.key;
 
-        <div className="slop-creator-category-grid" aria-label="Customization categories">
-          {creatorCategories.map((category, index) => {
-            return (
-              <button
-                key={category.key}
-                type="button"
-                className={`slop-creator-category-tile${index === activeIndex ? " is-active" : ""}`}
-                onClick={() => setActiveIndex(index)}
-                aria-pressed={index === activeIndex}
-              >
-                <span className="slop-creator-category-tile-label">{category.label}</span>
-                <span className="slop-creator-category-tile-count">{getCategoryCount(category.key, characterConfig)}</span>
-              </button>
-            );
-          })}
+                return (
+                  <button
+                    key={category.key}
+                    type="button"
+                    className={`slop-create-side-tab${isActive ? " is-active" : ""}`}
+                    onClick={() => {
+                      if (activePage === "creation") {
+                        setActiveCreationCategory(category.key as CreationCategoryKey);
+                        return;
+                      }
+
+                      if (activePage === "inventory") {
+                        setActiveInventoryCategory(category.key as InventoryCategoryKey);
+                        return;
+                      }
+
+                      setActiveStatsCategory(category.key as StatsCategoryKey);
+                    }}
+                    aria-pressed={isActive}
+                  >
+                    <CategoryIcon icon={category.icon} />
+                  </button>
+                );
+              },
+            )}
+          </div>
         </div>
       </div>
 
-      <div className="slop-creator-stage-shell">
-        <div className="slop-creator-stage">
-          <div className="slop-creator-stage-orb slop-creator-stage-orb-blue" aria-hidden="true" />
-          <div className="slop-creator-stage-orb slop-creator-stage-orb-violet" aria-hidden="true" />
-          <div className="slop-creator-stage-orb slop-creator-stage-orb-cyan" aria-hidden="true" />
-          <div className="slop-creator-stage-triangle slop-creator-stage-triangle-one" aria-hidden="true" />
-          <div className="slop-creator-stage-triangle slop-creator-stage-triangle-two" aria-hidden="true" />
-          <div className="slop-creator-stage-triangle slop-creator-stage-triangle-three" aria-hidden="true" />
-          <div className="slop-creator-stage-triangle slop-creator-stage-triangle-four" aria-hidden="true" />
-          <div className="slop-creator-stage-triangle slop-creator-stage-triangle-five" aria-hidden="true" />
-          <div className="slop-creator-stage-triangle slop-creator-stage-triangle-six" aria-hidden="true" />
-          <div className="slop-creator-stage-triangle slop-creator-stage-triangle-seven" aria-hidden="true" />
-          <div className="slop-creator-stage-triangle slop-creator-stage-triangle-eight" aria-hidden="true" />
-          <div className="slop-creator-stage-triangle slop-creator-stage-triangle-nine" aria-hidden="true" />
-          <div className="slop-creator-stage-triangle slop-creator-stage-triangle-ten" aria-hidden="true" />
-          <div className="slop-creator-stage-triangle slop-creator-stage-triangle-eleven" aria-hidden="true" />
-          <div className="slop-creator-stage-triangle slop-creator-stage-triangle-twelve" aria-hidden="true" />
-          <div className="slop-creator-stage-triangle slop-creator-stage-triangle-thirteen" aria-hidden="true" />
-          <div className="slop-creator-stage-triangle slop-creator-stage-triangle-fourteen" aria-hidden="true" />
-          <div className="slop-creator-stage-grid" aria-hidden="true" />
-          <div className="slop-creator-stage-floor" aria-hidden="true" />
-
-          <div className={`slop-creator-stage-tools ${characterStageClassName}`} aria-hidden="true">
-            <span className="slop-creator-stage-tool" />
-            <span className="slop-creator-stage-tool" />
-            <span className="slop-creator-stage-tool" />
-            <span className="slop-creator-stage-tool" />
-          </div>
-
-          <div
-            className={`${characterThemeClass} ${characterStageClassName}`}
-            style={characterThemeStyle}
-            aria-label="Character preview built from uploaded SVG parts"
+      <nav className="slop-create-bottom-nav slop-create-bottom-nav--creator" aria-label="Create a Slop pages">
+        {pageOptions.map((page) => (
+          <button
+            key={page.key}
+            type="button"
+            className={`slop-create-bottom-button${activePage === page.key ? " is-active" : ""}`}
+            onClick={() => setActivePage(page.key)}
           >
-            <div className="slop-creator-part slop-creator-part-leg1" style={getIdlePartStyle("leg1")}>
-              <SlopLegSvg variant="left" className="slop-creator-part-svg" />
-            </div>
-            <div className="slop-creator-part slop-creator-part-leg2" style={getIdlePartStyle("leg2")}>
-              <SlopLegSvg variant="right" className="slop-creator-part-svg" />
-            </div>
-            <div className="slop-creator-part slop-creator-part-arm1" style={getIdlePartStyle("arm1")}>
-              <div className="slop-creator-arm-swing slop-creator-arm-swing-left" style={getArmSwingStyle("left")}>
-                <SlopArmSvg variant="right" className="slop-creator-part-svg" />
-              </div>
-            </div>
-            <div className="slop-creator-part slop-creator-part-body" style={getIdlePartStyle("body")}>
-              <SlopBodySvg className="slop-creator-part-svg" />
-            </div>
-            {selectedShirt.asset ? (
-              <div className="slop-creator-part slop-creator-part-shirt" style={getIdlePartStyle("shirt")}>
-                <Image src={selectedShirt.asset} alt="" fill unoptimized className="slop-creator-part-image" />
-              </div>
-            ) : null}
-            {selectedPants.asset ? (
-              <div className="slop-creator-part slop-creator-part-pants" style={getIdlePartStyle("pants")}>
-                <Image src={selectedPants.asset} alt="" fill unoptimized className="slop-creator-part-image" />
-              </div>
-            ) : null}
-            <div className="slop-creator-part slop-creator-part-arm2" style={getIdlePartStyle("arm2")}>
-              <div className="slop-creator-arm-swing slop-creator-arm-swing-right" style={getArmSwingStyle("right")}>
-                <SlopArmSvg variant="left" className="slop-creator-part-svg" />
-              </div>
-            </div>
-            <div className="slop-creator-part slop-creator-part-head" style={getIdlePartStyle("head")}>
-              <SlopHeadSvg className="slop-creator-part-svg" />
-            </div>
-            <div className="slop-creator-part slop-creator-part-eyes" style={getIdlePartStyle("eyes")}>
-              <span className={`slop-creator-face-layer${isBlinking ? " is-blinking" : ""}`}>
-                <Image src={selectedEyes.asset} alt="" fill unoptimized className="slop-creator-part-image" />
-              </span>
-            </div>
-            <div className="slop-creator-part slop-creator-part-mouth" style={getIdlePartStyle("mouth")}>
-              <Image src={selectedMouth.asset} alt="" fill unoptimized className="slop-creator-part-image" />
-            </div>
-            {selectedAccessory.asset ? (
-              <div className="slop-creator-part slop-creator-part-accessory" style={getIdlePartStyle("accessory")}>
-                <Image src={selectedAccessory.asset} alt="" fill unoptimized className="slop-creator-part-image" />
-              </div>
-            ) : null}
-          </div>
-
-          <div className={shopStageClassName}>
-            {renderedStageView === "store" ? <SlopCreatorShopStage activeTab={activeShopTab} onTabChange={setActiveShopTab} /> : null}
-          </div>
-        </div>
-
-        <div className="slop-creator-bottom-dock" aria-label="Primary creator navigation">
-          {dockItems.map((item) => {
-            const isActive =
-              item.key === "character"
-                ? activeStageView === "character"
-                : item.key === "home"
-                  ? activeStageView === "store" && activeShopTab === "home"
-                  : activeStageView === "store" && activeShopTab !== "home";
-
-            return (
-              <button
-                key={item.key}
-                type="button"
-                className={`slop-creator-dock-item${isActive ? " is-active" : ""}`}
-                aria-pressed={isActive || undefined}
-                onClick={() => handleDockSelect(item.key)}
-              >
-                <span className={`slop-creator-dock-icon slop-creator-dock-icon-${item.key}`} aria-hidden="true" />
-                <span className="slop-creator-dock-label">{item.label}</span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
+            <CategoryIcon icon={page.icon} />
+            <span>{page.label}</span>
+          </button>
+        ))}
+      </nav>
     </section>
   );
 }

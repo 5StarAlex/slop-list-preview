@@ -128,6 +128,9 @@ export default function Home() {
                     <Link href="/catalog" className="route-button">
                       Go To Catalog
                     </Link>
+                    <Link href="/games" className="route-button">
+                      Open Games
+                    </Link>
                     <Link href="/create" className="route-button">
                       Open Create
                     </Link>

@@ -96,7 +96,7 @@ export default function SpaceGamePanel() {
   });
 
   const nextId = useRef(0);
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const timeoutRef = useRef<number | null>(null);
   const frameRef = useRef<number | null>(null);
   const lastFrameTime = useRef<number | null>(null);
   const marqueeRef = useRef<HTMLDivElement | null>(null);
@@ -105,9 +105,9 @@ export default function SpaceGamePanel() {
   const driftPixelsRef = useRef<DriftPixel[]>([]);
   const attackPixelsRef = useRef<AttackPixel[]>([]);
   const abilityReadyRef = useRef(false);
-  const timeoutsRef = useRef<Array<ReturnType<typeof setTimeout>>>([]);
-  const coinIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const abilityTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const timeoutsRef = useRef<number[]>([]);
+  const coinIntervalRef = useRef<number | null>(null);
+  const abilityTimeoutRef = useRef<number | null>(null);
   const gameStartRef = useRef<number | null>(null);
   const lastCoinAwardRef = useRef<number | null>(null);
   const addCoinsRef = useRef(addCoins);
@@ -292,12 +292,14 @@ export default function SpaceGamePanel() {
       }
 
       if (phaseRef.current === "playing") {
-        if (cursorRef.current) {
+        const cursor = cursorRef.current;
+
+        if (cursor) {
           const hit = nextPixels.some((pixel) => {
             const pixelRight = pixel.x + pixel.size;
             const pixelBottom = pixel.y + pixel.size;
-            const playerLeft = cursorRef.current.x - PLAYER_SIZE / 2;
-            const playerTop = cursorRef.current.y - PLAYER_SIZE / 2;
+            const playerLeft = cursor.x - PLAYER_SIZE / 2;
+            const playerTop = cursor.y - PLAYER_SIZE / 2;
             const playerRight = playerLeft + PLAYER_SIZE;
             const playerBottom = playerTop + PLAYER_SIZE;
 

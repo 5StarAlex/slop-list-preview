@@ -8,37 +8,52 @@ export default function CreatePage() {
       <SiteHeader />
       <div className="route-shell">
         <div className="route-page-head">
-          <p className="route-page-subtitle">Create Slop</p>
-          <SlopTitle className="route-page-title">Create-A-Slop</SlopTitle>
+          <p className="route-page-subtitle">New Entry</p>
+          <SlopTitle className="route-page-title">Post A New Entry</SlopTitle>
           <p className="route-copy">
-            Pitch a new disaster, drop the one-line hook, and feed the board.
+            Drop a fresh listing into the board without leaving the rest of the site flow.
           </p>
         </div>
 
-        <div className="route-grid">
-          <article className="route-card">
-            <SlopTitle as="h3" size="sm">New Title</SlopTitle>
-            <input className="route-input" placeholder="Anime title..." />
-            <input className="route-input" placeholder="One line pitch..." />
-            <textarea
-              className="route-textarea"
-              placeholder="Why should this be in the slop rotation?"
-            />
-            <button type="button" className="post-button">
-              Submit Entry
-            </button>
+        <div className="new-entry-layout">
+          <article className="route-card new-entry-form-card">
+            <div className="new-entry-card-head">
+              <SlopTitle as="h3" size="sm">Listing Draft</SlopTitle>
+              <span className="new-entry-chip">Board Post</span>
+            </div>
+
+            <div className="new-entry-field-grid">
+              <input className="route-input" placeholder="Title..." />
+              <input className="route-input" placeholder="One-line hook..." />
+            </div>
+
+            <textarea className="route-textarea new-entry-textarea" placeholder="Why does this deserve a spot in the rotation?" />
+
+            <div className="new-entry-field-grid">
+              <input className="route-input" placeholder="Genre or vibe..." />
+              <input className="route-input" placeholder="Image URL..." />
+            </div>
+
+            <div className="new-entry-actions">
+              <button type="button" className="post-button">
+                Submit Entry
+              </button>
+              <button type="button" className="route-button">
+                Save Draft
+              </button>
+            </div>
           </article>
 
-          <article className="route-card">
-            <SlopTitle as="h3" size="sm">Current Build Tips</SlopTitle>
-            <p>Keep the pitch short, make the angle obvious, and lean into the chaos.</p>
+          <article className="route-card new-entry-side-card">
+            <SlopTitle as="h3" size="sm">Entry Notes</SlopTitle>
+            <p>Keep the hook fast, the angle obvious, and the screenshot or image loud enough to sell the bit.</p>
             <div className="route-tag-row">
-              <span className="route-tag">Romance</span>
-              <span className="route-tag">Action</span>
-              <span className="route-tag">Messy</span>
+              <span className="route-tag">Trending</span>
+              <span className="route-tag">Chaotic</span>
+              <span className="route-tag">Debate Bait</span>
             </div>
-            <Link href="/about" className="route-button">
-              Read About
+            <Link href="/catalog" className="route-button">
+              Browse Catalog
             </Link>
           </article>
         </div>

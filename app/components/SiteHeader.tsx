@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import slopListLogo from "../NewStyleIcons/SlopListLogo.png";
+import GlobalProfileWidget from "./GlobalProfileWidget";
 import SiteNav from "./SiteNav";
 import SpaceParallaxLayers from "./SpaceParallaxLayers";
 import { useParallaxOffset } from "./useParallaxOffset";
@@ -39,6 +40,7 @@ export default function SiteHeader({ navVariant = "default" }: SiteHeaderProps) 
 
         <SiteNav variant={navVariant} />
       </div>
+      <GlobalProfileWidget />
     </header>
   );
 }
