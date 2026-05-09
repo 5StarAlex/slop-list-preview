@@ -1,63 +1,85 @@
-import Link from "next/link";
-import SiteHeader from "../components/SiteHeader";
-import SlopTitle from "../components/SlopTitle";
+import SlopPageShell from "../components/layout/SlopPageShell";
+import NeonPanel from "../components/ui/NeonPanel";
+import NeonButton from "../components/ui/NeonButton";
+
+const talkedAbout = [
+  ["Trending", "Clean Slop, No Witnesses", "The meme that broke the internet this week.", "12.4K"],
+  ["News", "Vending Machine Boss", "Spotted in the wild: new dungeon encounter?", "8.7K"],
+  ["Event", "Slop Arcade Open!", "New games. New leaderboard. Absolute chaos.", "7.1K"],
+  ["Debate", "Pineapple on Slop?", "The eternal debate rages on once again.", "5.6K"],
+  ["News", "New Challenger?", "Someone new is climbing the ranks...", "4.2K"],
+] as const;
 
 export default function CreatePage() {
   return (
-    <div className="route-page">
-      <SiteHeader />
-      <div className="route-shell">
-        <div className="route-page-head">
-          <p className="route-page-subtitle">New Entry</p>
-          <SlopTitle className="route-page-title">Post A New Entry</SlopTitle>
-          <p className="route-copy">
-            Drop a fresh listing into the board without leaving the rest of the site flow.
-          </p>
+    <SlopPageShell>
+      <NeonPanel variant="purple" className="slop-talked-about-panel">
+        <div className="slop-home-section-head">
+          <h2>Most Talked About</h2>
         </div>
+        <div className="slop-talked-about-grid">
+          {talkedAbout.map(([tag, title, copy, score], index) => (
+            <article key={title} className="slop-talked-card">
+              <div className="slop-talked-card__image" aria-hidden="true">
+                <span className="slop-talked-card__rank">{index + 1}</span>
+                <span className="slop-talked-card__tag">{tag}</span>
+              </div>
+              <strong>{title}</strong>
+              <p>{copy}</p>
+              <span>★ {score}</span>
+            </article>
+          ))}
+        </div>
+      </NeonPanel>
 
-        <div className="new-entry-layout">
-          <article className="route-card new-entry-form-card">
-            <div className="new-entry-card-head">
-              <SlopTitle as="h3" size="sm">Listing Draft</SlopTitle>
-              <span className="new-entry-chip">Board Post</span>
+      <div className="slop-post-layout">
+        <NeonPanel variant="blue" className="slop-post-form-panel">
+          <div className="slop-home-section-head">
+            <div>
+              <p className="slop-page-kicker">Post A New Entry</p>
+              <h2>Drop a fresh listing into the board without leaving the rest of the site flow.</h2>
             </div>
+            <NeonButton href="/rules" variant="purple">
+              Rules
+            </NeonButton>
+          </div>
 
-            <div className="new-entry-field-grid">
-              <input className="route-input" placeholder="Title..." />
-              <input className="route-input" placeholder="One-line hook..." />
-            </div>
+          <div className="slop-post-input-grid">
+            <input className="slop-post-input" placeholder="Title..." />
+            <input className="slop-post-input" placeholder="One-line hook..." />
+          </div>
+          <textarea className="slop-post-textarea" placeholder="Why does this deserve a spot in the rotation?" />
+          <div className="slop-post-input-grid">
+            <input className="slop-post-input" placeholder="Genre or vibe... (e.g. Meme, News, Rant)" />
+            <input className="slop-post-input" placeholder="Image URL (or upload below)..." />
+          </div>
+          <label className="slop-upload-box">
+            <span>Upload An Image</span>
+            <small>PNG, JPG, GIF up to 10MB</small>
+          </label>
+          <div className="slop-post-actions">
+            <NeonButton variant="pink">Submit Entry</NeonButton>
+            <NeonButton variant="purple">Save Draft</NeonButton>
+          </div>
+        </NeonPanel>
 
-            <textarea className="route-textarea new-entry-textarea" placeholder="Why does this deserve a spot in the rotation?" />
-
-            <div className="new-entry-field-grid">
-              <input className="route-input" placeholder="Genre or vibe..." />
-              <input className="route-input" placeholder="Image URL..." />
-            </div>
-
-            <div className="new-entry-actions">
-              <button type="button" className="post-button">
-                Submit Entry
-              </button>
-              <button type="button" className="route-button">
-                Save Draft
-              </button>
-            </div>
-          </article>
-
-          <article className="route-card new-entry-side-card">
-            <SlopTitle as="h3" size="sm">Entry Notes</SlopTitle>
-            <p>Keep the hook fast, the angle obvious, and the screenshot or image loud enough to sell the bit.</p>
-            <div className="route-tag-row">
-              <span className="route-tag">Trending</span>
-              <span className="route-tag">Chaotic</span>
-              <span className="route-tag">Debate Bait</span>
-            </div>
-            <Link href="/catalog" className="route-button">
+        <NeonPanel variant="pink" className="slop-post-side-panel">
+          <p className="slop-page-kicker">Make It Sloppy</p>
+          <h2>Keep the hook fast, the angle obvious, and the screenshot loud enough to sell the bit.</h2>
+          <div className="slop-vibe-row">
+            <span className="slop-vibe-pill">Trending</span>
+            <span className="slop-vibe-pill">Chaotic</span>
+            <span className="slop-vibe-pill">Debate Bait</span>
+          </div>
+          <div className="slop-catalog-callout">
+            <strong>Browse The Catalog</strong>
+            <p>Not sure what fits? Check the catalog for inspo.</p>
+            <NeonButton href="/catalog" variant="gold">
               Browse Catalog
-            </Link>
-          </article>
-        </div>
+            </NeonButton>
+          </div>
+        </NeonPanel>
       </div>
-    </div>
+    </SlopPageShell>
   );
 }

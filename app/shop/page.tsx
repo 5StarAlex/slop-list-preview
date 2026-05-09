@@ -1,73 +1,174 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import SlopPageShell from "../components/layout/SlopPageShell";
+import NeonPanel from "../components/ui/NeonPanel";
+import ShopTryOnPreview from "../components/shop/ShopTryOnPreview";
+import ShopItemCard from "../components/shop/ShopItemCard";
 import { useAccount } from "../components/AccountProvider";
-import SiteHeader from "../components/SiteHeader";
-import SlopTitle from "../components/SlopTitle";
-import { WHITE_TRAIL_COST } from "../lib/siteData";
+import { allShopItems, dailyDealItems, featuredShopItems, getShopItem } from "../lib/shopData";
 
 export default function ShopPage() {
-  const { account, spendCoins, setWhiteTrailEnabled } = useAccount();
-  const [message, setMessage] = useState("Spend your coins on an upgrade that follows you across the whole site.");
-  const coins = account.economy.coins;
-  const trailUnlocked = account.unlocks.whiteTrailEnabled;
+  const { account, spendCoins, unlockShopItems, setEquippedShopItems } = useAccount();
+  const [selectedItemId, setSelectedItemId] = useState<string>(featuredShopItems[0].id);
+  const [tryOnMode, setTryOnMode] = useState(true);
+  const [message, setMessage] = useState("Featured items rotate daily. Try on a fit and lock it in when you're ready.");
 
-  const buyWhiteTrail = () => {
-    if (trailUnlocked) {
-      setMessage("White mouse trail already unlocked. It stays active across the whole site.");
+  const ownedItemIds = account.ownedShopItemIds;
+  const equippedItemIds = account.equippedShopItemIds;
+  const selectedItem = getShopItem(selectedItemId);
+
+  const previewItemIds = useMemo(() => {
+    if (!tryOnMode || !selectedItem) {
+      return equippedItemIds;
+    }
+
+    const next = new Set(equippedItemIds);
+
+    if (selectedItem.category === "shirt") {
+      for (const item of allShopItems) {
+        if (item.category === "shirt") {
+          next.delete(item.id);
+        }
+      }
+    }
+
+    if (selectedItem.category === "pants") {
+      for (const item of allShopItems) {
+        if (item.category === "pants") {
+          next.delete(item.id);
+        }
+      }
+    }
+
+    if (selectedItem.category === "accessory" || selectedItem.category === "eyes" || selectedItem.category === "effect" || selectedItem.category === "shoes" || selectedItem.category === "pet") {
+      next.delete(selectedItem.id);
+    }
+
+    next.add(selectedItem.id);
+    return Array.from(next);
+  }, [equippedItemIds, selectedItem, tryOnMode]);
+
+  const previewCost = previewItemIds.reduce((total, itemId) => {
+    if (ownedItemIds.includes(itemId)) {
+      return total;
+    }
+
+    return total + (getShopItem(itemId)?.price ?? 0);
+  }, 0);
+
+  const buyItem = (itemId: string) => {
+    const item = getShopItem(itemId);
+    if (!item) {
       return;
     }
 
-    if (coins < WHITE_TRAIL_COST) {
-      setMessage(`You need ${WHITE_TRAIL_COST - coins} more slop coins to buy the white mouse trail.`);
+    if (ownedItemIds.includes(item.id)) {
+      setMessage(`${item.name} is already in your inventory.`);
       return;
     }
 
-    if (!spendCoins(WHITE_TRAIL_COST)) {
-      setMessage("That purchase could not be completed.");
+    if (!spendCoins(item.price)) {
+      setMessage(`You need ${item.price - account.economy.coins} more coins for ${item.name}.`);
       return;
     }
 
-    setWhiteTrailEnabled(true);
-    setMessage("White mouse trail unlocked. It now follows your cursor across the full website.");
+    unlockShopItems([item.id]);
+    setMessage(`${item.name} added to your locker.`);
+  };
+
+  const buyEquipped = () => {
+    const pending = previewItemIds.filter((itemId) => !ownedItemIds.includes(itemId));
+
+    if (pending.length === 0) {
+      setEquippedShopItems(previewItemIds);
+      setMessage("Equipped your current fit.");
+      return;
+    }
+
+    if (!spendCoins(previewCost)) {
+      setMessage(`You need ${previewCost - account.economy.coins} more coins to buy this full loadout.`);
+      return;
+    }
+
+    unlockShopItems(pending);
+    setEquippedShopItems(previewItemIds);
+    setMessage("Bought and equipped your full try-on loadout.");
   };
 
   return (
-    <div className="route-page">
-      <SiteHeader />
-      <div className="route-shell">
-        <div className="route-page-head">
-          <p className="route-page-subtitle">Slop Shop</p>
-          <SlopTitle className="route-page-title">Spend Your Slop Coins</SlopTitle>
-          <p className="route-copy">
-            The shop keeps the same site styling, but this one actually gives you a global unlock
-            instead of a local gimmick.
-          </p>
-        </div>
-
-        <div className="route-grid">
-          <article className="route-card shop-card">
-            <SlopTitle as="h3" size="sm">White Mouse Trail</SlopTitle>
-            <p>Cost: {WHITE_TRAIL_COST} slop coins</p>
-            <div className="shop-preview" aria-hidden="true">
-              <span className="shop-preview-pixel pixel-one" />
-              <span className="shop-preview-pixel pixel-two" />
-              <span className="shop-preview-pixel pixel-three" />
-              <span className="shop-preview-cursor" />
-            </div>
-            <button type="button" className="post-button" onClick={buyWhiteTrail}>
-              {trailUnlocked ? "Unlocked" : "Buy Upgrade"}
-            </button>
-          </article>
-
-          <article className="route-card shop-card">
-            <SlopTitle as="h3" size="sm">Wallet + Status</SlopTitle>
-            <p>Current coins: {coins}</p>
-            <p>{trailUnlocked ? "Global white trail is active." : "Global white trail is still locked."}</p>
-            <p className="route-copy">{message}</p>
-          </article>
-        </div>
+    <SlopPageShell className="slop-shop-route">
+      <div className="slop-page-heading">
+        <p className="slop-page-kicker">Arcade Mall</p>
+        <h1 className="slop-page-title">Slop Shop</h1>
+        <p className="slop-page-copy">{message}</p>
       </div>
-    </div>
+
+      <div className="slop-shop-layout">
+        <NeonPanel variant="dark" className="slop-shop-left">
+          <ShopTryOnPreview
+            config={account.characterConfig}
+            previewItemIds={previewItemIds}
+            tryOnMode={tryOnMode}
+            onToggleTryOn={() => setTryOnMode((current) => !current)}
+            onReset={() => {
+              setSelectedItemId(featuredShopItems[0].id);
+              setTryOnMode(false);
+            }}
+            onBuyEquipped={buyEquipped}
+          />
+        </NeonPanel>
+
+        <NeonPanel variant="purple" className="slop-shop-right">
+          <div className="slop-shop-section-head">
+            <div>
+              <p className="slop-shop-kicker">Featured Items</p>
+              <h2 className="slop-shop-title">Build Your Fit</h2>
+            </div>
+            <span className="slop-shop-total">Preview Cost: ★ {previewCost}</span>
+          </div>
+
+          <div className="slop-shop-grid">
+            {featuredShopItems.map((item) => (
+              <ShopItemCard
+                key={item.id}
+                item={item}
+                isOwned={ownedItemIds.includes(item.id)}
+                isEquipped={equippedItemIds.includes(item.id)}
+                isPreviewing={selectedItemId === item.id}
+                onPreview={() => setSelectedItemId(item.id)}
+                onBuy={() => buyItem(item.id)}
+                canAfford={account.economy.coins >= item.price}
+              />
+            ))}
+          </div>
+        </NeonPanel>
+      </div>
+
+      <NeonPanel variant="pink" className="slop-daily-deals">
+        <div className="slop-shop-section-head">
+          <div>
+            <p className="slop-shop-kicker">Daily Deals</p>
+            <h2 className="slop-shop-title">Fresh Rotation</h2>
+          </div>
+          <span className="slop-shop-total">New deals in: 12:45:30</span>
+        </div>
+
+        <div className="slop-daily-deals-row">
+          {dailyDealItems.map((item) => (
+            <ShopItemCard
+              key={item.id}
+              item={item}
+              isOwned={ownedItemIds.includes(item.id)}
+              isEquipped={equippedItemIds.includes(item.id)}
+              isPreviewing={selectedItemId === item.id}
+              onPreview={() => setSelectedItemId(item.id)}
+              onBuy={() => buyItem(item.id)}
+              canAfford={account.economy.coins >= item.price}
+            />
+          ))}
+        </div>
+      </NeonPanel>
+    </SlopPageShell>
   );
 }

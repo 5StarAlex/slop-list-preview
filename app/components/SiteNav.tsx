@@ -12,27 +12,16 @@ export default function SiteNav({ variant = "default" }: SiteNavProps) {
   const pathname = usePathname();
   const navItems = [...siteNavItems, aboutNavItem];
 
-  if (variant === "profile") {
-    return (
-      <nav className="pixel-nav profile-nav-row" aria-label="Profile navigation">
-        {navItems.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            className={`pixel-tab profile-home-button${pathname === item.href ? " is-active" : ""}`}
-          >
-            <span className="pixel-tab-label">{item.label}</span>
-          </Link>
-        ))}
-      </nav>
-    );
-  }
-
   return (
-    <nav className="pixel-nav" aria-label="Main navigation">
+    <nav className={`slop-site-nav${variant === "profile" ? " slop-site-nav--profile" : ""}`} aria-label="Main navigation">
       {navItems.map((item) => (
-        <Link key={item.href} href={item.href} className={`pixel-tab${pathname === item.href ? " is-active" : ""}`}>
-          <span className="pixel-tab-label">{item.label}</span>
+        <Link
+          key={item.href}
+          href={item.href}
+          className={`slop-site-nav__item slop-site-nav__item--${item.accent}${pathname === item.href ? " is-active" : ""}`}
+        >
+          <span className={`slop-site-nav__icon is-${item.icon}`} aria-hidden="true" />
+          <span className="slop-site-nav__label">{item.label}</span>
         </Link>
       ))}
     </nav>

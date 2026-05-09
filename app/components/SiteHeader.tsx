@@ -1,11 +1,10 @@
 "use client";
 
-import Image from "next/image";
-import slopListLogo from "../NewStyleIcons/SlopListLogo.png";
 import GlobalProfileWidget from "./GlobalProfileWidget";
 import SiteNav from "./SiteNav";
 import SpaceParallaxLayers from "./SpaceParallaxLayers";
 import { useParallaxOffset } from "./useParallaxOffset";
+import SlopLogo from "./layout/SlopLogo";
 
 type SiteHeaderProps = {
   navVariant?: "default" | "profile";
@@ -16,28 +15,19 @@ export default function SiteHeader({ navVariant = "default" }: SiteHeaderProps) 
 
   return (
     <header
-      className="space-banner"
+      className="slop-site-header"
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
     >
-      <div className="space-banner-shell">
+      <div className="slop-site-header__shell">
         <SpaceParallaxLayers
           offset={offset}
-          className="space-banner-layers"
+          className="slop-site-header__layers"
           includeNebula
           includeScanlines
           intensity="medium"
         />
-        <div className="logo-stack">
-          <div
-            className="logo-image-wrap"
-            style={{ ["--logo-mask" as string]: `url(${slopListLogo.src})` }}
-          >
-            <Image src={slopListLogo} alt="Slop List" className="logo-image" priority />
-            <span className="logo-image-gleam" aria-hidden="true" />
-          </div>
-        </div>
-
+        <SlopLogo />
         <SiteNav variant={navVariant} />
       </div>
       <GlobalProfileWidget />

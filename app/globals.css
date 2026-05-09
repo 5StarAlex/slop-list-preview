@@ -11754,3 +11754,1148 @@ body {
     font-size: 0.56rem;
   }
 }
+
+/* Neon Slop UI System */
+
+:root {
+  --slop-bg-deep: #12004f;
+  --slop-bg-mid: #3510a8;
+  --slop-bg-light: #7357ff;
+  --slop-pink: #ff4fd8;
+  --slop-hot-pink: #ff2ebd;
+  --slop-purple: #8c45ff;
+  --slop-blue: #47b7ff;
+  --slop-cyan: #65f4ff;
+  --slop-yellow: #fff04a;
+  --slop-orange: #ffb13d;
+  --slop-white: #fff6ff;
+  --slop-panel: rgba(48, 15, 148, 0.78);
+  --slop-panel-dark: rgba(18, 5, 80, 0.9);
+  --slop-glass: rgba(255, 255, 255, 0.12);
+  --slop-border-pink: #ff6df0;
+  --slop-border-blue: #63d9ff;
+  --slop-border-purple: #a86cff;
+  --slop-font-display: "Fredoka", "Trebuchet MS", sans-serif;
+  --slop-font-body: "Verdana", "Tahoma", sans-serif;
+}
+
+body {
+  color: var(--slop-white);
+  font-family: var(--slop-font-body);
+  background:
+    radial-gradient(circle at top, rgba(122, 96, 255, 0.4), transparent 34%),
+    linear-gradient(180deg, #17045f 0%, #12004f 38%, #1b0d72 100%);
+}
+
+main {
+  position: relative;
+  z-index: 0;
+}
+
+.slop-site-shell {
+  position: relative;
+  width: min(1520px, calc(100% - 28px));
+  margin: 0 auto;
+  padding: 18px 0 34px;
+}
+
+.slop-site-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.slop-site-starfield,
+.slop-site-grid,
+.slop-site-sweep,
+.slop-site-confetti {
+  position: absolute;
+  inset: 0;
+}
+
+.slop-site-starfield {
+  background-image:
+    radial-gradient(circle at 12% 18%, rgba(255, 255, 255, 0.95) 0 2px, transparent 3px),
+    radial-gradient(circle at 62% 12%, rgba(255, 240, 74, 0.9) 0 3px, transparent 4px),
+    radial-gradient(circle at 82% 28%, rgba(101, 244, 255, 0.9) 0 2px, transparent 4px),
+    radial-gradient(circle at 24% 62%, rgba(255, 109, 240, 0.8) 0 2px, transparent 4px),
+    radial-gradient(circle at 74% 74%, rgba(255, 255, 255, 0.92) 0 3px, transparent 5px);
+}
+
+.slop-site-grid {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 64px 64px;
+  opacity: 0.2;
+}
+
+.slop-site-sweep.is-pink {
+  background: linear-gradient(135deg, transparent 34%, rgba(255, 79, 216, 0.42) 34%, rgba(255, 79, 216, 0.12) 64%, transparent 64%);
+  transform: translate(-12%, 8%) rotate(-8deg);
+}
+
+.slop-site-sweep.is-blue {
+  background: linear-gradient(120deg, transparent 46%, rgba(71, 183, 255, 0.36) 46%, rgba(71, 183, 255, 0.1) 78%, transparent 78%);
+  transform: translate(28%, 12%) rotate(10deg);
+}
+
+.slop-site-confetti {
+  background:
+    radial-gradient(circle at 18% 48%, rgba(255, 79, 216, 0.46), transparent 18%),
+    radial-gradient(circle at 72% 56%, rgba(71, 183, 255, 0.34), transparent 20%);
+  filter: blur(18px);
+}
+
+.slop-site-content {
+  display: grid;
+  gap: 24px;
+}
+
+.slop-site-header {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.slop-site-header__shell {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 22px;
+  padding: 12px 280px 12px 16px;
+  min-height: 118px;
+  border: 2px solid rgba(255, 255, 255, 0.16);
+  border-radius: 34px;
+  background: linear-gradient(180deg, rgba(61, 20, 177, 0.76), rgba(28, 10, 112, 0.88));
+  box-shadow:
+    0 0 0 2px rgba(255, 109, 240, 0.18),
+    0 24px 40px rgba(8, 3, 36, 0.38),
+    inset 0 1px 0 rgba(255, 255, 255, 0.24);
+  overflow: hidden;
+}
+
+.slop-site-header__layers {
+  position: absolute;
+  inset: 0;
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+.slop-logo {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: min(220px, 24vw);
+}
+
+.slop-logo-image {
+  width: 100%;
+  height: auto;
+  filter:
+    drop-shadow(0 0 10px rgba(255, 59, 202, 0.4))
+    drop-shadow(0 8px 18px rgba(7, 10, 42, 0.38));
+}
+
+.slop-logo-glow {
+  position: absolute;
+  inset: 20% -8% 12%;
+  z-index: -1;
+  background: radial-gradient(circle, rgba(255, 79, 216, 0.42), transparent 68%);
+  filter: blur(18px);
+}
+
+.slop-site-nav {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+}
+
+.slop-site-nav__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 54px;
+  padding: 0 22px;
+  border: 2px solid rgba(255, 255, 255, 0.16);
+  border-radius: 18px;
+  font-family: var(--slop-font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #fffaf9;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.32),
+    0 12px 22px rgba(8, 5, 41, 0.22);
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+}
+
+.slop-site-nav__item:hover,
+.slop-site-nav__item.is-active {
+  transform: translateY(-2px);
+  border-color: rgba(255, 240, 74, 0.7);
+  box-shadow:
+    0 0 0 2px rgba(255, 240, 74, 0.22),
+    0 16px 30px rgba(8, 5, 41, 0.28);
+}
+
+.slop-site-nav__item--pink,
+.slop-site-nav__item--magenta {
+  background: linear-gradient(180deg, #ff63d9, #ff43bf);
+}
+
+.slop-site-nav__item--gold {
+  background: linear-gradient(180deg, #ffbb49, #ff7c6b);
+}
+
+.slop-site-nav__item--purple,
+.slop-site-nav__item--violet {
+  background: linear-gradient(180deg, #8d56ff, #6042ff);
+}
+
+.slop-site-nav__item--cyan,
+.slop-site-nav__item--blue {
+  background: linear-gradient(180deg, #6dcfff, #53a9ff);
+}
+
+.slop-site-nav__icon {
+  width: 16px;
+  height: 16px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.08);
+}
+
+.slop-site-nav__icon.is-gamepad,
+.slop-site-nav__icon.is-info,
+.slop-site-nav__icon.is-home,
+.slop-site-nav__icon.is-wand {
+  border-radius: 999px;
+}
+
+.slop-site-nav__icon.is-pen {
+  clip-path: polygon(0 70%, 70% 0, 100% 30%, 30% 100%);
+}
+
+.slop-site-nav__icon.is-search {
+  border-radius: 999px;
+  box-shadow:
+    8px 8px 0 -5px rgba(255, 255, 255, 0.95),
+    0 0 0 2px rgba(0, 0, 0, 0.08);
+}
+
+.slop-page-heading,
+.slop-home-section-head,
+.slop-shop-section-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.slop-page-kicker,
+.slop-shop-kicker {
+  margin: 0 0 4px;
+  color: #d8d6ff;
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.slop-page-title,
+.slop-hero-title,
+.slop-shop-title,
+.slop-home-section-head h2,
+.slop-home-sidebar-panel h2 {
+  margin: 0;
+  font-family: var(--slop-font-display);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.slop-page-title,
+.slop-hero-title {
+  font-size: clamp(2.6rem, 2.1rem + 2vw, 5rem);
+  line-height: 0.92;
+  color: var(--slop-yellow);
+  text-shadow:
+    0 4px 0 rgba(119, 49, 168, 0.9),
+    0 0 18px rgba(255, 79, 216, 0.28);
+}
+
+.slop-page-copy,
+.slop-news-card p,
+.slop-feature-card p,
+.slop-home-promo-card p,
+.slop-shop-preview-copy {
+  margin: 0;
+  color: rgba(255, 246, 255, 0.86);
+  font-size: 1rem;
+  line-height: 1.45;
+}
+
+.neon-panel {
+  position: relative;
+  border: 2px solid rgba(255, 255, 255, 0.16);
+  border-radius: 30px;
+  padding: 22px;
+  box-shadow:
+    0 18px 34px rgba(7, 3, 32, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  overflow: hidden;
+}
+
+.neon-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 36%);
+  pointer-events: none;
+}
+
+.neon-panel--dark { background: linear-gradient(180deg, rgba(20, 8, 84, 0.92), rgba(17, 5, 68, 0.96)); }
+.neon-panel--purple { background: linear-gradient(180deg, rgba(83, 24, 181, 0.82), rgba(46, 12, 139, 0.92)); }
+.neon-panel--pink { background: linear-gradient(180deg, rgba(112, 27, 166, 0.88), rgba(65, 14, 154, 0.94)); }
+.neon-panel--blue { background: linear-gradient(180deg, rgba(75, 49, 204, 0.82), rgba(42, 28, 173, 0.92)); }
+.neon-panel--gold { background: linear-gradient(180deg, rgba(115, 50, 170, 0.86), rgba(86, 31, 143, 0.94)); }
+
+.neon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 0 22px;
+  border: 2px solid rgba(255, 255, 255, 0.16);
+  border-radius: 16px;
+  font-family: var(--slop-font-display);
+  font-size: 1rem;
+  font-weight: 800;
+  color: #fffaf9;
+  cursor: pointer;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    0 14px 24px rgba(9, 3, 40, 0.28);
+}
+
+.neon-button--pink { background: linear-gradient(180deg, #ff63d9, #ff3cb5); }
+.neon-button--purple { background: linear-gradient(180deg, #8859ff, #633dff); }
+.neon-button--blue { background: linear-gradient(180deg, #62cfff, #4da8ff); }
+.neon-button--gold { background: linear-gradient(180deg, #ffd95b, #ffb43c); color: #431861; }
+
+.slop-home-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.7fr);
+  gap: 22px;
+}
+
+.slop-home-main,
+.slop-home-sidebar {
+  display: grid;
+  gap: 22px;
+}
+
+.slop-hero-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  align-items: center;
+  min-height: 360px;
+}
+
+.slop-hero-subtitle {
+  margin: 8px 0 14px;
+  color: #ffe983;
+  font-family: var(--slop-font-display);
+  font-size: 1.8rem;
+  font-style: italic;
+  text-transform: uppercase;
+}
+
+.slop-hero-button {
+  margin-top: 22px;
+  width: fit-content;
+}
+
+.slop-hero-art {
+  position: relative;
+  min-height: 280px;
+}
+
+.slop-hero-arcade,
+.slop-hero-coin,
+.slop-hero-ufo {
+  position: absolute;
+  display: block;
+}
+
+.slop-hero-arcade {
+  right: 28px;
+  bottom: 12px;
+  width: 220px;
+  height: 260px;
+  border: 4px solid rgba(255, 255, 255, 0.2);
+  border-radius: 28px 28px 20px 20px;
+  background:
+    linear-gradient(180deg, rgba(255, 111, 236, 0.9), rgba(145, 75, 255, 0.95));
+  box-shadow: 0 22px 36px rgba(15, 7, 58, 0.36);
+}
+
+.slop-hero-arcade::before {
+  content: "SLOP";
+  position: absolute;
+  top: 18px;
+  left: 22px;
+  color: var(--slop-yellow);
+  font-family: var(--slop-font-display);
+  font-size: 2rem;
+  font-weight: 900;
+}
+
+.slop-hero-arcade::after {
+  content: "";
+  position: absolute;
+  top: 70px;
+  left: 34px;
+  right: 34px;
+  bottom: 58px;
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at center, rgba(255, 79, 216, 0.92), rgba(34, 12, 94, 0.95));
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.12);
+}
+
+.slop-hero-coin {
+  top: 78px;
+  left: 32px;
+  width: 86px;
+  height: 86px;
+  border-radius: 999px;
+  background: radial-gradient(circle, #ffe77f 0%, #ffbe3c 72%);
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.18);
+}
+
+.slop-hero-ufo {
+  right: 4px;
+  top: 88px;
+  width: 90px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #9f7dff, #5be0ff);
+  box-shadow: 0 0 24px rgba(91, 224, 255, 0.46);
+}
+
+.slop-featured-games-grid,
+.slop-shop-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.slop-feature-card {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.14);
+  border-radius: 24px;
+  background: rgba(17, 6, 72, 0.5);
+}
+
+.slop-feature-card__art {
+  position: relative;
+  min-height: 166px;
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 18% 20%, rgba(255, 255, 255, 0.92) 0 12px, transparent 13px),
+    radial-gradient(circle at 78% 26%, rgba(255, 255, 255, 0.92) 0 12px, transparent 13px),
+    linear-gradient(180deg, rgba(35, 16, 118, 0.12), rgba(35, 16, 118, 0.54)),
+    linear-gradient(135deg, rgba(255, 79, 216, 0.2), rgba(71, 183, 255, 0.2));
+}
+
+.slop-feature-card__badge,
+.slop-shop-item-card__flag {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 32px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #ff63d9, #ff44bf);
+  font-family: var(--slop-font-display);
+  font-weight: 800;
+}
+
+.slop-home-promo-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.slop-home-promo-card {
+  min-height: 140px;
+}
+
+.slop-home-sidebar-panel {
+  display: grid;
+  gap: 16px;
+}
+
+.slop-challenge-card {
+  display: grid;
+  gap: 12px;
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 22px;
+  background: rgba(15, 10, 74, 0.36);
+}
+
+.slop-challenge-card__top {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.slop-progress {
+  height: 16px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  overflow: hidden;
+}
+
+.slop-progress__fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #65f4ff, #5b8aff);
+}
+
+.slop-progress__copy,
+.slop-coin-reward,
+.slop-news-card span,
+.slop-shop-total,
+.slop-shop-item-card__rarity {
+  color: #e7d8ff;
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.slop-news-list,
+.slop-leaderboard {
+  display: grid;
+  gap: 12px;
+}
+
+.slop-news-card,
+.slop-leaderboard-row {
+  display: grid;
+  gap: 6px;
+  padding: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  background: rgba(10, 8, 58, 0.3);
+}
+
+.slop-leaderboard-row {
+  grid-template-columns: 24px 1fr auto;
+  align-items: center;
+  gap: 12px;
+}
+
+.slop-shop-layout {
+  display: grid;
+  grid-template-columns: minmax(320px, 0.85fr) minmax(0, 1.15fr);
+  gap: 22px;
+}
+
+.slop-shop-preview-panel,
+.slop-shop-right {
+  display: grid;
+  gap: 18px;
+}
+
+.slop-shop-preview-stage {
+  min-height: 520px;
+  display: grid;
+  place-items: center;
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at center bottom, rgba(255, 79, 216, 0.32), transparent 34%),
+    linear-gradient(180deg, rgba(77, 42, 186, 0.74), rgba(25, 10, 96, 0.88));
+}
+
+.slop-character-preview-shell {
+  position: relative;
+  width: min(100%, 320px);
+  min-height: 420px;
+  display: grid;
+  place-items: center;
+}
+
+.slop-character-preview-backdrop {
+  position: absolute;
+  inset: 20px 0 60px;
+  border-radius: 28px;
+  background:
+    linear-gradient(135deg, rgba(95, 110, 255, 0.5), rgba(255, 79, 216, 0.38)),
+    linear-gradient(180deg, rgba(10, 5, 58, 0.24), rgba(10, 5, 58, 0.4));
+  transform: perspective(600px) rotateY(-8deg);
+}
+
+.slop-character-preview {
+  position: relative;
+  width: 260px;
+  height: 360px;
+  z-index: 1;
+  transform: translateY(8px);
+}
+
+.slop-character-preview-pedestal {
+  position: absolute;
+  left: 50%;
+  bottom: 10px;
+  width: 190px;
+  height: 30px;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(255, 195, 79, 0.82), rgba(255, 79, 216, 0.34), transparent 74%);
+  transform: translateX(-50%);
+  filter: blur(1px);
+}
+
+.slop-character-shirt-overlay,
+.slop-character-pants-overlay,
+.slop-character-shoes-overlay,
+.slop-character-accessory-overlay,
+.slop-character-pet-orbit {
+  position: absolute;
+  display: none;
+}
+
+.slop-character-shirt-overlay {
+  inset: 22% 24% 32%;
+  border-radius: 24px 24px 28px 28px;
+  background: linear-gradient(180deg, #5e21c9, #7d49ff);
+  box-shadow: inset 0 -10px 0 rgba(0, 0, 0, 0.14);
+}
+
+.slop-character-pants-overlay {
+  left: 26%;
+  right: 26%;
+  bottom: 10%;
+  height: 26%;
+  border-radius: 12px 12px 24px 24px;
+  background: linear-gradient(180deg, #111b86, #142bba);
+}
+
+.slop-character-shoes-overlay {
+  left: 24%;
+  right: 24%;
+  bottom: 6%;
+  height: 10%;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #fff9f3, #d7d8ff);
+}
+
+.slop-character-accessory-overlay {
+  left: 28%;
+  right: 28%;
+  top: 0;
+  height: 22%;
+  border-radius: 50% 50% 20% 20%;
+  background: linear-gradient(180deg, #ffd95b, #ffac1d);
+  clip-path: polygon(0 100%, 16% 36%, 34% 68%, 50% 12%, 66% 68%, 84% 36%, 100% 100%);
+}
+
+.slop-character-pet-orbit {
+  right: -18px;
+  top: 46px;
+  width: 44px;
+  height: 44px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #18151f, #06070b);
+  box-shadow:
+    0 0 0 2px rgba(130, 118, 255, 0.26),
+    0 0 16px rgba(130, 118, 255, 0.42);
+}
+
+.slop-character-preview[class*="has-shirt-"] .slop-character-shirt-overlay,
+.slop-character-preview[class*="item-neon-drip-hoodie"] .slop-character-shirt-overlay,
+.slop-character-preview[class*="item-comfy-hoodie"] .slop-character-shirt-overlay {
+  display: block;
+}
+
+.slop-character-preview[class*="item-neon-drip-hoodie"] .slop-character-shirt-overlay {
+  background:
+    linear-gradient(180deg, #40209f, #7a3cff),
+    linear-gradient(90deg, rgba(255, 79, 216, 0.5), rgba(101, 244, 255, 0.4));
+}
+
+.slop-character-preview[class*="has-pants-"] .slop-character-pants-overlay,
+.slop-character-preview[class*="item-galaxy-pajama-pants"] .slop-character-pants-overlay {
+  display: block;
+}
+
+.slop-character-preview[class*="item-galaxy-pajama-pants"] .slop-character-pants-overlay {
+  background:
+    radial-gradient(circle at 22% 30%, #fff6ff 0 3px, transparent 4px),
+    radial-gradient(circle at 70% 40%, #fff04a 0 3px, transparent 4px),
+    linear-gradient(180deg, #19186c, #0b0c56);
+}
+
+.slop-character-preview[class*="item-star-slippers"] .slop-character-shoes-overlay {
+  display: block;
+}
+
+.slop-character-preview[class*="has-accessory-"] .slop-character-accessory-overlay,
+.slop-character-preview[class*="item-slop-king-crown"] .slop-character-accessory-overlay,
+.slop-character-preview[class*="item-halo"] .slop-character-accessory-overlay,
+.slop-character-preview[class*="item-neon-cap"] .slop-character-accessory-overlay {
+  display: block;
+}
+
+.slop-character-preview[class*="item-halo"] .slop-character-accessory-overlay {
+  top: -10px;
+  left: 30%;
+  right: 30%;
+  height: 8%;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #ffd95b, #fff6ca);
+  clip-path: none;
+}
+
+.slop-character-preview[class*="item-neon-cap"] .slop-character-accessory-overlay {
+  top: 8px;
+  left: 25%;
+  right: 25%;
+  height: 14%;
+  border-radius: 999px 999px 20px 20px;
+  background: linear-gradient(180deg, #2c2d88, #ffb13d);
+  clip-path: none;
+}
+
+.slop-character-preview[class*="item-pixel-slop-pet"] .slop-character-pet-orbit {
+  display: block;
+}
+
+.slop-shop-preview-controls {
+  display: grid;
+  gap: 14px;
+}
+
+.slop-shop-tryon-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 58px;
+  padding: 0 18px;
+  border: 2px solid rgba(255, 255, 255, 0.14);
+  border-radius: 18px;
+  background: linear-gradient(180deg, #ff63d9, #ff43bf);
+  color: white;
+  font-family: var(--slop-font-display);
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.slop-shop-preview-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.slop-shop-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.slop-shop-item-card {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  border-radius: 22px;
+  background: rgba(18, 9, 88, 0.5);
+}
+
+.slop-shop-item-card.is-previewing {
+  border-color: rgba(255, 240, 74, 0.9);
+  box-shadow: 0 0 0 2px rgba(255, 240, 74, 0.22);
+}
+
+.slop-shop-item-card__top,
+.slop-shop-item-card__bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.slop-shop-item-card__art {
+  position: relative;
+  min-height: 170px;
+  border: 0;
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at center, rgba(255, 255, 255, 0.08), transparent 58%),
+    linear-gradient(180deg, rgba(143, 82, 255, 0.34), rgba(56, 21, 143, 0.24));
+}
+
+.slop-shop-item-card__art::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 96px;
+  height: 96px;
+  transform: translate(-50%, -50%);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.slop-shop-item-card__art.is-crown::before {
+  background: linear-gradient(180deg, #ffe063, #ffac1d);
+  clip-path: polygon(0 100%, 18% 38%, 36% 70%, 50% 10%, 64% 70%, 82% 38%, 100% 100%);
+}
+
+.slop-shop-item-card__art.is-halo::before {
+  width: 106px;
+  height: 24px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #fff4a2, #ffcb3c);
+}
+
+.slop-shop-item-card__art.is-pants::before {
+  width: 92px;
+  height: 110px;
+  border-radius: 20px;
+  background: linear-gradient(180deg, #222086, #10104f);
+}
+
+.slop-shop-item-card__art.is-hoodie::before {
+  width: 116px;
+  height: 106px;
+  border-radius: 26px;
+  background: linear-gradient(180deg, #2f208b, #7a3cff);
+}
+
+.slop-shop-item-card__art.is-eyes::before {
+  width: 110px;
+  height: 36px;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 25% 50%, #111 0 16px, transparent 17px),
+    radial-gradient(circle at 75% 50%, #111 0 16px, transparent 17px);
+}
+
+.slop-shop-item-card__art.is-pet::before {
+  width: 86px;
+  height: 86px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #16161f, #05050a);
+}
+
+.slop-shop-item-card__art.is-backdrop::before {
+  width: 118px;
+  height: 86px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #fd68db, #4520bc);
+}
+
+.slop-shop-item-card__art.is-drink::before {
+  width: 54px;
+  height: 96px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #fff6ff, #f8a6c6);
+}
+
+.slop-shop-item-card__art.is-slippers::before,
+.slop-shop-item-card__art.is-shades::before,
+.slop-shop-item-card__art.is-cap::before,
+.slop-shop-item-card__art.is-trail::before {
+  background: linear-gradient(180deg, #fff8f4, #dad9ff);
+}
+
+.slop-shop-item-card__button {
+  min-height: 42px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #ff63d9, #ff43bf);
+  color: white;
+  font-family: var(--slop-font-display);
+  font-weight: 800;
+}
+
+.slop-shop-item-card__button:disabled {
+  opacity: 0.5;
+}
+
+.slop-shop-item-card__button.is-owned {
+  background: linear-gradient(180deg, #8e5bff, #613eff);
+}
+
+.slop-daily-deals {
+  display: grid;
+  gap: 18px;
+}
+
+.slop-daily-deals-row {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 14px;
+}
+
+@media (max-width: 1200px) {
+  .slop-site-header__shell {
+    grid-template-columns: 1fr;
+    padding-right: 16px;
+  }
+
+  .slop-home-grid,
+  .slop-shop-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .slop-shop-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .slop-home-promo-row,
+  .slop-daily-deals-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .slop-hero-panel {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .slop-site-shell {
+    width: min(100%, calc(100% - 18px));
+  }
+
+  .slop-site-nav {
+    justify-content: flex-start;
+  }
+
+  .slop-featured-games-grid,
+  .slop-shop-grid,
+  .slop-home-promo-row,
+  .slop-daily-deals-row {
+    grid-template-columns: 1fr;
+  }
+
+  .slop-shop-preview-actions {
+    flex-direction: column;
+  }
+}
+
+.slop-talked-about-panel,
+.slop-post-form-panel,
+.slop-post-side-panel,
+.slop-about-card {
+  display: grid;
+  gap: 18px;
+}
+
+.slop-talked-about-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.slop-talked-card {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  border-radius: 22px;
+  background: rgba(15, 6, 80, 0.44);
+}
+
+.slop-talked-card__image {
+  position: relative;
+  min-height: 180px;
+  border-radius: 18px;
+  background:
+    linear-gradient(180deg, rgba(255, 79, 216, 0.18), rgba(71, 183, 255, 0.18)),
+    radial-gradient(circle at 24% 30%, rgba(255, 255, 255, 0.9) 0 22px, transparent 23px),
+    linear-gradient(135deg, rgba(35, 19, 115, 0.4), rgba(12, 7, 72, 0.6));
+}
+
+.slop-talked-card__rank,
+.slop-talked-card__tag {
+  position: absolute;
+  top: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 30px;
+  padding: 0 10px;
+  border-radius: 12px;
+  font-family: var(--slop-font-display);
+  font-weight: 800;
+}
+
+.slop-talked-card__rank {
+  left: 12px;
+  min-width: 30px;
+  background: linear-gradient(180deg, #fff8ff, #ffd1f2);
+  color: #7728a8;
+}
+
+.slop-talked-card__tag {
+  right: 12px;
+  background: linear-gradient(180deg, #8d56ff, #6042ff);
+}
+
+.slop-post-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.52fr);
+  gap: 22px;
+}
+
+.slop-post-input-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.slop-post-input,
+.slop-post-textarea,
+.slop-catalog-searchbar input {
+  width: 100%;
+  border: 2px solid rgba(255, 255, 255, 0.14);
+  border-radius: 18px;
+  background: rgba(255, 246, 255, 0.94);
+  color: #522491;
+  padding: 16px 18px;
+}
+
+.slop-post-textarea {
+  min-height: 180px;
+  resize: vertical;
+}
+
+.slop-upload-box {
+  display: grid;
+  place-items: center;
+  min-height: 112px;
+  border: 2px dashed rgba(255, 109, 240, 0.5);
+  border-radius: 24px;
+  color: white;
+  text-align: center;
+}
+
+.slop-upload-box small {
+  color: rgba(255, 246, 255, 0.7);
+}
+
+.slop-post-actions,
+.slop-vibe-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.slop-vibe-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 42px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #ff63d9, #8c45ff);
+  font-family: var(--slop-font-display);
+  font-weight: 700;
+}
+
+.slop-catalog-callout {
+  display: grid;
+  gap: 10px;
+  padding: 18px;
+  border: 2px dashed rgba(255, 109, 240, 0.42);
+  border-radius: 24px;
+  background: rgba(18, 8, 84, 0.32);
+}
+
+.slop-about-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.slop-about-icon {
+  display: inline-flex;
+  width: 48px;
+  height: 48px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #ff63d9, #8d56ff);
+  font-size: 1.5rem;
+}
+
+.slop-catalog-search {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px;
+  align-items: center;
+}
+
+.slop-catalog-clear {
+  min-height: 56px;
+  padding: 0 20px;
+  border: 2px solid rgba(255, 255, 255, 0.16);
+  border-radius: 18px;
+  background: linear-gradient(180deg, #6dcfff, #4da8ff);
+  color: white;
+  font-family: var(--slop-font-display);
+  font-weight: 800;
+}
+
+.slop-catalog-searchbar {
+  display: block;
+}
+
+.slop-catalog-stack {
+  display: grid;
+  gap: 22px;
+}
+
+.slop-catalog-empty {
+  padding: 28px;
+  border-radius: 24px;
+  background: rgba(17, 8, 74, 0.72);
+  font-family: var(--slop-font-display);
+  font-size: 1.2rem;
+}
+
+@media (max-width: 1200px) {
+  .slop-talked-about-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .slop-post-layout,
+  .slop-about-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .slop-talked-about-grid,
+  .slop-post-input-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .slop-catalog-search {
+    grid-template-columns: 1fr;
+  }
+}

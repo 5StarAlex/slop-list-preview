@@ -1,168 +1,147 @@
-import Image from "next/image";
-import Link from "next/link";
-import SiteHeader from "./components/SiteHeader";
-import SlopCoinsDisplay from "./components/SlopCoinsDisplay";
-import SlopOfTheWeek from "./components/SlopOfTheWeek";
-import SlopTitle from "./components/SlopTitle";
-import SpaceGamePanel from "./components/SpaceGamePanel";
+import SlopPageShell from "./components/layout/SlopPageShell";
+import NeonPanel from "./components/ui/NeonPanel";
+import NeonButton from "./components/ui/NeonButton";
+import ChallengeCard from "./components/home/ChallengeCard";
 
-const discussionPosts = [
+const featureGames = [
   {
-    title: "Akiba Maid War: So bad its peak?",
-    image:
-      "https://m.media-amazon.com/images/M/MV5BYzA5YmZlNzMtYjdlZC00ZDg0LTgyMjEtNTZhYTFmYzJkNTg1XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
-    emojis: ["\u{1F525}", "\u{1FAE0}", "\u{1F440}"],
-    comment:
-      "They was ready to up blick over any minor inconvenience \u{1F602}",
+    title: "Tag Game",
+    badge: "2P",
+    copy: "Two blocky slops sprint through neon lanes, juking corners and trading chase pressure.",
+    accent: "pink",
   },
   {
-    title: "My life as a vending machine or some **** idk",
-    image:
-      "https://m.media-amazon.com/images/M/MV5BZjQ2MGYyYzgtODlhZi00YjczLWJmZTEtYzIxYWM1NTQ4ZGFlXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
-    emojis: ["\u{1F979}", "\u{1F4A5}", "\u{1F60D}"],
-    comment:
-      "but no 86 season \u{1F610}",
+    title: "Endless Runner",
+    badge: "RUN",
+    copy: "A chunky slop charges through traps while a rival shadow racer pushes every jump and dodge.",
+    accent: "gold",
   },
+  {
+    title: "Clash Game",
+    badge: "VS",
+    copy: "Two slops collide with bursts, shields, and arcade timing in a stylized duel arena.",
+    accent: "purple",
+  },
+] as const;
+
+const newsItems = [
+  { title: "Neon Sprint Tournament", copy: "Compete this weekend for exclusive rewards.", age: "2d ago" },
+  { title: "New Game: Bubble Brawl", copy: "Pop, clash, win.", age: "5d ago" },
+  { title: "Creator Spotlight", copy: "Check out amazing games from our top creators.", age: "1w ago" },
+];
+
+const leaderboard = [
+  ["PixelMaster", "12,540"],
+  ["NeonNinja", "11,230"],
+  ["SlopKing", "9,870"],
+  ["ArcadeAce (You)", "6,420"],
+  ["GameOn77", "5,210"],
 ];
 
 export default function Home() {
   return (
-    <div className="habbo-page">
-      <SiteHeader />
-
-      <div className="retro-layout">
-        <aside className="left-column">
-          <section className="pixel-card">
-            <SlopTitle as="h2" size="md">Slop Coins</SlopTitle>
-            <SlopCoinsDisplay />
-            <p>Post, react, and keep the board alive to stack more coins.</p>
-          </section>
-
-          <section className="paper-panel">
-            <SlopTitle as="h3" size="sm">Get Yo Slop Coins Up</SlopTitle>
-            <p>
-              Wanna be the king of slop? to stack them coins up get involved with
-              discussion posts, rank shows, or engagement bait for all I care.
-              Just don&apos;t be broke!
-            </p>
-          </section>
-
-          <div className="pixel-card">
-            <div className="ad-box">IAC</div>
-          </div>
-
-          <div className="pixel-card">
-            <div className="mini-title-wrap">
-              <SlopTitle as="h3" size="sm">Top Meme</SlopTitle>
+    <SlopPageShell>
+      <div className="slop-home-grid">
+        <div className="slop-home-main">
+          <NeonPanel variant="blue" className="slop-hero-panel">
+            <div className="slop-hero-copy">
+              <p className="slop-page-kicker">Welcome To</p>
+              <h1 className="slop-hero-title">Slop List</h1>
+              <h2 className="slop-hero-subtitle">Discover. Play. Create. Compete.</h2>
+              <p className="slop-page-copy">
+                Jump into a universe of wild arcade games made by the community, for the community.
+              </p>
+              <NeonButton href="/games" variant="pink" className="slop-hero-button">
+                Explore Games
+              </NeonButton>
             </div>
-            <div className="meme-frame">
-              <Image
-                src="https://i.redd.it/nn689gw7430d1.jpeg"
-                alt="Top Meme"
-                width={640}
-                height={640}
-                className="meme-image"
-                unoptimized
-              />
+            <div className="slop-hero-art" aria-hidden="true">
+              <span className="slop-hero-arcade" />
+              <span className="slop-hero-coin" />
+              <span className="slop-hero-ufo" />
             </div>
-          </div>
+          </NeonPanel>
 
-          <div className="footer-links">
-            <Link href="/about">Terms &amp; Conditions</Link>
-            <Link href="/profile">Privacy Policy</Link>
-            <Link href="/shop">JittyBoyz Labs</Link>
-          </div>
-        </aside>
-
-        <section className="main-column">
-          <div className="main-shell">
-            <div className="board-grid">
-              <div id="slop-of-the-week">
-                <SlopOfTheWeek />
-              </div>
-
-              <aside className="news-column">
-                <SpaceGamePanel />
-
-                <section className="news-card">
-                  <SlopTitle as="h3" size="md" className="board-title">Slop Board</SlopTitle>
-
-                  <div className="discussion-list">
-                    {discussionPosts.map((post) => (
-                      <article key={post.title} className="discussion-card hover-grow-panel">
-                        <div className="discussion-image-frame">
-                          <div className="emoji-float-row" aria-hidden="true">
-                            {post.emojis.map((emoji, index) => (
-                              <span
-                                key={`${post.title}-${emoji}`}
-                                className="emoji-float"
-                                style={{ animationDelay: `${index * 0.28}s` }}
-                              >
-                                {emoji}
-                              </span>
-                            ))}
-                          </div>
-                          <Image
-                            src={post.image}
-                            alt={post.title}
-                            width={1000}
-                            height={1500}
-                            className="discussion-image"
-                            unoptimized
-                          />
-                        </div>
-
-                        <div className="discussion-copy">
-                          <strong>{post.title}</strong>
-                          <p>{post.comment}</p>
-                        </div>
-                      </article>
-                    ))}
+          <NeonPanel variant="purple" className="slop-featured-games">
+            <div className="slop-home-section-head">
+              <h2>Featured Games</h2>
+              <NeonButton href="/games" variant="purple">
+                View All Games
+              </NeonButton>
+            </div>
+            <div className="slop-featured-games-grid">
+              {featureGames.map((game) => (
+                <article key={game.title} className={`slop-feature-card is-${game.accent}`}>
+                  <div className="slop-feature-card__art" aria-hidden="true">
+                    <span className="slop-feature-card__badge">{game.badge}</span>
                   </div>
-                </section>
-
-                <section className="nav-box">
-                  <SlopTitle as="h3" size="sm">Travel Pages</SlopTitle>
-                  <p>The middle box handles all the page jumps, just like the reference.</p>
-                  <div className="route-list">
-                    <Link href="/catalog" className="route-button">
-                      Go To Catalog
-                    </Link>
-                    <Link href="/games" className="route-button">
-                      Open Games
-                    </Link>
-                    <Link href="/create" className="route-button">
-                      Open Create
-                    </Link>
-                    <Link href="/shop" className="route-button">
-                      Open Shop
-                    </Link>
-                    <Link href="/profile" className="route-button">
-                      View Profile
-                    </Link>
-                    <Link href="/about" className="route-button">
-                      Read About
-                    </Link>
-                  </div>
-                </section>
-
-                <section className="mini-card">
-                  <SlopTitle as="h3" size="sm">Hotel Happenings</SlopTitle>
-                  <p>
-                    Slime is active in the top bar, stat chips bounce on hover, and
-                    the board is starting to feel way more alive.
-                  </p>
-                </section>
-              </aside>
+                  <strong>{game.title}</strong>
+                  <p>{game.copy}</p>
+                  <NeonButton href="/games" variant={game.accent === "gold" ? "gold" : "pink"}>
+                    Play Now
+                  </NeonButton>
+                </article>
+              ))}
             </div>
-          </div>
+          </NeonPanel>
 
-          <p className="copyright">
-            All rights including taste crimes, glowing pixels, and ranking drama are
-            reserved by The Slop List.
-          </p>
-        </section>
+          <div className="slop-home-promo-row">
+            <NeonPanel variant="dark" className="slop-home-promo-card">
+              <strong>Play Games</strong>
+              <p>Explore hundreds of arcade games.</p>
+            </NeonPanel>
+            <NeonPanel variant="dark" className="slop-home-promo-card">
+              <strong>Create & Share</strong>
+              <p>Build your own slops and share them.</p>
+            </NeonPanel>
+            <NeonPanel variant="dark" className="slop-home-promo-card">
+              <strong>Earn Rewards</strong>
+              <p>Complete challenges and earn stars.</p>
+            </NeonPanel>
+            <NeonPanel variant="dark" className="slop-home-promo-card">
+              <strong>Join The Community</strong>
+              <p>Connect, compete, and have fun.</p>
+            </NeonPanel>
+          </div>
+        </div>
+
+        <div className="slop-home-sidebar">
+          <NeonPanel variant="pink" className="slop-home-sidebar-panel">
+            <h2>Daily Challenge</h2>
+            <ChallengeCard title="High Score Hunter" copy="Score 10,000 points in any arcade game." reward={50} progress={6420} total={10000} />
+          </NeonPanel>
+
+          <NeonPanel variant="purple" className="slop-home-sidebar-panel">
+            <div className="slop-home-section-head">
+              <h2>News & Updates</h2>
+            </div>
+            <div className="slop-news-list">
+              {newsItems.map((item) => (
+                <article key={item.title} className="slop-news-card">
+                  <strong>{item.title}</strong>
+                  <p>{item.copy}</p>
+                  <span>{item.age}</span>
+                </article>
+              ))}
+            </div>
+          </NeonPanel>
+
+          <NeonPanel variant="blue" className="slop-home-sidebar-panel">
+            <div className="slop-home-section-head">
+              <h2>Leaderboard</h2>
+            </div>
+            <ol className="slop-leaderboard">
+              {leaderboard.map(([name, score], index) => (
+                <li key={name} className="slop-leaderboard-row">
+                  <span>{index + 1}</span>
+                  <strong>{name}</strong>
+                  <span>★ {score}</span>
+                </li>
+              ))}
+            </ol>
+          </NeonPanel>
+        </div>
       </div>
-    </div>
+    </SlopPageShell>
   );
 }

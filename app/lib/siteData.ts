@@ -5,12 +5,12 @@ export const SHOP_EVENT_NAME = "slop-shop-updated";
 export const WHITE_TRAIL_COST = 500;
 
 export const siteNavItems = [
-  { href: "/", label: "Home Page" },
-  { href: "/catalog", label: "Catalog" },
-  { href: "/games", label: "Games" },
-  { href: "/create", label: "New Entry" },
-  { href: "/shop", label: "Slop Shop" },
-  { href: "/profile", label: "Create-A-Slop" },
+  { href: "/", label: "Home", accent: "pink", icon: "home" },
+  { href: "/catalog", label: "Catalog", accent: "gold", icon: "search" },
+  { href: "/games", label: "Games", accent: "purple", icon: "gamepad" },
+  { href: "/create", label: "New Entry", accent: "magenta", icon: "pen" },
+  { href: "/shop", label: "Slop Shop", accent: "cyan", icon: "bag" },
+  { href: "/profile", label: "Create-A-Slop", accent: "violet", icon: "wand" },
 ];
 
-export const aboutNavItem = { href: "/about", label: "About" };
+export const aboutNavItem = { href: "/about", label: "About", accent: "blue", icon: "info" };
