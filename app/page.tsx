@@ -59,6 +59,8 @@ export default function Home() {
               <span className="slop-hero-arcade" />
               <span className="slop-hero-coin" />
               <span className="slop-hero-ufo" />
+              <span className="slop-hero-spark is-left" />
+              <span className="slop-hero-spark is-right" />
             </div>
           </NeonPanel>
 
@@ -74,6 +76,10 @@ export default function Home() {
                 <article key={game.title} className={`slop-feature-card is-${game.accent}`}>
                   <div className="slop-feature-card__art" aria-hidden="true">
                     <span className="slop-feature-card__badge">{game.badge}</span>
+                    <span className="slop-feature-card__figure is-left" />
+                    <span className="slop-feature-card__figure is-right" />
+                    <span className="slop-feature-card__burst" />
+                    <span className="slop-feature-card__floor" />
                   </div>
                   <strong>{game.title}</strong>
                   <p>{game.copy}</p>
@@ -135,7 +141,7 @@ export default function Home() {
                 <li key={name} className="slop-leaderboard-row">
                   <span>{index + 1}</span>
                   <strong>{name}</strong>
-                  <span>★ {score}</span>
+                  <span>{"\u2605"} {score}</span>
                 </li>
               ))}
             </ol>

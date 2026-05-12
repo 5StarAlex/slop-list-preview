@@ -41,7 +41,13 @@ export default function ShopPage() {
       }
     }
 
-    if (selectedItem.category === "accessory" || selectedItem.category === "eyes" || selectedItem.category === "effect" || selectedItem.category === "shoes" || selectedItem.category === "pet") {
+    if (
+      selectedItem.category === "accessory" ||
+      selectedItem.category === "eyes" ||
+      selectedItem.category === "effect" ||
+      selectedItem.category === "shoes" ||
+      selectedItem.category === "pet"
+    ) {
       next.delete(selectedItem.id);
     }
 
@@ -98,9 +104,11 @@ export default function ShopPage() {
 
   return (
     <SlopPageShell className="slop-shop-route">
-      <div className="slop-page-heading">
-        <p className="slop-page-kicker">Arcade Mall</p>
-        <h1 className="slop-page-title">Slop Shop</h1>
+      <div className="slop-page-heading slop-page-heading--shop">
+        <div>
+          <p className="slop-page-kicker">Arcade Mall</p>
+          <h1 className="slop-page-title">Slop Shop</h1>
+        </div>
         <p className="slop-page-copy">{message}</p>
       </div>
 
@@ -125,7 +133,7 @@ export default function ShopPage() {
               <p className="slop-shop-kicker">Featured Items</p>
               <h2 className="slop-shop-title">Build Your Fit</h2>
             </div>
-            <span className="slop-shop-total">Preview Cost: ★ {previewCost}</span>
+            <span className="slop-shop-total">Preview Cost: {"\u2605"} {previewCost}</span>
           </div>
 
           <div className="slop-shop-grid">

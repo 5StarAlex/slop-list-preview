@@ -23,10 +23,13 @@ export default function CreatePage() {
               <div className="slop-talked-card__image" aria-hidden="true">
                 <span className="slop-talked-card__rank">{index + 1}</span>
                 <span className="slop-talked-card__tag">{tag}</span>
+                <span className="slop-talked-card__spark is-one" />
+                <span className="slop-talked-card__spark is-two" />
+                <span className="slop-talked-card__shape" />
               </div>
               <strong>{title}</strong>
               <p>{copy}</p>
-              <span>★ {score}</span>
+              <span>{"\u2605"} {score}</span>
             </article>
           ))}
         </div>

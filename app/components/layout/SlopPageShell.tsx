@@ -20,6 +20,10 @@ export default function SlopPageShell({
         <span className="slop-site-sweep is-pink" />
         <span className="slop-site-sweep is-blue" />
         <span className="slop-site-confetti" />
+        <span className="slop-site-orb is-left" />
+        <span className="slop-site-orb is-right" />
+        <span className="slop-site-shard is-one" />
+        <span className="slop-site-shard is-two" />
       </div>
       <SiteHeader />
       <div className={`slop-site-content ${contentClassName}`.trim()}>{children}</div>

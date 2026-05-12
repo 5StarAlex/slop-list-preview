@@ -33,10 +33,12 @@ export default function ShopItemCard({
 
       <button type="button" className={`slop-shop-item-card__art is-${item.icon}`} onClick={onPreview} aria-label={`Preview ${item.name}`}>
         <span className="slop-shop-item-card__glow" aria-hidden="true" />
+        <span className="slop-shop-item-card__spark is-one" aria-hidden="true" />
+        <span className="slop-shop-item-card__spark is-two" aria-hidden="true" />
       </button>
 
       <div className="slop-shop-item-card__bottom">
-        <span className="slop-shop-item-card__price">★ {item.price}</span>
+        <span className="slop-shop-item-card__price">{"\u2605"} {item.price}</span>
         {isOwned ? (
           <button type="button" className="slop-shop-item-card__button is-owned" onClick={onPreview}>
             {isEquipped ? "Viewing" : "Try On"}
