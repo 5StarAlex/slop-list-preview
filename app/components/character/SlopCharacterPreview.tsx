@@ -14,14 +14,14 @@ type SlopCharacterPreviewProps = {
 };
 
 const basePose = {
-  leg1: { x: -28, y: 10, rotate: 0, scale: 0.58 },
-  leg2: { x: 28, y: 10, rotate: 0, scale: 0.58 },
-  arm1: { x: -30, y: -66, rotate: -2, scale: 0.68 },
-  body: { x: 0, y: -70, rotate: 0, scale: 0.64 },
-  arm2: { x: 30, y: -66, rotate: 2, scale: 0.68 },
-  head: { x: 0, y: -133, rotate: 0, scale: 0.56 },
-  eyes: { x: 0, y: -133, rotate: 0, scale: 0.56 },
-  mouth: { x: 0, y: -124, rotate: 0, scale: 0.56 },
+  leg1: { x: 0, y: 0, rotate: 0, scale: 1 },
+  leg2: { x: 0, y: 0, rotate: 0, scale: 1 },
+  arm1: { x: 0, y: 0, rotate: 0, scale: 1 },
+  body: { x: 0, y: 0, rotate: 0, scale: 1 },
+  arm2: { x: 0, y: 0, rotate: 0, scale: 1 },
+  head: { x: 0, y: 0, rotate: 0, scale: 1 },
+  eyes: { x: 0, y: -70, rotate: 0, scale: 1 },
+  mouth: { x: 0, y: -70, rotate: 0, scale: 1 },
 } as const;
 
 type PosePartKey = keyof typeof basePose;
@@ -39,7 +39,7 @@ function getPartStyle(partKey: PosePartKey): CSSProperties {
 
 function getArmSwingStyle(side: "left" | "right"): CSSProperties {
   return {
-    "--arm-rotate": side === "left" ? "-1.5deg" : "1.5deg",
+    "--arm-rotate": side === "left" ? "-0.6deg" : "0.6deg",
   } as CSSProperties;
 }
 

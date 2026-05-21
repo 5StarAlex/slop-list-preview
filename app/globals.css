@@ -3800,9 +3800,9 @@ textarea {
   right: auto;
   bottom: auto;
   left: auto;
-  width: min(25vw, 265px);
-  max-width: 265px;
-  aspect-ratio: 0.72;
+  width: min(28vw, 310px);
+  max-width: 310px;
+  aspect-ratio: 1 / 1;
   margin: 8px auto 0;
   transform: none;
   filter: drop-shadow(0 0 18px rgba(255, 255, 255, 0.46)) drop-shadow(0 18px 40px rgba(14, 10, 55, 0.5));
@@ -15889,7 +15889,7 @@ main {
   place-items: center;
 }
 
-.comic-studio-character.is-live-preview span {
+.comic-studio-character.is-live-preview > span {
   position: static;
   display: inline;
   border: 0;
