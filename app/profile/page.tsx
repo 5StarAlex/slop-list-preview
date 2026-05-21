@@ -1,69 +1,162 @@
-import Link from "next/link";
-import ComicShell from "../components/ComicShell";
+"use client";
 
-const items = ["Blank Tee", "Cloud Hoc", "Volt Jacket", "Star Blazer", "Pixel Crew", "Neon Guard"] as const;
+import Link from "next/link";
+import { useMemo, useState } from "react";
+import ComicShell from "../components/ComicShell";
+import { useAccount } from "../components/AccountProvider";
+import SlopCharacterPreview from "../components/character/SlopCharacterPreview";
+import { customizationOptions, type CharacterConfig } from "../components/slopOptions";
+
+type Anime = {
+  mal_id: number;
+  title: string;
+  image: string;
+  score?: number;
+};
+
+const WATCHLIST_KEY = "slop-list-watchlist";
+
+const inventoryTabs = [
+  { key: "shirt", label: "Inventory", icon: "\ud83d\udcbc" },
+  { key: "color", label: "Creation", icon: "\ud83d\uddbc" },
+  { key: "accessories", label: "Stats", icon: "\ud83d\udcca" },
+] as const;
+
+type InventoryTabKey = (typeof inventoryTabs)[number]["key"];
 
 export default function ProfilePage() {
+  const { account, updateCharacterConfig } = useAccount();
+  const [activeTab, setActiveTab] = useState<InventoryTabKey>("shirt");
+  const [watchlist] = useState<Anime[]>(() => {
+    if (typeof window === "undefined") {
+      return [];
+    }
+
+    try {
+      const raw = window.localStorage.getItem(WATCHLIST_KEY);
+      return raw ? (JSON.parse(raw) as Anime[]) : [];
+    } catch {
+      window.localStorage.removeItem(WATCHLIST_KEY);
+      return [];
+    }
+  });
+
+  const activeOptions = customizationOptions[activeTab];
+  const activeValue = account.characterConfig[activeTab];
+
+  const updateConfig = (key: InventoryTabKey, value: number) => {
+    updateCharacterConfig({
+      ...account.characterConfig,
+      [key]: value,
+    } as CharacterConfig);
+  };
+
+  const statCards = useMemo(
+    () => [
+      ["Stars", account.economy.coins],
+      ["Watchlist", watchlist.length],
+      ["Level", account.progression.level],
+      ["XP", `${account.progression.xp}/${account.progression.xpToNextLevel}`],
+    ],
+    [account.economy.coins, account.progression.level, account.progression.xp, account.progression.xpToNextLevel, watchlist.length],
+  );
+
   return (
     <ComicShell className="comic-studio-page">
       <main className="comic-studio">
         <header className="comic-page-title">
           <Link href="/" className="comic-back-button" aria-label="Back home">{"\u2039"}</Link>
           <div>
-            <h1>SLOP STUDIO</h1>
-            <p>INVENTORY</p>
+            <h1>{account.profile.displayName}</h1>
+            <p>@{account.profile.username}</p>
           </div>
           <div className="comic-window-controls">
-            <span>{"\u2b50"} 20</span>
-            <button type="button">{"\u2212"}</button>
-            <button type="button">{"\u00d7"}</button>
-            <button type="button">{"\u00d7"}</button>
+            <span>{"\u2b50"} {account.economy.coins}</span>
           </div>
         </header>
 
         <section className="comic-studio-grid">
           <aside className="comic-avatar-builder">
-            {["HEAD", "ARMS", "EFFECT", "TOP", "BOTTOM", "FOOTPRINT"].map((slot) => (
-              <button type="button" key={slot} className={`comic-slot is-${slot.toLowerCase()}`}>
-                <span>{slot}</span>
-                <strong>{slot === "TOP" ? "\ud83d\udc55" : slot === "BOTTOM" ? "\ud83d\udc56" : slot === "EFFECT" ? "\ud83d\udfe2" : slot === "FOOTPRINT" ? "\u26f0" : "..."}</strong>
-                <em>{"\u2605"}</em>
-              </button>
-            ))}
-            <div className="comic-studio-character">
-              <span className="comic-studio-head" />
-              <span className="comic-studio-body" />
-              <span className="comic-studio-arm is-left" />
-              <span className="comic-studio-arm is-right" />
-              <span className="comic-studio-leg is-left" />
-              <span className="comic-studio-leg is-right" />
-              <span className="comic-studio-pedestal" />
+            {(["eyes", "mouth", "color", "shirt", "pants", "accessories"] as const).map((slot) => {
+              const option = customizationOptions[slot][account.characterConfig[slot]];
+
+              return (
+                <button
+                  type="button"
+                  key={slot}
+                  className={`comic-slot is-${slot}`}
+                  onClick={() => setActiveTab(slot === "shirt" || slot === "color" || slot === "accessories" ? slot : "color")}
+                >
+                  <span>{slot.toUpperCase()}</span>
+                  <strong>{option?.label ?? "..."}</strong>
+                  <em>{"\u2605"}</em>
+                </button>
+              );
+            })}
+            <div className="comic-studio-character is-live-preview">
+              <SlopCharacterPreview config={account.characterConfig} equippedShopItemIds={account.equippedShopItemIds} pedestal />
             </div>
           </aside>
 
           <section className="comic-inventory-panel">
-            <header><h2>AMOUNT</h2><strong>14/100</strong></header>
+            <header>
+              <h2>{activeTab === "shirt" ? "Customize Shirt" : activeTab === "color" ? "Customize Color" : "Customize Accessories"}</h2>
+              <strong>{activeOptions.length}/100</strong>
+            </header>
             <div className="comic-item-grid">
-              {items.map((item, index) => (
-                <button type="button" className={`comic-item-card${index === 1 ? " is-selected" : ""}`} key={item}>
-                  <span className="comic-shirt-icon" />
-                  <strong>{item}</strong>
-                  {index === 1 ? <em>{"\u2713"}</em> : null}
-                </button>
+              {activeOptions.map((item, index) => {
+                const active = activeValue === index;
+
+                return (
+                  <button
+                    type="button"
+                    className={`comic-item-card${active ? " is-selected" : ""}`}
+                    key={item.id}
+                    onClick={() => updateConfig(activeTab, index)}
+                  >
+                    <span className={`comic-shirt-icon is-${item.swatchType}`} />
+                    <strong>{item.label}</strong>
+                    {active ? <em>{"\u2713"}</em> : null}
+                  </button>
+                );
+              })}
+            </div>
+            <div className="comic-profile-stats">
+              {statCards.map(([label, value]) => (
+                <span key={label}><strong>{value}</strong>{label}</span>
               ))}
             </div>
+            <div className="comic-profile-watchlist">
+              <h2>Watch List</h2>
+              {watchlist.length === 0 ? (
+                <p>Add anime from Catalog and it will show up here.</p>
+              ) : (
+                <ul>
+                  {watchlist.slice(0, 6).map((anime) => (
+                    <li key={anime.mal_id}>{anime.title}</li>
+                  ))}
+                </ul>
+              )}
+            </div>
             <div className="comic-category-rail">
-              <button type="button" className="is-active">{"\ud83d\udc55"}</button>
-              <button type="button">{"\ud83d\udc56"}</button>
-              <button type="button">{"\u26f0"}</button>
+              <button type="button" className={activeTab === "shirt" ? "is-active" : ""} onClick={() => setActiveTab("shirt")}>{"\ud83d\udc55"}</button>
+              <button type="button" className={activeTab === "color" ? "is-active" : ""} onClick={() => setActiveTab("color")}>{"\ud83c\udfa8"}</button>
+              <button type="button" className={activeTab === "accessories" ? "is-active" : ""} onClick={() => setActiveTab("accessories")}>{"\u2655"}</button>
             </div>
           </section>
         </section>
 
         <nav className="comic-studio-tabs" aria-label="Studio tabs">
-          <button type="button" className="is-active">{"\ud83d\udcbc"} INVENTORY</button>
-          <button type="button">{"\ud83d\uddbc"} CREATION</button>
-          <button type="button">{"\ud83d\udcca"} STATS</button>
+          {inventoryTabs.map((tab) => (
+            <button
+              key={tab.key}
+              type="button"
+              className={activeTab === tab.key ? "is-active" : ""}
+              onClick={() => setActiveTab(tab.key)}
+            >
+              {tab.icon} {tab.label}
+            </button>
+          ))}
         </nav>
       </main>
     </ComicShell>

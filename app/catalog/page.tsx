@@ -1,75 +1,185 @@
-import type { ReactNode } from "react";
+"use client";
 
+import Image from "next/image";
+import { useEffect, useState } from "react";
 import ComicShell from "../components/ComicShell";
 
-const springAnime = [
-  "Tongari Boushi no Atelier",
-  "Re:Zero kara Hajimeru Isekai Seikatsu 4th Season",
-  "Youkoso Jitsuryoku Shijou Shugi no Kyoushitsu e 4th Season: 2-nensei-hen 1 Gakki",
-  "Tensei shitara Slime Datta Ken 4th Season",
-  "Yomi no Tsugai",
-  "Ao no Exorcist: Yosuga-hen",
-] as const;
+type Anime = {
+  mal_id: number;
+  title: string;
+  image: string;
+  score?: number;
+};
 
-const episodeVideos = ["Episode 13", "Episode 1", "Episode 26", "Episode 167", "Episode 12", "Episode 1", "Episode 5"] as const;
+type JikanAnime = {
+  mal_id: number;
+  title: string;
+  score?: number;
+  images?: {
+    jpg?: {
+      image_url?: string;
+    };
+  };
+};
+
+const WATCHLIST_KEY = "slop-list-watchlist";
+
+function mapAnime(item: JikanAnime): Anime {
+  return {
+    mal_id: item.mal_id,
+    title: item.title,
+    image: item.images?.jpg?.image_url ?? "",
+    score: item.score,
+  };
+}
+
+function readWatchlist() {
+  if (typeof window === "undefined") {
+    return [];
+  }
+
+  try {
+    const raw = window.localStorage.getItem(WATCHLIST_KEY);
+    return raw ? (JSON.parse(raw) as Anime[]) : [];
+  } catch {
+    window.localStorage.removeItem(WATCHLIST_KEY);
+    return [];
+  }
+}
 
 export default function CatalogPage() {
+  const [trending, setTrending] = useState<Anime[]>([]);
+  const [narutoResults, setNarutoResults] = useState<Anime[]>([]);
+  const [watchlist, setWatchlist] = useState<Anime[]>(readWatchlist);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    Promise.all([
+      fetch("https://api.jikan.moe/v4/anime?q=naruto&limit=12").then((response) => response.json()),
+      fetch("https://api.jikan.moe/v4/top/anime?limit=12").then((response) => response.json()),
+    ])
+      .then(([naruto, top]) => {
+        if (!isMounted) {
+          return;
+        }
+
+        setNarutoResults((naruto.data ?? []).map(mapAnime));
+        setTrending((top.data ?? []).map(mapAnime));
+      })
+      .catch(() => {
+        if (!isMounted) {
+          return;
+        }
+
+        setNarutoResults([]);
+        setTrending([]);
+      })
+      .finally(() => {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const addToWatchlist = (anime: Anime) => {
+    const next = watchlist.some((item) => item.mal_id === anime.mal_id)
+      ? watchlist
+      : [anime, ...watchlist].slice(0, 50);
+
+    setWatchlist(next);
+    window.localStorage.setItem(WATCHLIST_KEY, JSON.stringify(next));
+  };
+
+  const removeFromWatchlist = (anime: Anime) => {
+    const next = watchlist.filter((item) => item.mal_id !== anime.mal_id);
+    setWatchlist(next);
+    window.localStorage.setItem(WATCHLIST_KEY, JSON.stringify(next));
+  };
+
   return (
     <ComicShell className="comic-catalog-page">
       <main className="comic-catalog">
-        <CatalogSection title="MY WATCHED TOPICS" empty action>
-          <p className="comic-empty-line">No watched topics found.</p>
-        </CatalogSection>
-
-        <CatalogSection title="SPRING 2026 ANIME" action arrow>
-          <div className="comic-catalog-row">
-            {springAnime.map((title, index) => (
-              <article key={title} className="comic-catalog-card">
-                <div className={`comic-catalog-thumb tone-${index + 1}`} />
-                <strong>{title}</strong>
-                <span />
-              </article>
-            ))}
-          </div>
-        </CatalogSection>
-
-        <CatalogSection title="LATEST UPDATED EPISODE VIDEOS" action arrow>
-          <div className="comic-catalog-row is-videos">
-            {episodeVideos.map((title, index) => (
-              <article key={`${title}-${index}`} className="comic-catalog-card">
-                <div className={`comic-catalog-thumb tone-${(index % 6) + 1}`} />
-                <strong>{title} <span aria-hidden="true">{"\u2655"}</span></strong>
-                <span />
-              </article>
-            ))}
-          </div>
-        </CatalogSection>
+        <CatalogRow
+          title="MY WATCH LIST"
+          items={watchlist}
+          emptyText="Add anime from the rows below and they will show up here."
+          actionLabel="Remove"
+          onAction={removeFromWatchlist}
+        />
+        <CatalogRow
+          title="NARUTO SEARCH"
+          items={narutoResults}
+          emptyText={isLoading ? "Loading anime from Jikan..." : "No Naruto results loaded."}
+          actionLabel="Add"
+          onAction={addToWatchlist}
+          watchlist={watchlist}
+        />
+        <CatalogRow
+          title="TRENDING ANIME"
+          items={trending}
+          emptyText={isLoading ? "Loading top anime from Jikan..." : "No trending anime loaded."}
+          actionLabel="Add"
+          onAction={addToWatchlist}
+          watchlist={watchlist}
+        />
       </main>
     </ComicShell>
   );
 }
 
-function CatalogSection({
+function CatalogRow({
   title,
-  children,
-  empty = false,
-  action = false,
-  arrow = false,
+  items,
+  emptyText,
+  actionLabel,
+  onAction,
+  watchlist = [],
 }: {
   title: string;
-  children: ReactNode;
-  empty?: boolean;
-  action?: boolean;
-  arrow?: boolean;
+  items: Anime[];
+  emptyText: string;
+  actionLabel: string;
+  onAction: (anime: Anime) => void;
+  watchlist?: Anime[];
 }) {
   return (
-    <section className={`comic-catalog-section${empty ? " is-empty" : ""}`}>
+    <section className={`comic-catalog-section${items.length === 0 ? " is-empty" : ""}`}>
       <header>
         <h2>{title}</h2>
-        {action ? <a href="#">View More <span aria-hidden="true">{"\u203a"}</span></a> : null}
+        <a href="https://api.jikan.moe/v4/anime?q=naruto" target="_blank" rel="noreferrer">
+          Jikan API <span aria-hidden="true">{"\u203a"}</span>
+        </a>
       </header>
-      {children}
-      {arrow ? <button type="button" className="comic-row-arrow" aria-label={`Scroll ${title}`}>{"\u203a"}</button> : null}
+      <div className="comic-catalog-row">
+        {items.length === 0 ? (
+          <p className="comic-empty-line">{emptyText}</p>
+        ) : (
+          items.map((anime) => {
+            const alreadyAdded = watchlist.some((item) => item.mal_id === anime.mal_id);
+
+            return (
+              <article key={anime.mal_id} className="comic-catalog-card">
+                <div className="comic-catalog-thumb is-live">
+                  {anime.image ? (
+                    <Image src={anime.image} alt={anime.title} fill unoptimized sizes="180px" />
+                  ) : null}
+                </div>
+                <strong>{anime.title}</strong>
+                <span>{anime.score ? `Score ${anime.score}` : "Anime"}</span>
+                <button type="button" onClick={() => onAction(anime)} disabled={actionLabel === "Add" && alreadyAdded}>
+                  {alreadyAdded && actionLabel === "Add" ? "Added" : actionLabel}
+                </button>
+              </article>
+            );
+          })
+        )}
+      </div>
     </section>
   );
 }

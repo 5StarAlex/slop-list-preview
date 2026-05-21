@@ -1,10 +1,15 @@
+"use client";
+
+import Link from "next/link";
 import ComicShell from "../components/ComicShell";
+import { useAccount } from "../components/AccountProvider";
 
 const games = [
   {
     ribbon: "ARCADE RUSH",
     badge: "2P",
     title: "TAG GAME",
+    slug: "tag-game",
     copy: "Two blocky slops sprint through neon lanes, juking corners and trading chase pressure.",
     button: "PLAY TAG",
     tone: "blue",
@@ -14,6 +19,7 @@ const games = [
     ribbon: "NEON SPRINT",
     badge: "RUN",
     title: "ENDLESS RUNNER",
+    slug: "endless-runner",
     copy: "A chunky slop charges through traps while a rival shadow racer pushes every jump and dodge.",
     button: "START RUN",
     tone: "yellow",
@@ -23,6 +29,7 @@ const games = [
     ribbon: "ARENA CLASH",
     badge: "VS",
     title: "CLASH GAME",
+    slug: "clash-game",
     copy: "Two blocky slops collide with bursts, shields, and arcade timing in a stylized duel arena.",
     button: "ENTER CLASH",
     tone: "pink",
@@ -39,6 +46,8 @@ const leaders = [
 ] as const;
 
 export default function GamesPage() {
+  const { account } = useAccount();
+
   return (
     <ComicShell className="comic-games-page">
       <main className="comic-arcade">
@@ -48,10 +57,7 @@ export default function GamesPage() {
             <p>GAMES</p>
           </div>
           <div className="comic-window-controls">
-            <span>{"\u2b50"} 20</span>
-            <button type="button">{"\u2212"}</button>
-            <button type="button">{"\u00d7"}</button>
-            <button type="button">{"\u00d7"}</button>
+            <span>{"\u2b50"} {account.economy.coins}</span>
           </div>
         </header>
 
@@ -79,7 +85,7 @@ export default function GamesPage() {
                 <div className="comic-game-stats">
                   {game.stats.map((stat) => <span key={stat}>{stat}</span>)}
                 </div>
-                <button type="button">{game.button}</button>
+                <Link href={`/games/${game.slug}`} className="comic-game-link-button">{game.button}</Link>
               </article>
             ))}
           </div>
@@ -101,7 +107,7 @@ export default function GamesPage() {
                 <li key={name}><span>{index + 1}</span><strong>{name}</strong><em>{"\u2b50"} {score}</em></li>
               ))}
             </ol>
-            <button type="button">VIEW LEADERBOARD</button>
+            <Link href="/games/tag-game" className="comic-game-link-button">VIEW GAME ROOMS</Link>
           </aside>
         </section>
       </main>

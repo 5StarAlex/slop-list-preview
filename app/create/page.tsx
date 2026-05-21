@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import Image from "next/image";
+import { type ChangeEventHandler, type FormEvent, useMemo, useState } from "react";
 import ComicShell from "../components/ComicShell";
+import { useAccount } from "../components/AccountProvider";
 
 const postTypes = [
   {
@@ -38,39 +40,97 @@ const postTypes = [
 
 type PostTypeKey = (typeof postTypes)[number]["key"];
 
-const feed = [
+type Post = {
+  id: number;
+  type: string;
+  author: string;
+  title: string;
+  body: string;
+  spoiler: boolean;
+  gifUrl: string;
+  imageDataUrl?: string;
+  poll?: string[];
+};
+
+const starterFeed: Post[] = [
   {
-    name: "WeebKing",
-    tag: "Anime",
-    time: "2h ago",
-    title: "Frieren is peak fantasy \u2728",
-    copy: "The animation, the story, the vibes... everything is just 10/10. Himmel still best boy.",
-    stats: ["342", "27", "12"],
-    art: "is-frieren",
+    id: 1,
+    type: "Anime",
+    author: "WeebKing",
+    title: "Frieren is peak fantasy",
+    body: "The animation, the story, the vibes... everything is just 10/10. Himmel still best boy.",
+    spoiler: false,
+    gifUrl: "",
   },
   {
-    name: "SlopQueen",
-    tag: "Meme",
-    time: "5h ago",
-    title: "When the episode ends on a cliffhanger \ud83d\ude2d",
-    copy: "",
-    stats: ["512", "38", "21"],
-    art: "is-meme",
-  },
-  {
-    name: "ZenitsuSimpp",
-    tag: "Discussion",
-    time: "1d ago",
+    id: 2,
+    type: "Discussion",
+    author: "ZenitsuSimpp",
     title: "Who had the best glow up?",
-    copy: "Mine has to be Asta. Dude went from nothing to one of the strongest.",
-    stats: ["276", "64", "9"],
-    art: "is-glow",
+    body: "Mine has to be Asta. Dude went from nothing to one of the strongest.",
+    spoiler: false,
+    gifUrl: "",
+    poll: ["Asta", "Tanjiro"],
   },
-] as const;
+];
 
 export default function CreatePage() {
+  const { account } = useAccount();
   const [activePostType, setActivePostType] = useState<PostTypeKey>("post");
+  const [title, setTitle] = useState("");
+  const [body, setBody] = useState("");
+  const [spoiler, setSpoiler] = useState(false);
+  const [gifUrl, setGifUrl] = useState("");
+  const [pollA, setPollA] = useState("");
+  const [pollB, setPollB] = useState("");
+  const [imageDataUrl, setImageDataUrl] = useState<string>();
+  const [posts, setPosts] = useState<Post[]>(starterFeed);
+
   const activeType = postTypes.find((type) => type.key === activePostType) ?? postTypes[0];
+  const canPost = useMemo(() => title.trim().length > 0 || body.trim().length > 0 || Boolean(imageDataUrl), [body, imageDataUrl, title]);
+
+  const onImage: ChangeEventHandler<HTMLInputElement> = (event) => {
+    const file = event.target.files?.[0];
+    if (!file) {
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => setImageDataUrl(String(reader.result));
+    reader.readAsDataURL(file);
+  };
+
+  const submitPost = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (!canPost) {
+      return;
+    }
+
+    const poll = pollA.trim() && pollB.trim() ? [pollA.trim(), pollB.trim()] : undefined;
+    setPosts((current) => [
+      {
+        id: Date.now(),
+        type: activeType.label,
+        author: account.profile.displayName,
+        title: title.trim() || "Untitled Slop",
+        body: body.trim(),
+        spoiler,
+        gifUrl: gifUrl.trim(),
+        imageDataUrl,
+        poll,
+      },
+      ...current,
+    ]);
+    setTitle("");
+    setBody("");
+    setSpoiler(false);
+    setGifUrl("");
+    setPollA("");
+    setPollB("");
+    setImageDataUrl(undefined);
+    event.currentTarget.reset();
+  };
 
   return (
     <ComicShell className="comic-entry-page">
@@ -83,7 +143,7 @@ export default function CreatePage() {
             <p>Post about anime, share memes, or start a discussion with the community!</p>
           </div>
 
-          <form className="comic-post-box">
+          <form className="comic-post-box" onSubmit={submitPost}>
             <h2><span aria-hidden="true">{"\u270f"}</span> {activeType.heading}</h2>
             <div className="comic-post-tabs" role="tablist" aria-label="Post type">
               {postTypes.map((type) => {
@@ -104,24 +164,55 @@ export default function CreatePage() {
               })}
             </div>
             <label>
-              <span>Add a title (optional)</span>
-              <input placeholder={activeType.titlePlaceholder} maxLength={100} />
-              <em>0/100</em>
+              <span>Add a title</span>
+              <input value={title} onChange={(event) => setTitle(event.target.value)} placeholder={activeType.titlePlaceholder} maxLength={100} />
+              <em>{title.length}/100</em>
             </label>
             <label>
               <span>{activeType.bodyLabel}</span>
-              <textarea placeholder={activeType.bodyPlaceholder} maxLength={2000} />
-              <em>0/2000</em>
+              <textarea value={body} onChange={(event) => setBody(event.target.value)} placeholder={activeType.bodyPlaceholder} maxLength={2000} />
+              <em>{body.length}/2000</em>
             </label>
             <div className="comic-post-tools">
-              <button type="button">{"\ud83d\uddbc"} Add Image</button>
-              <button type="button">GIF Add GIF</button>
-              <button type="button">{"\ud83d\udcca"} Add Poll</button>
-              <button type="button">{"!"} Add Spoiler</button>
+              <label className="comic-post-tool-field">
+                <span>{"\ud83d\uddbc"} Add Image</span>
+                <input type="file" accept="image/*" onChange={onImage} />
+              </label>
+              <label className="comic-post-tool-field">
+                <span>GIF</span>
+                <input value={gifUrl} onChange={(event) => setGifUrl(event.target.value)} placeholder="Paste GIF URL..." />
+              </label>
+              <label className="comic-post-tool-field">
+                <span>Poll A</span>
+                <input value={pollA} onChange={(event) => setPollA(event.target.value)} placeholder="First option" />
+              </label>
+              <label className="comic-post-tool-field">
+                <span>Poll B</span>
+                <input value={pollB} onChange={(event) => setPollB(event.target.value)} placeholder="Second option" />
+              </label>
+              <button type="button" className={spoiler ? "is-active" : ""} onClick={() => setSpoiler((current) => !current)}>
+                {spoiler ? "\u2713 Spoiler On" : "! Add Spoiler"}
+              </button>
             </div>
+            {imageDataUrl ? (
+              <div className="comic-post-preview">
+                <Image src={imageDataUrl} alt="Upload preview" width={220} height={140} unoptimized />
+                <button type="button" onClick={() => setImageDataUrl(undefined)}>Remove</button>
+              </div>
+            ) : null}
             <div className="comic-post-actions">
-              <button type="reset">Cancel</button>
-              <button type="submit" className="is-submit">{"\u27a4"} {activeType.submitLabel}</button>
+              <button type="reset" onClick={() => {
+                setTitle("");
+                setBody("");
+                setSpoiler(false);
+                setGifUrl("");
+                setPollA("");
+                setPollB("");
+                setImageDataUrl(undefined);
+              }}>
+                Cancel
+              </button>
+              <button type="submit" className="is-submit" disabled={!canPost}>{"\u27a4"} {activeType.submitLabel}</button>
             </div>
           </form>
         </section>
@@ -130,36 +221,34 @@ export default function CreatePage() {
           <div className="comic-feed-window-bar">
             <h2><span aria-hidden="true">{"\ud83d\udc65"}</span> COMMUNITY FEED</h2>
             <div className="comic-window-controls">
-              <span>{"\u2b50"} 20</span>
-              <button type="button">{"\u2212"}</button>
-              <button type="button">{"\u26f6"}</button>
-              <button type="button">{"\u00d7"}</button>
+              <span>{"\u2b50"} {account.economy.coins}</span>
             </div>
           </div>
 
           <div className="comic-feed-list">
-            {feed.map((post, index) => (
-              <article key={post.name} className="comic-feed-card">
-                <div className={`comic-feed-avatar is-${index + 1}`} />
+            {posts.map((post) => (
+              <article key={post.id} className="comic-feed-card">
+                <div className="comic-feed-avatar" />
                 <div className="comic-feed-copy">
-                  <p><strong>{post.name}</strong> <span>{"\u2714"}</span> <em>{post.time}</em></p>
-                  <mark>{post.tag}</mark>
+                  <p><strong>{post.author}</strong> <span>{"\u2714"}</span> <em>now</em></p>
+                  <mark>{post.type}</mark>
+                  {post.spoiler ? <mark className="is-spoiler">SPOILER</mark> : null}
                   <h3>{post.title}</h3>
-                  {post.copy ? <p>{post.copy}</p> : null}
+                  {post.body ? <p>{post.body}</p> : null}
+                  {post.gifUrl ? <p><a href={post.gifUrl} target="_blank" rel="noreferrer">GIF attachment</a></p> : null}
+                  {post.poll ? <p className="comic-post-poll">{post.poll.join(" vs ")}</p> : null}
                   <div className="comic-feed-stats">
-                    <span>{"\ud83d\udc97"} {post.stats[0]}</span>
-                    <span>{"\ud83d\udcac"} {post.stats[1]}</span>
-                    <span>{"\u21aa"} {post.stats[2]}</span>
-                    <span>{"\u25af"}</span>
+                    <span>{"\ud83d\udc97"} 0</span>
+                    <span>{"\ud83d\udcac"} 0</span>
+                    <span>{"\u21aa"} Share</span>
                   </div>
                 </div>
-                <div className={`comic-feed-art ${post.art}`} />
-                <button type="button" className="comic-feed-menu" aria-label="Open post menu">{"\u22ef"}</button>
+                <div className="comic-feed-art is-upload">
+                  {post.imageDataUrl ? <Image src={post.imageDataUrl} alt="" fill unoptimized /> : null}
+                </div>
               </article>
             ))}
           </div>
-
-          <button type="button" className="comic-load-more">Load More <span aria-hidden="true">{"\u2304"}</span></button>
         </section>
       </main>
     </ComicShell>
