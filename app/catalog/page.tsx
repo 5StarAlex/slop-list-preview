@@ -56,6 +56,225 @@ const discoveryQueries = [
   },
 ] as const;
 
+const fallbackRows: Record<(typeof discoveryQueries)[number]["title"], Anime[]> = {
+  "FRIEREN + SOFT FANTASY": [
+    {
+      mal_id: 52991,
+      title: "Frieren: Beyond Journey's End",
+      image: "https://cdn.myanimelist.net/images/anime/1015/138006l.jpg",
+      score: 9.27,
+      synopsis: "An elf mage travels after the hero's journey, learning what time, grief, and old bonds still mean.",
+    },
+    {
+      mal_id: 54492,
+      title: "The Apothecary Diaries",
+      image: "https://cdn.myanimelist.net/images/anime/1708/138033l.jpg",
+      score: 8.85,
+      synopsis: "A sharp apothecary solves court mysteries with dry wit, poison knowledge, and a dangerously good poker face.",
+    },
+    {
+      mal_id: 33352,
+      title: "Violet Evergarden",
+      image: "https://cdn.myanimelist.net/images/anime/1795/95088l.jpg",
+      score: 8.69,
+      synopsis: "A former soldier becomes a letter writer and slowly learns the language of love, loss, and memory.",
+    },
+    {
+      mal_id: 35062,
+      title: "The Ancient Magus' Bride",
+      image: "https://cdn.myanimelist.net/images/anime/3/88476l.jpg",
+      score: 8.05,
+      synopsis: "A lonely girl enters a strange magical household filled with folklore, danger, and soft melancholy.",
+    },
+    {
+      mal_id: 52701,
+      title: "Delicious in Dungeon",
+      image: "https://cdn.myanimelist.net/images/anime/1711/142478l.jpg",
+      score: 8.59,
+      synopsis: "A party crawls through a dungeon by cooking monsters, turning fantasy adventure into weird comfort food.",
+    },
+    {
+      mal_id: 2966,
+      title: "Spice and Wolf",
+      image: "https://cdn.myanimelist.net/images/anime/5/59401l.jpg",
+      score: 8.21,
+      synopsis: "A merchant and a wolf deity wander through trade towns with romance, banter, and economic schemes.",
+    },
+    {
+      mal_id: 25013,
+      title: "Yona of the Dawn",
+      image: "https://cdn.myanimelist.net/images/anime/9/64225l.jpg",
+      score: 8.04,
+      synopsis: "A sheltered princess escapes betrayal and slowly becomes the center of her own myth.",
+    },
+    {
+      mal_id: 4081,
+      title: "Natsume's Book of Friends",
+      image: "https://cdn.myanimelist.net/images/anime/1681/108439l.jpg",
+      score: 8.3,
+      synopsis: "A gentle boy sees spirits and returns names from an inherited book, one quiet encounter at a time.",
+    },
+    {
+      mal_id: 30123,
+      title: "Snow White with the Red Hair",
+      image: "https://cdn.myanimelist.net/images/anime/10/75764l.jpg",
+      score: 7.76,
+      synopsis: "A herbalist with bright red hair finds a new court, a new future, and a prince worth trusting.",
+    },
+    {
+      mal_id: 51553,
+      title: "Witch Hat Atelier",
+      image: "https://cdn.myanimelist.net/images/anime/1726/155542l.jpg",
+      score: 8.74,
+      synopsis: "A girl who loves magic discovers its hidden rules and steps into a gorgeous witchcraft world.",
+    },
+  ],
+  "ROMANCE COMEDY": [
+    {
+      mal_id: 37999,
+      title: "Kaguya-sama: Love is War",
+      image: "https://cdn.myanimelist.net/images/anime/1295/106551l.jpg",
+      score: 8.4,
+      synopsis: "Two elite student council rivals turn confession into psychological warfare.",
+    },
+    {
+      mal_id: 55690,
+      title: "The Dangers in My Heart Season 2",
+      image: "https://cdn.myanimelist.net/images/anime/1643/138581l.jpg",
+      score: 8.69,
+      synopsis: "A shy boy and a bright model keep closing the distance in one of the sweetest modern romcoms.",
+    },
+    {
+      mal_id: 42897,
+      title: "Horimiya",
+      image: "https://cdn.myanimelist.net/images/anime/1695/111486l.jpg",
+      score: 8.18,
+      synopsis: "Two classmates find each other's hidden sides and turn everyday high school life warm fast.",
+    },
+    {
+      mal_id: 4224,
+      title: "Toradora!",
+      image: "https://cdn.myanimelist.net/images/anime/13/22128l.jpg",
+      score: 8.04,
+      synopsis: "A fake alliance between two prickly classmates becomes a classic romantic comedy mess.",
+    },
+    {
+      mal_id: 48736,
+      title: "My Dress-Up Darling",
+      image: "https://cdn.myanimelist.net/images/anime/1179/119897l.jpg",
+      score: 8.13,
+      synopsis: "Cosplay, craft, and crush energy collide when two very different students become creative partners.",
+    },
+    {
+      mal_id: 23289,
+      title: "Monthly Girls' Nozaki-kun",
+      image: "https://cdn.myanimelist.net/images/anime/5/66083l.jpg",
+      score: 7.81,
+      synopsis: "A confession goes sideways into manga assistant work and perfect deadpan comedy.",
+    },
+    {
+      mal_id: 35968,
+      title: "Wotakoi: Love is Hard for Otaku",
+      image: "https://cdn.myanimelist.net/images/anime/1864/93518l.jpg",
+      score: 7.92,
+      synopsis: "Office romance for nerds who would rather be gaming, reading, and dodging emotional sincerity.",
+    },
+    {
+      mal_id: 35860,
+      title: "Teasing Master Takagi-san",
+      image: "https://cdn.myanimelist.net/images/anime/1591/95091l.jpg",
+      score: 7.67,
+      synopsis: "A girl keeps teasing the boy beside her, and every tiny prank is basically a love letter.",
+    },
+    {
+      mal_id: 7054,
+      title: "Maid Sama!",
+      image: "https://cdn.myanimelist.net/images/anime/6/25254l.jpg",
+      score: 7.99,
+      synopsis: "A strict student council president hides a cafe job, until the school's popular boy finds out.",
+    },
+    {
+      mal_id: 55866,
+      title: "A Sign of Affection",
+      image: "https://cdn.myanimelist.net/images/anime/1478/140828l.jpg",
+      score: 8.2,
+      synopsis: "A soft university romance about communication, curiosity, and letting someone into your world.",
+    },
+  ],
+  "TOP ANIME": [
+    {
+      mal_id: 52991,
+      title: "Frieren: Beyond Journey's End",
+      image: "https://cdn.myanimelist.net/images/anime/1015/138006l.jpg",
+      score: 9.27,
+      synopsis: "A reflective fantasy journey after the final battle, built around memory and connection.",
+    },
+    {
+      mal_id: 43608,
+      title: "Kaguya-sama: Love is War -Ultra Romantic-",
+      image: "https://cdn.myanimelist.net/images/anime/1160/122627l.jpg",
+      score: 8.95,
+      synopsis: "The student council romance war reaches peak confession chaos.",
+    },
+    {
+      mal_id: 5114,
+      title: "Fullmetal Alchemist: Brotherhood",
+      image: "https://cdn.myanimelist.net/images/anime/1208/94745l.jpg",
+      score: 9.11,
+      synopsis: "Two brothers chase restoration through alchemy, war, conspiracy, and sacrifice.",
+    },
+    {
+      mal_id: 9253,
+      title: "Steins;Gate",
+      image: "https://cdn.myanimelist.net/images/anime/1935/127974l.jpg",
+      score: 9.07,
+      synopsis: "Time travel starts as a joke and becomes a devastating thriller about consequence.",
+    },
+    {
+      mal_id: 37987,
+      title: "Violet Evergarden: The Movie",
+      image: "https://cdn.myanimelist.net/images/anime/1825/110716l.jpg",
+      score: 8.83,
+      synopsis: "Violet's search for feeling and closure becomes a sweeping final letter.",
+    },
+    {
+      mal_id: 28851,
+      title: "A Silent Voice",
+      image: "https://cdn.myanimelist.net/images/anime/1122/96435l.jpg",
+      score: 8.93,
+      synopsis: "A former bully tries to face the girl he hurt and the life he almost lost.",
+    },
+    {
+      mal_id: 42938,
+      title: "Fruits Basket: The Final Season",
+      image: "https://cdn.myanimelist.net/images/anime/1085/114792l.jpg",
+      score: 8.93,
+      synopsis: "The zodiac curse reaches its emotional finish with family trauma and chosen love.",
+    },
+    {
+      mal_id: 50172,
+      title: "Mob Psycho 100 III",
+      image: "https://cdn.myanimelist.net/images/anime/1228/125011l.jpg",
+      score: 8.72,
+      synopsis: "A psychic boy faces his feelings with surreal action and huge emotional payoff.",
+    },
+    {
+      mal_id: 52034,
+      title: "[Oshi No Ko]",
+      image: "https://cdn.myanimelist.net/images/anime/1812/134736l.jpg",
+      score: 8.53,
+      synopsis: "A pop-idol mystery drama about fame, performance, revenge, and reinvention.",
+    },
+    {
+      mal_id: 47917,
+      title: "Bocchi the Rock!",
+      image: "https://cdn.myanimelist.net/images/anime/1448/127956l.jpg",
+      score: 8.73,
+      synopsis: "A socially anxious guitarist joins a band and turns panic into extremely funny music.",
+    },
+  ],
+};
+
 function mapAnime(item: JikanAnime): Anime {
   return {
     mal_id: item.mal_id,
@@ -64,6 +283,19 @@ function mapAnime(item: JikanAnime): Anime {
     score: item.score,
     synopsis: item.synopsis,
   };
+}
+
+function uniqueAnime(items: Anime[]) {
+  const seen = new Set<number>();
+
+  return items.filter((item) => {
+    if (seen.has(item.mal_id)) {
+      return false;
+    }
+
+    seen.add(item.mal_id);
+    return true;
+  });
 }
 
 function readJson<T>(key: string, fallback: T): T {
@@ -85,7 +317,7 @@ function writeJson<T>(key: string, value: T) {
 }
 
 export default function CatalogPage() {
-  const [rows, setRows] = useState<Record<string, Anime[]>>({});
+  const [rows, setRows] = useState<Record<string, Anime[]>>(fallbackRows);
   const [watchlist, setWatchlist] = useState<Anime[]>(() => readJson(WATCHLIST_KEY, []));
   const [ratings, setRatings] = useState<Record<string, number>>(() => readJson(RATINGS_KEY, {}));
   const [topSlopVotes, setTopSlopVotes] = useState<Record<string, number>>(() => readJson(TOP_SLOP_KEY, {}));
@@ -99,19 +331,23 @@ export default function CatalogPage() {
     let isMounted = true;
 
     Promise.all(
-      discoveryQueries.map((query) =>
-        fetch(query.url)
-          .then((response) => response.json())
-          .then((payload) => [query.title, (payload.data ?? []).map(mapAnime)] as const)
-          .catch(() => [query.title, []] as const),
-      ),
+      discoveryQueries.map(async (query) => {
+        try {
+          const response = await fetch(query.url);
+          const payload = await response.json();
+          const liveItems = Array.isArray(payload.data) ? payload.data.map(mapAnime) : [];
+          return [query.title, uniqueAnime([...fallbackRows[query.title], ...liveItems]).slice(0, 12)] as const;
+        } catch {
+          return [query.title, fallbackRows[query.title]] as const;
+        }
+      }),
     )
       .then((results) => {
         if (!isMounted) {
           return;
         }
 
-        setRows(Object.fromEntries(results));
+        setRows({ ...fallbackRows, ...Object.fromEntries(results) });
       })
       .finally(() => {
         if (isMounted) {
