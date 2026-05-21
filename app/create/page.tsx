@@ -1,4 +1,42 @@
+"use client";
+
+import { useState } from "react";
 import ComicShell from "../components/ComicShell";
+
+const postTypes = [
+  {
+    key: "post",
+    label: "Post",
+    icon: "\ud83d\udcac",
+    heading: "WHAT DO YOU WANT TO POST?",
+    titlePlaceholder: "Enter a catchy title...",
+    bodyLabel: "What's on your mind?",
+    bodyPlaceholder: "Write your post here...",
+    submitLabel: "Post Slop",
+  },
+  {
+    key: "meme",
+    label: "Meme",
+    icon: "\ud83d\ude42",
+    heading: "DROP A MEME",
+    titlePlaceholder: "Name this beautiful disaster...",
+    bodyLabel: "Add meme context",
+    bodyPlaceholder: "Set up the joke, tag the moment, or leave it mysterious...",
+    submitLabel: "Post Meme",
+  },
+  {
+    key: "discussion",
+    label: "Discussion",
+    icon: "\ud83d\udc65",
+    heading: "START A DISCUSSION",
+    titlePlaceholder: "Ask the community something spicy...",
+    bodyLabel: "What should everyone weigh in on?",
+    bodyPlaceholder: "Write the prompt, theory, hot take, or question here...",
+    submitLabel: "Start Discussion",
+  },
+] as const;
+
+type PostTypeKey = (typeof postTypes)[number]["key"];
 
 const feed = [
   {
@@ -31,6 +69,9 @@ const feed = [
 ] as const;
 
 export default function CreatePage() {
+  const [activePostType, setActivePostType] = useState<PostTypeKey>("post");
+  const activeType = postTypes.find((type) => type.key === activePostType) ?? postTypes[0];
+
   return (
     <ComicShell className="comic-entry-page">
       <main className="comic-entry-layout">
@@ -43,20 +84,33 @@ export default function CreatePage() {
           </div>
 
           <form className="comic-post-box">
-            <h2><span aria-hidden="true">{"\u270f"}</span> WHAT DO YOU WANT TO POST?</h2>
+            <h2><span aria-hidden="true">{"\u270f"}</span> {activeType.heading}</h2>
             <div className="comic-post-tabs" role="tablist" aria-label="Post type">
-              <button type="button" className="is-active"><span aria-hidden="true">{"\ud83d\udcac"}</span> Post</button>
-              <button type="button"><span aria-hidden="true">{"\ud83d\ude42"}</span> Meme</button>
-              <button type="button"><span aria-hidden="true">{"\ud83d\udc65"}</span> Discussion</button>
+              {postTypes.map((type) => {
+                const isActive = activePostType === type.key;
+
+                return (
+                  <button
+                    key={type.key}
+                    type="button"
+                    role="tab"
+                    aria-selected={isActive}
+                    className={isActive ? "is-active" : ""}
+                    onClick={() => setActivePostType(type.key)}
+                  >
+                    <span aria-hidden="true">{type.icon}</span> {type.label}
+                  </button>
+                );
+              })}
             </div>
             <label>
               <span>Add a title (optional)</span>
-              <input placeholder="Enter a catchy title..." maxLength={100} />
+              <input placeholder={activeType.titlePlaceholder} maxLength={100} />
               <em>0/100</em>
             </label>
             <label>
-              <span>What&apos;s on your mind?</span>
-              <textarea placeholder="Write your post here..." maxLength={2000} />
+              <span>{activeType.bodyLabel}</span>
+              <textarea placeholder={activeType.bodyPlaceholder} maxLength={2000} />
               <em>0/2000</em>
             </label>
             <div className="comic-post-tools">
@@ -67,7 +121,7 @@ export default function CreatePage() {
             </div>
             <div className="comic-post-actions">
               <button type="reset">Cancel</button>
-              <button type="submit" className="is-submit">{"\u27a4"} Post Slop</button>
+              <button type="submit" className="is-submit">{"\u27a4"} {activeType.submitLabel}</button>
             </div>
           </form>
         </section>

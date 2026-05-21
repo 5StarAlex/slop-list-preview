@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { type SVGProps, useEffect, useState } from "react";
+import { type CSSProperties, type SVGProps, useEffect, useMemo, useState } from "react";
 import { useAccount } from "./AccountProvider";
 import SlopLogo from "./layout/SlopLogo";
 
@@ -23,10 +23,25 @@ const navItems = [
 
 type ComicNavIconName = (typeof navItems)[number]["icon"];
 
+const comicBackgrounds = [
+  { key: "main", label: "Main", image: null },
+  { key: "flame", label: "Flame", image: "/demo-2/bg-flame.jpg" },
+  { key: "field", label: "Field", image: "/demo-2/bg-field.jpg" },
+  { key: "sky", label: "Sky", image: "/demo-2/bg-sky.jpg" },
+  { key: "arcade", label: "Arcade", image: "/demo-2/bg-arcade.jpg" },
+] as const;
+
 export default function ComicShell({ children, className = "" }: ComicShellProps) {
   const pathname = usePathname();
-  const { account } = useAccount();
+  const { account, updateProfile } = useAccount();
   const profile = account.profile;
+  const activeBackground = useMemo(
+    () => comicBackgrounds.find((option) => option.key === profile.siteBackground) ?? comicBackgrounds[0],
+    [profile.siteBackground],
+  );
+  const themeStyle = activeBackground.image
+    ? ({ "--comic-theme-bg": `url(${activeBackground.image})` } as CSSProperties)
+    : undefined;
   const [profileOpen, setProfileOpen] = useState(false);
   const [profileClosing, setProfileClosing] = useState(false);
 
@@ -54,7 +69,7 @@ export default function ComicShell({ children, className = "" }: ComicShellProps
   }, [profileOpen]);
 
   return (
-    <div className={`demo2-page comic-app ${className}`.trim()}>
+    <div className={`demo2-page comic-app ${className}`.trim()} style={themeStyle}>
       <header className="comic-header" aria-label="Slop List navigation">
         <SlopLogo />
 
@@ -113,6 +128,21 @@ export default function ComicShell({ children, className = "" }: ComicShellProps
               <span><strong>342</strong> Likes</span>
             </div>
             <p className="comic-popout-copy">{profile.description}</p>
+            <section className="comic-theme-picker" aria-label="Theme background">
+              <h3>Theme Background</h3>
+              <div className="comic-theme-options">
+                {comicBackgrounds.map((option) => (
+                  <button
+                    key={option.key}
+                    type="button"
+                    className={`comic-theme-option${profile.siteBackground === option.key ? " is-active" : ""}`}
+                    onClick={() => updateProfile({ ...profile, siteBackground: option.key })}
+                  >
+                    <span>{option.label}</span>
+                  </button>
+                ))}
+              </div>
+            </section>
             <Link href="/profile" className="comic-popout-action" onClick={closeProfile}>
               Open Create-A-Slop
             </Link>
