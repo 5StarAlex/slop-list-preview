@@ -1,93 +1,75 @@
-"use client";
+import type { ReactNode } from "react";
 
-import { useState } from "react";
-import SlopPageShell from "../components/layout/SlopPageShell";
-import CatalogCarousel, { type CatalogEntry } from "../components/CatalogCarousel";
+import ComicShell from "../components/ComicShell";
 
-const slopPool: CatalogEntry[] = [
-  {
-    title: "Kanojo, Okarishimasu",
-    subtitle: "Rent-a-Girlfriend",
-    image: "https://m.media-amazon.com/images/M/MV5BNThiMDM2MTktNGMwYi00NTY3LWEyMzQtNDg1NDBlYWIwYTU3XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
-    tag: "Certified Mess",
-  },
-  {
-    title: "Kuroiwa Medaka ni Watashi no Kawaii ga Tsuujinai",
-    subtitle: "Medaka Kuroiwa is Impervious to My Charms",
-    image: "https://m.media-amazon.com/images/M/MV5BZWNlNWQxNGYtYzk4OC00MWRiLWExZDUtOGJmYjYyNmI1MWNhXkEyXkFqcGc@._V1_.jpg",
-    tag: "Charm Check",
-  },
-  {
-    title: "Reborn as a Vending Machine, I Now Wander the Dungeon",
-    subtitle: "Reborn as a Vending Machine",
-    image: "https://m.media-amazon.com/images/M/MV5BZjQ2MGYyYzgtODlhZi00YjczLWJmZTEtYzIxYWM1NTQ4ZGFlXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
-    tag: "Dungeon Slop",
-  },
-  {
-    title: "Uzaki-chan wa Asobitai!",
-    subtitle: "Uzaki-chan Wants to Hang Out!",
-    image: "https://m.media-amazon.com/images/M/MV5BMTg4ZWQ0M2ItMzVmZS00MTliLWEwOGYtNTMzYzBjMDI0NjAyXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
-    tag: "Gremlin Energy",
-  },
-  {
-    title: "Miraculous: Tales of Ladybug and Cat Noir",
-    subtitle: "Paris, secrets, and maximum looped drama",
-    image: "https://m.media-amazon.com/images/M/MV5BODQ5NGFjZTQtNDkzNy00YWVjLWJiNGMtNTk1YzVmMmQ1YWQwXkEyXkFqcGc@._V1_.jpg",
-    tag: "Hero Drama",
-  },
-];
+const springAnime = [
+  "Tongari Boushi no Atelier",
+  "Re:Zero kara Hajimeru Isekai Seikatsu 4th Season",
+  "Youkoso Jitsuryoku Shijou Shugi no Kyoushitsu e 4th Season: 2-nensei-hen 1 Gakki",
+  "Tensei shitara Slime Datta Ken 4th Season",
+  "Yomi no Tsugai",
+  "Ao no Exorcist: Yosuga-hen",
+] as const;
 
-const sectionEntries = {
-  forYou: slopPool,
-  highestRated: [slopPool[4], slopPool[0], slopPool[3], slopPool[1], slopPool[2]],
-  upcoming: [slopPool[2], slopPool[1], slopPool[4], slopPool[0], slopPool[3]],
-};
+const episodeVideos = ["Episode 13", "Episode 1", "Episode 26", "Episode 167", "Episode 12", "Episode 1", "Episode 5"] as const;
 
 export default function CatalogPage() {
-  const [searchTerm, setSearchTerm] = useState("");
-
-  const normalizedQuery = searchTerm.trim().toLowerCase();
-  const filteredEntries = slopPool.filter((entry) => entry.title.toLowerCase().includes(normalizedQuery));
-
   return (
-    <SlopPageShell>
-      <div className="slop-page-heading">
-        <div>
-          <p className="slop-page-kicker">Catalog</p>
-          <h1 className="slop-page-title">Slop Catalog</h1>
-        </div>
-      </div>
+    <ComicShell className="comic-catalog-page">
+      <main className="comic-catalog">
+        <CatalogSection title="MY WATCHED TOPICS" empty action>
+          <p className="comic-empty-line">No watched topics found.</p>
+        </CatalogSection>
 
-      <div className="slop-catalog-search">
-        <button type="button" className="slop-catalog-clear" onClick={() => setSearchTerm("")}>
-          Clear
-        </button>
-        <label className="slop-catalog-searchbar">
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(event) => setSearchTerm(event.target.value)}
-            placeholder="Search the slop..."
-            aria-label="Search catalog"
-          />
-        </label>
-      </div>
+        <CatalogSection title="SPRING 2026 ANIME" action arrow>
+          <div className="comic-catalog-row">
+            {springAnime.map((title, index) => (
+              <article key={title} className="comic-catalog-card">
+                <div className={`comic-catalog-thumb tone-${index + 1}`} />
+                <strong>{title}</strong>
+                <span />
+              </article>
+            ))}
+          </div>
+        </CatalogSection>
 
-      <div className="slop-catalog-stack">
-        {normalizedQuery ? (
-          filteredEntries.length > 0 ? (
-            <CatalogCarousel title="Search Results" entries={filteredEntries} />
-          ) : (
-            <div className="slop-catalog-empty">No slop titles matched &quot;{searchTerm}&quot;.</div>
-          )
-        ) : (
-          <>
-            <CatalogCarousel title="Slop For You" entries={sectionEntries.forYou} />
-            <CatalogCarousel title="Highest Rated Slop" entries={sectionEntries.highestRated} />
-            <CatalogCarousel title="Fresh Slop" entries={sectionEntries.upcoming} />
-          </>
-        )}
-      </div>
-    </SlopPageShell>
+        <CatalogSection title="LATEST UPDATED EPISODE VIDEOS" action arrow>
+          <div className="comic-catalog-row is-videos">
+            {episodeVideos.map((title, index) => (
+              <article key={`${title}-${index}`} className="comic-catalog-card">
+                <div className={`comic-catalog-thumb tone-${(index % 6) + 1}`} />
+                <strong>{title} <span aria-hidden="true">{"\u2655"}</span></strong>
+                <span />
+              </article>
+            ))}
+          </div>
+        </CatalogSection>
+      </main>
+    </ComicShell>
+  );
+}
+
+function CatalogSection({
+  title,
+  children,
+  empty = false,
+  action = false,
+  arrow = false,
+}: {
+  title: string;
+  children: ReactNode;
+  empty?: boolean;
+  action?: boolean;
+  arrow?: boolean;
+}) {
+  return (
+    <section className={`comic-catalog-section${empty ? " is-empty" : ""}`}>
+      <header>
+        <h2>{title}</h2>
+        {action ? <a href="#">View More <span aria-hidden="true">{"\u203a"}</span></a> : null}
+      </header>
+      {children}
+      {arrow ? <button type="button" className="comic-row-arrow" aria-label={`Scroll ${title}`}>{"\u203a"}</button> : null}
+    </section>
   );
 }

@@ -1,36 +1,60 @@
-import SlopPageShell from "../components/layout/SlopPageShell";
-import NeonPanel from "../components/ui/NeonPanel";
+import ComicShell from "../components/ComicShell";
 
 const aboutSections = [
-  ["What Is Slop List?", "A neon arcade-social platform for ranking, collecting, posting, and clowning on the most unforgettable slop."],
-  ["How Coins Work", "You earn coins through participation, games, challenges, and community momentum. Spend them on cosmetics, effects, and fits."],
-  ["How Ranking Works", "Posts, games, and slops rise when the community engages. Hot takes, meme energy, and consistency all matter."],
-  ["Community Rules", "Keep it chaotic, not miserable. Be funny, be readable, and don’t make the board worse to look at."],
-  ["Future Updates", "More games, richer shops, better creator tools, and a stronger slop identity system are all on deck."],
+  {
+    title: "WHAT IS SLOP LIST?",
+    copy: "A comic-social board for ranking, collecting, posting, and celebrating the most unforgettable slop.",
+    accent: "pink",
+  },
+  {
+    title: "HOW COINS WORK",
+    copy: "Earn stars through posts, games, challenges, and community momentum. Spend them on fits, effects, and profile flair.",
+    accent: "yellow",
+  },
+  {
+    title: "HOW RANKING WORKS",
+    copy: "Posts, games, and slops climb when the community reacts. Loud taste, good timing, and consistency all matter.",
+    accent: "blue",
+  },
+  {
+    title: "COMMUNITY RULES",
+    copy: "Keep it chaotic, not miserable. Be funny, be readable, and make the board better to look at.",
+    accent: "purple",
+  },
+  {
+    title: "FUTURE UPDATES",
+    copy: "More game modes, richer shops, stronger creator tools, and a deeper slop identity system are on deck.",
+    accent: "cyan",
+  },
 ] as const;
 
 export default function AboutPage() {
   return (
-    <SlopPageShell>
-      <div className="slop-page-heading">
-        <div>
-          <p className="slop-page-kicker">About</p>
-          <h1 className="slop-page-title">The Slop List</h1>
-          <p className="slop-page-copy">The board runs on loud opinions, dumb commitment, and just enough structure to keep the chaos readable.</p>
-        </div>
-      </div>
+    <ComicShell className="comic-about-page">
+      <main className="comic-about">
+        <section className="comic-page-title">
+          <p>ABOUT</p>
+          <h1>THE SLOP LIST</h1>
+          <span aria-hidden="true">{"\u2726"}</span>
+        </section>
 
-      <div className="slop-about-grid">
-        {aboutSections.map(([title, copy], index) => (
-          <NeonPanel key={title} variant={index % 2 === 0 ? "purple" : "blue"} className="slop-about-card">
-            <span className="slop-about-icon" aria-hidden="true">
-              ★
-            </span>
-            <h2>{title}</h2>
-            <p>{copy}</p>
-          </NeonPanel>
-        ))}
-      </div>
-    </SlopPageShell>
+        <section className="comic-about-board">
+          <header>
+            <h2>FIELD GUIDE</h2>
+            <p>The board runs on loud opinions, dumb commitment, and just enough structure to keep the chaos readable.</p>
+          </header>
+
+          <div className="comic-about-grid">
+            {aboutSections.map((section, index) => (
+              <article key={section.title} className={`comic-about-card is-${section.accent}`}>
+                <span aria-hidden="true">{index + 1}</span>
+                <h3>{section.title}</h3>
+                <p>{section.copy}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+      </main>
+    </ComicShell>
   );
 }

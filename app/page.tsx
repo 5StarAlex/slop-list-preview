@@ -1,153 +1,124 @@
-import SlopPageShell from "./components/layout/SlopPageShell";
-import NeonPanel from "./components/ui/NeonPanel";
-import NeonButton from "./components/ui/NeonButton";
-import ChallengeCard from "./components/home/ChallengeCard";
+import Image from "next/image";
+import Link from "next/link";
+import ComicShell from "./components/ComicShell";
 
-const featureGames = [
-  {
-    title: "Tag Game",
-    badge: "2P",
-    copy: "Two blocky slops sprint through neon lanes, juking corners and trading chase pressure.",
-    accent: "pink",
-  },
-  {
-    title: "Endless Runner",
-    badge: "RUN",
-    copy: "A chunky slop charges through traps while a rival shadow racer pushes every jump and dodge.",
-    accent: "gold",
-  },
-  {
-    title: "Clash Game",
-    badge: "VS",
-    copy: "Two slops collide with bursts, shields, and arcade timing in a stylized duel arena.",
-    accent: "purple",
-  },
+const runnerUps = [
+  ["NeonGlitch", "13,420"],
+  ["PixelPunk", "11,090"],
+  ["TurboToast", "8,765"],
+  ["SlopKing23", "6,540"],
+  ["ByteBoi", "5,310"],
 ] as const;
 
-const newsItems = [
-  { title: "Neon Sprint Tournament", copy: "Compete this weekend for exclusive rewards.", age: "2d ago" },
-  { title: "New Game: Bubble Brawl", copy: "Pop, clash, win.", age: "5d ago" },
-  { title: "Creator Spotlight", copy: "Check out amazing games from our top creators.", age: "1w ago" },
-];
-
-const leaderboard = [
-  ["PixelMaster", "12,540"],
-  ["NeonNinja", "11,230"],
-  ["SlopKing", "9,870"],
-  ["ArcadeAce (You)", "6,420"],
-  ["GameOn77", "5,210"],
-];
+const topSlopCards = [
+  { title: "PIXEL OUTLAW", subtitle: "", className: "is-outlaw" },
+  { title: "RWBY", subtitle: "ARCADE MAYHEM", className: "is-rwby" },
+  { title: "IDOL REBOOT", subtitle: "", className: "is-idol" },
+] as const;
 
 export default function Home() {
   return (
-    <SlopPageShell>
-      <div className="slop-home-grid">
-        <div className="slop-home-main">
-          <NeonPanel variant="blue" className="slop-hero-panel">
-            <div className="slop-hero-copy">
-              <p className="slop-page-kicker">Welcome To</p>
-              <h1 className="slop-hero-title">Slop List</h1>
-              <h2 className="slop-hero-subtitle">Discover. Play. Create. Compete.</h2>
-              <p className="slop-page-copy">
-                Jump into a universe of wild arcade games made by the community, for the community.
-              </p>
-              <NeonButton href="/games" variant="pink" className="slop-hero-button">
-                Explore Games
-              </NeonButton>
-            </div>
-            <div className="slop-hero-art" aria-hidden="true">
-              <span className="slop-hero-arcade" />
-              <span className="slop-hero-coin" />
-              <span className="slop-hero-ufo" />
-              <span className="slop-hero-spark is-left" />
-              <span className="slop-hero-spark is-right" />
-            </div>
-          </NeonPanel>
+    <ComicShell>
+      <main className="demo2-board">
+        <section className="demo2-hero-poster" aria-label="Create a slop">
+          <Image
+            src="/demo-2/home-poster.png"
+            alt="Slop List poster with Create A Slop headline and anime character"
+            fill
+            priority
+            sizes="(max-width: 900px) 100vw, 66vw"
+            className="demo2-hero-poster-image"
+          />
+          <Link href="/create" className="demo2-create-button" aria-label="New slop entry">
+            <Image
+              src="/demo-2/create-a-slop-button.png"
+              alt="New slop entry"
+              fill
+              priority
+              sizes="30vw"
+              className="demo2-create-button-image"
+            />
+          </Link>
+          <span className="demo2-float-star is-one" aria-hidden="true" />
+          <span className="demo2-float-star is-two" aria-hidden="true" />
+        </section>
 
-          <NeonPanel variant="purple" className="slop-featured-games">
-            <div className="slop-home-section-head">
-              <h2>Featured Games</h2>
-              <NeonButton href="/games" variant="purple">
-                View All Games
-              </NeonButton>
+        <aside className="demo2-king-panel" aria-label="King of Slop leaderboard">
+          <div className="demo2-panel-frame">
+            <div className="demo2-king-head">
+              <span aria-hidden="true">{"\u2606"}</span>
+              <h1>KING OF SLOP</h1>
+              <span aria-hidden="true">{"\u2606"}</span>
             </div>
-            <div className="slop-featured-games-grid">
-              {featureGames.map((game) => (
-                <article key={game.title} className={`slop-feature-card is-${game.accent}`}>
-                  <div className="slop-feature-card__art" aria-hidden="true">
-                    <span className="slop-feature-card__badge">{game.badge}</span>
-                    <span className="slop-feature-card__figure is-left" />
-                    <span className="slop-feature-card__figure is-right" />
-                    <span className="slop-feature-card__burst" />
-                    <span className="slop-feature-card__floor" />
-                  </div>
-                  <strong>{game.title}</strong>
-                  <p>{game.copy}</p>
-                  <NeonButton href="/games" variant={game.accent === "gold" ? "gold" : "pink"}>
-                    Play Now
-                  </NeonButton>
-                </article>
-              ))}
-            </div>
-          </NeonPanel>
+            <div className="demo2-ribbon">ARIAL ACE</div>
 
-          <div className="slop-home-promo-row">
-            <NeonPanel variant="dark" className="slop-home-promo-card">
-              <strong>Play Games</strong>
-              <p>Explore hundreds of arcade games.</p>
-            </NeonPanel>
-            <NeonPanel variant="dark" className="slop-home-promo-card">
-              <strong>Create & Share</strong>
-              <p>Build your own slops and share them.</p>
-            </NeonPanel>
-            <NeonPanel variant="dark" className="slop-home-promo-card">
-              <strong>Earn Rewards</strong>
-              <p>Complete challenges and earn stars.</p>
-            </NeonPanel>
-            <NeonPanel variant="dark" className="slop-home-promo-card">
-              <strong>Join The Community</strong>
-              <p>Connect, compete, and have fun.</p>
-            </NeonPanel>
+            <div className="demo2-king-stage">
+              <div className="demo2-king-figure" aria-label="King slop character">
+                <span className="demo2-king-crown" aria-hidden="true">{"\u2655"}</span>
+                <span className="demo2-king-face" aria-hidden="true" />
+                <span className="demo2-king-body" aria-hidden="true" />
+                <span className="demo2-king-arm is-left" aria-hidden="true" />
+                <span className="demo2-king-arm is-right" aria-hidden="true" />
+                <span className="demo2-king-leg is-left" aria-hidden="true" />
+                <span className="demo2-king-leg is-right" aria-hidden="true" />
+              </div>
+              <div className="demo2-medal-stack" aria-label="King of Slop stats">
+                <span><strong>{"\u2655"}</strong> 1</span>
+                <span><strong>{"\u2605"}</strong> 15,230</span>
+              </div>
+            </div>
+
+            <div className="demo2-runner-panel">
+              <div className="demo2-runner-ribbon">RUNNER UP</div>
+              <ol>
+                {runnerUps.map(([name, score], index) => (
+                  <li key={name}>
+                    <span className="demo2-runner-face" aria-hidden="true">{"\u263b"}</span>
+                    <span className="demo2-runner-rank">{index + 1}</span>
+                    <strong>{name}</strong>
+                    <span className="demo2-runner-score"><span aria-hidden="true">{"\u2605"}</span> {score}</span>
+                  </li>
+                ))}
+              </ol>
+            </div>
           </div>
-        </div>
+        </aside>
 
-        <div className="slop-home-sidebar">
-          <NeonPanel variant="pink" className="slop-home-sidebar-panel">
-            <h2>Daily Challenge</h2>
-            <ChallengeCard title="High Score Hunter" copy="Score 10,000 points in any arcade game." reward={50} progress={6420} total={10000} />
-          </NeonPanel>
-
-          <NeonPanel variant="purple" className="slop-home-sidebar-panel">
-            <div className="slop-home-section-head">
-              <h2>News & Updates</h2>
-            </div>
-            <div className="slop-news-list">
-              {newsItems.map((item) => (
-                <article key={item.title} className="slop-news-card">
-                  <strong>{item.title}</strong>
-                  <p>{item.copy}</p>
-                  <span>{item.age}</span>
-                </article>
-              ))}
-            </div>
-          </NeonPanel>
-
-          <NeonPanel variant="blue" className="slop-home-sidebar-panel">
-            <div className="slop-home-section-head">
-              <h2>Leaderboard</h2>
-            </div>
-            <ol className="slop-leaderboard">
-              {leaderboard.map(([name, score], index) => (
-                <li key={name} className="slop-leaderboard-row">
-                  <span>{index + 1}</span>
-                  <strong>{name}</strong>
-                  <span>{"\u2605"} {score}</span>
-                </li>
-              ))}
-            </ol>
-          </NeonPanel>
-        </div>
-      </div>
-    </SlopPageShell>
+        <section className="demo2-top-slop" aria-label="Top Slop carousel">
+          <button type="button" className="demo2-carousel-arrow is-left" aria-label="Previous top slop">
+            {"\u2039"}
+          </button>
+          <div className="demo2-top-slop-title">
+            <span aria-hidden="true">{"\u265b"}</span>
+            <h2>TOP SLOP</h2>
+            <Link href="/create" aria-label="Add top slop">+</Link>
+          </div>
+          <div className="demo2-card-row">
+            {topSlopCards.map((card, index) => (
+              <article key={card.title} className={`demo2-slop-card ${card.className}${index === 1 ? " is-featured" : ""}`}>
+                <div className="demo2-slop-card-art">
+                  <span className="demo2-card-figure is-a" aria-hidden="true" />
+                  <span className="demo2-card-figure is-b" aria-hidden="true" />
+                  <span className="demo2-card-splash" aria-hidden="true" />
+                </div>
+                <strong>{card.title}</strong>
+                {card.subtitle ? <span>{card.subtitle}</span> : null}
+              </article>
+            ))}
+          </div>
+          <div className="demo2-carousel-dots" aria-hidden="true">
+            <span className="is-active" />
+            <span />
+            <span />
+            <span />
+            <span />
+            <span />
+          </div>
+          <button type="button" className="demo2-carousel-arrow is-right" aria-label="Next top slop">
+            {"\u203a"}
+          </button>
+        </section>
+      </main>
+    </ComicShell>
   );
 }

@@ -1,60 +1,69 @@
-import SlopTitle from "../../components/SlopTitle";
+import ComicShell from "../../components/ComicShell";
+
+const stats = [
+  ["12", "Episodes"],
+  ["P.A. Works", "Studio"],
+  ["A Tier", "This Week"],
+] as const;
+
+const reasons = [
+  "Ridiculously sharp visual identity.",
+  "Every episode escalates in the funniest possible direction.",
+  "Stylish, messy, and exactly the kind of thing the board should argue about.",
+] as const;
 
 export default function SlopDetailPage() {
   return (
-    <div className="page-stack">
-      <section className="section-heading">
-        <div className="stack-sm">
-          <span className="section-kicker">Detail View</span>
-          <SlopTitle className="section-title">Akiba Maid War</SlopTitle>
-          <p className="section-copy">
-            The focused detail page keeps the same glossy system while trimming
-            away unnecessary interactivity.
-          </p>
-        </div>
-      </section>
+    <ComicShell className="comic-detail-page">
+      <main className="comic-detail">
+        <section className="comic-page-title">
+          <p>DETAIL VIEW</p>
+          <h1>AKIBA MAID WAR</h1>
+          <span aria-hidden="true">{"\u2605"}</span>
+        </section>
 
-      <section className="content-grid">
-        <article className="spotlight-card">
-          <div className="spotlight-cover" />
-          <div className="stack-md">
-            <p className="section-copy">
-              A maelstrom of maid cafe politics, dead-serious action framing, and
-              absurd tonal pivots that somehow become the whole appeal.
-            </p>
-            <div className="tag-row">
-              <span className="tag">12 Episodes</span>
-              <span className="tag">P.A. Works</span>
-              <span className="tag">Action Comedy</span>
+        <section className="comic-detail-grid">
+          <article className="comic-detail-spotlight">
+            <div className="comic-detail-poster">
+              <span>AKIBA</span>
+              <strong>MAID WAR</strong>
             </div>
-          </div>
-        </article>
+            <div className="comic-detail-copy">
+              <mark>Action Comedy</mark>
+              <p>
+                A maelstrom of maid cafe politics, dead-serious action framing, and absurd tonal pivots that somehow become the whole appeal.
+              </p>
+              <div className="comic-detail-stats">
+                {stats.map(([value, label]) => (
+                  <span key={label}>
+                    <strong>{value}</strong>
+                    {label}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </article>
 
-        <aside className="glass-panel stack-lg">
-          <div className="stack-sm">
-            <SlopTitle as="h2" size="md" className="card-title">Why it landed here</SlopTitle>
-            <ul className="plain-list">
-              <li>Ridiculously sharp visual identity.</li>
-              <li>Every episode escalates in the funniest possible direction.</li>
-              <li>Fits the site because it is both stylish and gloriously messy.</li>
+          <aside className="comic-detail-panel">
+            <h2>WHY IT LANDED HERE</h2>
+            <ul>
+              {reasons.map((reason) => (
+                <li key={reason}>{reason}</li>
+              ))}
             </ul>
-          </div>
-
-          <div className="stack-sm">
-            <SlopTitle as="h2" size="md" className="card-title">Community meter</SlopTitle>
-            <div className="meter-row">
-              <div className="meter-chip">
+            <div className="comic-detail-meter">
+              <span>
                 <strong>7.3</strong>
-                <span className="muted-copy">MAL score</span>
-              </div>
-              <div className="meter-chip">
-                <strong>A Tier</strong>
-                <span className="muted-copy">This week&apos;s ranking</span>
-              </div>
+                MAL Score
+              </span>
+              <span>
+                <strong>{"\u2605"} 15,230</strong>
+                Community Heat
+              </span>
             </div>
-          </div>
-        </aside>
-      </section>
-    </div>
+          </aside>
+        </section>
+      </main>
+    </ComicShell>
   );
 }
