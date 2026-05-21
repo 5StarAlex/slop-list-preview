@@ -29,6 +29,11 @@ const comicBackgrounds = [
   { key: "field", label: "Field", image: "/demo-2/bg-field.jpg" },
   { key: "sky", label: "Sky", image: "/demo-2/bg-sky.jpg" },
   { key: "arcade", label: "Arcade", image: "/demo-2/bg-arcade.jpg" },
+  { key: "nebula", label: "Nebula", image: null },
+  { key: "city", label: "City", image: null },
+  { key: "forest", label: "Forest", image: null },
+  { key: "synth", label: "Synth", image: null },
+  { key: "sunrise", label: "Sunrise", image: null },
 ] as const;
 
 export default function ComicShell({ children, className = "" }: ComicShellProps) {
@@ -39,9 +44,7 @@ export default function ComicShell({ children, className = "" }: ComicShellProps
     () => comicBackgrounds.find((option) => option.key === profile.siteBackground) ?? comicBackgrounds[0],
     [profile.siteBackground],
   );
-  const themeStyle = activeBackground.image
-    ? ({ "--comic-theme-bg": `url(${activeBackground.image})` } as CSSProperties)
-    : undefined;
+  const themeStyle = ({ "--comic-theme-bg": activeBackground.image ? `url(${activeBackground.image})` : "none" } as CSSProperties);
   const [profileOpen, setProfileOpen] = useState(false);
   const [profileClosing, setProfileClosing] = useState(false);
 
@@ -69,7 +72,10 @@ export default function ComicShell({ children, className = "" }: ComicShellProps
   }, [profileOpen]);
 
   return (
-    <div className={`demo2-page comic-app ${className}`.trim()} style={themeStyle}>
+    <div
+      className={`demo2-page comic-app bg-${profile.siteBackground}${profile.darkMode ? " theme-dark" : ""}${profile.glossyMode ? " theme-glossy" : ""} ${className}`.trim()}
+      style={themeStyle}
+    >
       <header className="comic-header" aria-label="Slop List navigation">
         <SlopLogo />
 
@@ -91,9 +97,9 @@ export default function ComicShell({ children, className = "" }: ComicShellProps
             <Image src={profile.profileImage} alt="" fill unoptimized className="comic-profile-avatar-image" />
           </span>
           <span className="comic-profile-copy">
-            <strong>Alex</strong>
-            <span>Slop Legend</span>
-            <em><span aria-hidden="true">{"\u2605"}</span> 15,230</em>
+            <strong>{profile.displayName}</strong>
+            <span>{profile.affiliation}</span>
+            <em><span aria-hidden="true">{"\u2605"}</span> {account.economy.coins}</em>
           </span>
         </button>
       </header>
@@ -117,15 +123,15 @@ export default function ComicShell({ children, className = "" }: ComicShellProps
                 <Image src={profile.profileImage} alt={`${profile.displayName} profile`} fill unoptimized />
               </span>
               <div>
-                <h2>Alex</h2>
-                <p>Slop Legend</p>
-                <strong><span aria-hidden="true">{"\u2605"}</span> 15,230</strong>
+                <h2>{profile.displayName}</h2>
+                <p>{profile.affiliation}</p>
+                <strong><span aria-hidden="true">{"\u2605"}</span> {account.economy.coins}</strong>
               </div>
             </div>
             <div className="comic-popout-stats">
-              <span><strong>20</strong> Coins</span>
-              <span><strong>5</strong> Rank</span>
-              <span><strong>342</strong> Likes</span>
+              <span><strong>{account.economy.coins}</strong> Stars</span>
+              <span><strong>{account.progression.level}</strong> Level</span>
+              <span><strong>{account.progression.xp}</strong> XP</span>
             </div>
             <p className="comic-popout-copy">{profile.description}</p>
             <section className="comic-theme-picker" aria-label="Theme background">

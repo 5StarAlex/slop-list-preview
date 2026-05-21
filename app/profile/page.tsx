@@ -18,6 +18,9 @@ const WATCHLIST_KEY = "slop-list-watchlist";
 
 const inventoryTabs = [
   { key: "shirt", label: "Inventory", icon: "\ud83d\udcbc" },
+  { key: "pants", label: "Pants", icon: "\ud83d\udc56" },
+  { key: "eyes", label: "Face", icon: "\ud83d\udc41" },
+  { key: "mouth", label: "Mouth", icon: "\ud83d\udcac" },
   { key: "color", label: "Creation", icon: "\ud83d\uddbc" },
   { key: "accessories", label: "Stats", icon: "\ud83d\udcca" },
 ] as const;
@@ -27,6 +30,7 @@ type InventoryTabKey = (typeof inventoryTabs)[number]["key"];
 export default function ProfilePage() {
   const { account, updateCharacterConfig } = useAccount();
   const [activeTab, setActiveTab] = useState<InventoryTabKey>("shirt");
+  const [query, setQuery] = useState("");
   const [watchlist] = useState<Anime[]>(() => {
     if (typeof window === "undefined") {
       return [];
@@ -41,7 +45,9 @@ export default function ProfilePage() {
     }
   });
 
-  const activeOptions = customizationOptions[activeTab];
+  const activeOptions = customizationOptions[activeTab].filter((option) =>
+    option.label.toLowerCase().includes(query.trim().toLowerCase()),
+  );
   const activeValue = account.characterConfig[activeTab];
 
   const updateConfig = (key: InventoryTabKey, value: number) => {
@@ -85,7 +91,7 @@ export default function ProfilePage() {
                   type="button"
                   key={slot}
                   className={`comic-slot is-${slot}`}
-                  onClick={() => setActiveTab(slot === "shirt" || slot === "color" || slot === "accessories" ? slot : "color")}
+                  onClick={() => setActiveTab(slot)}
                 >
                   <span>{slot.toUpperCase()}</span>
                   <strong>{option?.label ?? "..."}</strong>
@@ -100,19 +106,26 @@ export default function ProfilePage() {
 
           <section className="comic-inventory-panel">
             <header>
-              <h2>{activeTab === "shirt" ? "Customize Shirt" : activeTab === "color" ? "Customize Color" : "Customize Accessories"}</h2>
+              <h2>Customize {activeTab}</h2>
               <strong>{activeOptions.length}/100</strong>
             </header>
+            <input
+              className="comic-inventory-search"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="Search clothes, face, colors..."
+            />
             <div className="comic-item-grid">
-              {activeOptions.map((item, index) => {
-                const active = activeValue === index;
+              {activeOptions.map((item) => {
+                const realIndex = customizationOptions[activeTab].findIndex((option) => option.id === item.id);
+                const active = activeValue === realIndex;
 
                 return (
                   <button
                     type="button"
                     className={`comic-item-card${active ? " is-selected" : ""}`}
                     key={item.id}
-                    onClick={() => updateConfig(activeTab, index)}
+                    onClick={() => updateConfig(activeTab, realIndex)}
                   >
                     <span className={`comic-shirt-icon is-${item.swatchType}`} />
                     <strong>{item.label}</strong>
@@ -140,6 +153,9 @@ export default function ProfilePage() {
             </div>
             <div className="comic-category-rail">
               <button type="button" className={activeTab === "shirt" ? "is-active" : ""} onClick={() => setActiveTab("shirt")}>{"\ud83d\udc55"}</button>
+              <button type="button" className={activeTab === "pants" ? "is-active" : ""} onClick={() => setActiveTab("pants")}>{"\ud83d\udc56"}</button>
+              <button type="button" className={activeTab === "eyes" ? "is-active" : ""} onClick={() => setActiveTab("eyes")}>{"\ud83d\udc41"}</button>
+              <button type="button" className={activeTab === "mouth" ? "is-active" : ""} onClick={() => setActiveTab("mouth")}>{"\ud83d\udcac"}</button>
               <button type="button" className={activeTab === "color" ? "is-active" : ""} onClick={() => setActiveTab("color")}>{"\ud83c\udfa8"}</button>
               <button type="button" className={activeTab === "accessories" ? "is-active" : ""} onClick={() => setActiveTab("accessories")}>{"\u2655"}</button>
             </div>

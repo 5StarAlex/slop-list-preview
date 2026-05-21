@@ -2,7 +2,7 @@ import { defaultCharacterConfig, type CharacterConfig } from "../components/slop
 import { COINS_STORAGE_KEY, WHITE_TRAIL_STORAGE_KEY } from "./siteData";
 
 export type ProfileTheme = "black" | "white" | "red" | "blue" | "gray" | "aurora";
-export type SiteBackground = "main" | "flame" | "field" | "sky" | "arcade";
+export type SiteBackground = "main" | "flame" | "field" | "sky" | "arcade" | "nebula" | "city" | "forest" | "synth" | "sunrise";
 
 export type ProfileData = {
   profileImage: string;
@@ -15,6 +15,8 @@ export type ProfileData = {
   affiliationBoxColor: string;
   theme: ProfileTheme;
   siteBackground: SiteBackground;
+  darkMode: boolean;
+  glossyMode: boolean;
 };
 
 export type AccountEconomy = {
@@ -66,6 +68,8 @@ export const defaultProfile: ProfileData = {
   affiliationBoxColor: "rgba(255, 248, 230, 0.1)",
   theme: "black",
   siteBackground: "main",
+  darkMode: false,
+  glossyMode: false,
 };
 
 export function createDefaultAccountData(): AccountData {

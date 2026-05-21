@@ -79,6 +79,17 @@ export default function GlobalProfileWidget() {
     setAuthError("");
   };
 
+  const onProfileImageUpload: React.ChangeEventHandler<HTMLInputElement> = (event) => {
+    const file = event.target.files?.[0];
+    if (!file) {
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => setDraft((current) => ({ ...current, profileImage: String(reader.result) }));
+    reader.readAsDataURL(file);
+  };
+
   const handleSave = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -188,6 +199,11 @@ export default function GlobalProfileWidget() {
             </label>
 
             <label className="global-profile-field">
+              <span>Upload Profile Image</span>
+              <input type="file" accept="image/*" className="global-profile-input" onChange={onProfileImageUpload} />
+            </label>
+
+            <label className="global-profile-field">
               <span>Banner Image URL</span>
               <input
                 type="url"
@@ -232,6 +248,28 @@ export default function GlobalProfileWidget() {
                 ))}
               </div>
             </fieldset>
+
+            <label className="global-profile-field">
+              <span>
+                <input
+                  type="checkbox"
+                  checked={draft.darkMode}
+                  onChange={(event) => setDraft((current) => ({ ...current, darkMode: event.target.checked }))}
+                />{" "}
+                Dark mode
+              </span>
+            </label>
+
+            <label className="global-profile-field">
+              <span>
+                <input
+                  type="checkbox"
+                  checked={draft.glossyMode}
+                  onChange={(event) => setDraft((current) => ({ ...current, glossyMode: event.target.checked }))}
+                />{" "}
+                iOS glossy mode
+              </span>
+            </label>
 
             <div className="global-profile-actions">
               <button type="button" className="global-profile-secondary" onClick={() => setIsEditing(false)}>
