@@ -22,7 +22,7 @@ export default function Home() {
       <main className="demo2-board">
         <section className="demo2-hero-poster" aria-label="Create a slop">
           <Image
-            src="/demo-2/home-poster.png"
+            src="/assets/home/hero/create-slop-home-panel.png"
             alt="Slop List poster with Create A Slop headline and anime character"
             fill
             priority
@@ -31,7 +31,7 @@ export default function Home() {
           />
           <Link href="/create" className="demo2-create-button" aria-label="New slop entry">
             <Image
-              src="/demo-2/create-a-slop-button.png"
+              src="/assets/home/hero/create-slop-button.png"
               alt="New slop entry"
               fill
               priority

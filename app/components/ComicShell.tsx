@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { type CSSProperties, type SVGProps, useEffect, useMemo, useState } from "react";
 import { useAccount } from "./AccountProvider";
 import SlopLogo from "./layout/SlopLogo";
+import { useParallaxOffset } from "./useParallaxOffset";
 
 type ComicShellProps = {
   children: React.ReactNode;
@@ -39,12 +40,24 @@ const comicBackgrounds = [
 export default function ComicShell({ children, className = "" }: ComicShellProps) {
   const pathname = usePathname();
   const { account, updateProfile } = useAccount();
+  const { offset, handleMouseMove, handleMouseLeave } = useParallaxOffset();
   const profile = account.profile;
   const activeBackground = useMemo(
     () => comicBackgrounds.find((option) => option.key === profile.siteBackground) ?? comicBackgrounds[0],
     [profile.siteBackground],
   );
-  const themeStyle = ({ "--comic-theme-bg": activeBackground.image ? `url(${activeBackground.image})` : "none" } as CSSProperties);
+  const themeStyle = ({
+    "--comic-theme-bg": activeBackground.image ? `url(${activeBackground.image})` : "none",
+    "--shell-tab-x": `${offset.x * 10}px`,
+    "--shell-tab-y": `${offset.y * 8}px`,
+    "--shell-tab-gloss-x": `${offset.x * -4}px`,
+    "--shell-tab-gloss-y": `${offset.y * -3}px`,
+    "--shell-tab-line-x": `${offset.x * 2.2}px`,
+    "--shell-tab-line-y": `${offset.y * 1.8}px`,
+    "--shell-layer-back": `translate(${offset.x * -10}px, ${offset.y * -7}px)`,
+    "--shell-layer-mid": `translate(${offset.x * 24}px, ${offset.y * 16}px)`,
+    "--shell-layer-front": `translate(${offset.x * -38}px, ${offset.y * -24}px)`,
+  } as CSSProperties);
   const [profileOpen, setProfileOpen] = useState(false);
   const [profileClosing, setProfileClosing] = useState(false);
 
@@ -75,7 +88,14 @@ export default function ComicShell({ children, className = "" }: ComicShellProps
     <div
       className={`demo2-page comic-app bg-${profile.siteBackground}${profile.darkMode ? " theme-dark" : ""}${profile.glossyMode ? " theme-glossy" : ""} ${className}`.trim()}
       style={themeStyle}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
     >
+      <div className="comic-shell-parallax" aria-hidden="true">
+        <span className="comic-shell-shape-layer comic-shell-shape-layer-back" />
+        <span className="comic-shell-shape-layer comic-shell-shape-layer-mid" />
+        <span className="comic-shell-shape-layer comic-shell-shape-layer-front" />
+      </div>
       <header className="comic-header" aria-label="Slop List navigation">
         <SlopLogo />
 
