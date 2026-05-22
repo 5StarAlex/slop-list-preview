@@ -18011,3 +18011,69 @@ main {
     display: none;
   }
 }
+
+/* Keep overlays centered without freezing page scroll */
+
+.comic-catalog:has(.comic-anime-panel) > :not(.comic-anime-panel) {
+  filter: blur(6px) saturate(0.82);
+  transition: filter 180ms ease;
+}
+
+.comic-anime-panel {
+  top: 50%;
+  bottom: auto;
+  transform: translateY(-50%);
+  pointer-events: auto;
+}
+
+.comic-anime-panel::after {
+  content: "";
+  position: fixed;
+  inset: -100vmax;
+  z-index: -1;
+  background: rgba(14, 22, 48, 0.34);
+  backdrop-filter: blur(7px);
+  pointer-events: none;
+}
+
+.comic-profile-overlay {
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 16% 12%, rgba(255, 255, 255, 0.16) 0 120px, transparent 124px),
+    radial-gradient(circle at 86% 72%, rgba(118, 229, 255, 0.16) 0 180px, transparent 184px),
+    linear-gradient(135deg, rgba(55, 48, 229, 0.58), rgba(61, 67, 219, 0.46));
+  backdrop-filter: blur(7px);
+}
+
+.comic-profile-popout {
+  pointer-events: auto;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: min(1120px, calc(100vw - 28px));
+  height: min(760px, calc(100dvh - 28px));
+  transform: translate(-50%, -50%);
+}
+
+.comic-profile-popout.is-leaving {
+  transform: translate(-50%, -50%);
+}
+
+@media (max-width: 900px) {
+  .comic-profile-popout {
+    width: calc(100vw - 18px);
+    height: min(720px, calc(100dvh - 18px));
+  }
+}
+
+@media (max-width: 620px) {
+  .comic-anime-panel {
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .comic-profile-popout {
+    width: calc(100vw - 12px);
+    height: calc(100dvh - 12px);
+  }
+}

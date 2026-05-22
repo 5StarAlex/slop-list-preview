@@ -81,9 +81,6 @@ export default function ComicShell({ children, className = "" }: ComicShellProps
       return;
     }
 
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         closeProfile();
@@ -91,10 +88,7 @@ export default function ComicShell({ children, className = "" }: ComicShellProps
     };
 
     window.addEventListener("keydown", onKeyDown);
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener("keydown", onKeyDown);
-    };
+    return () => window.removeEventListener("keydown", onKeyDown);
   }, [profileOpen]);
 
   return (

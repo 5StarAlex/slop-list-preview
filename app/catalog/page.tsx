@@ -360,19 +360,6 @@ export default function CatalogPage() {
     };
   }, []);
 
-  useEffect(() => {
-    if (!selectedAnime) {
-      return;
-    }
-
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-
-    return () => {
-      document.body.style.overflow = previousOverflow;
-    };
-  }, [selectedAnime]);
-
   const watchlistPreview = watchlistExpanded ? watchlist : watchlist.slice(0, WATCHLIST_COLLAPSED_LIMIT);
   const selectedPosts = useMemo(
     () => animePosts.filter((post) => post.animeId === selectedAnime?.mal_id),
