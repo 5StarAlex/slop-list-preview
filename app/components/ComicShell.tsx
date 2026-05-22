@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { type CSSProperties, type SVGProps, useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import { useAccount } from "./AccountProvider";
 import SlopLogo from "./layout/SlopLogo";
 import { useParallaxOffset } from "./useParallaxOffset";
@@ -91,134 +92,137 @@ export default function ComicShell({ children, className = "" }: ComicShellProps
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [profileOpen]);
 
-  return (
-    <div
-      className={`demo2-page comic-app bg-${profile.siteBackground}${profile.darkMode ? " theme-dark" : ""}${profile.glossyMode ? " theme-glossy" : ""} ${className}`.trim()}
-      style={themeStyle}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-    >
-      <div className="comic-shell-parallax" aria-hidden="true">
-        <span className="comic-shell-shape-layer comic-shell-shape-layer-back" />
-        <span className="comic-shell-shape-layer comic-shell-shape-layer-mid" />
-        <span className="comic-shell-shape-layer comic-shell-shape-layer-front" />
-      </div>
-      <header className="comic-header" aria-label="Slop List navigation">
-        <SlopLogo />
-
-        <nav className="comic-nav" aria-label="Main navigation">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`comic-nav-item is-${item.color}${pathname === item.href ? " is-active" : ""}`}
-            >
-              <ComicNavIcon name={item.icon} />
-              <span>{item.label}</span>
-            </Link>
-          ))}
-        </nav>
-
-        <button type="button" className="comic-profile-card" onClick={() => setProfileOpen(true)} aria-label="Open profile card">
-          <span className="comic-profile-avatar">
-            <Image src={profile.profileImage} alt="" fill unoptimized className="comic-profile-avatar-image" />
-          </span>
-          <span className="comic-profile-copy">
-            <strong>{profile.displayName}</strong>
-            <span>{profile.affiliation}</span>
-            <em><span aria-hidden="true">{"\u2605"}</span> {account.economy.coins}</em>
-          </span>
+  const profileOverlay = (
+    <div className="comic-profile-overlay" role="presentation" onClick={closeProfile}>
+      <aside
+        className={`comic-profile-popout${profileClosing ? " is-leaving" : ""}`}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Profile card"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <button type="button" className="comic-popout-close" onClick={closeProfile} aria-label="Close profile card">
+          {"\u00d7"}
         </button>
-      </header>
-
-      {children}
-
-      {profileOpen ? (
-        <div className="comic-profile-overlay" role="presentation" onClick={closeProfile}>
-          <aside
-            className={`comic-profile-popout${profileClosing ? " is-leaving" : ""}`}
-            role="dialog"
-            aria-modal="true"
-            aria-label="Profile card"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <button type="button" className="comic-popout-close" onClick={closeProfile} aria-label="Close profile card">
-              {"\u00d7"}
-            </button>
-            <div className="comic-profile-takeover-bg" aria-hidden="true">
-              <span />
-              <span />
-              <span />
-            </div>
-            <div className="comic-profile-showcase">
-              <section className="comic-profile-main-card" aria-label="Profile summary">
-                <span className="comic-profile-badge">
-                  <Image src={profile.profileImage} alt="" fill unoptimized />
-                </span>
-                <header className="comic-profile-main-head">
-                  <h2>{profile.displayName}</h2>
-                  <span aria-hidden="true">...</span>
-                </header>
-                <div className="comic-profile-portrait">
-                  <Image src={profile.profileImage} alt={`${profile.displayName} profile`} fill unoptimized />
-                </div>
-                <p className="comic-profile-rank">
-                  <span aria-hidden="true">V</span>
-                  {profile.affiliation}
-                </p>
-                <div className="comic-profile-tag-row" aria-label="Profile tags">
-                  <span>Confident</span>
-                  <span>Catalog Main</span>
-                  <span>Top Slop</span>
-                </div>
-              </section>
-
-              <section className="comic-profile-comment-card" aria-label="Profile comments">
-                <header>
-                  <span aria-hidden="true" />
-                  <h3>COMMENT</h3>
-                </header>
-                <div className="comic-profile-comment-list">
-                  {profileCommentRows.map((comment, index) => (
-                    <p key={comment.name}>
-                      <span>{comment.name.slice(0, 1)}</span>
-                      <strong>{comment.name}</strong>
-                      <em>{index === 0 ? profile.description : comment.copy}</em>
-                    </p>
-                  ))}
-                </div>
-              </section>
-            </div>
-
-            <div className="comic-profile-control-strip">
-              <div className="comic-popout-stats">
-                <span><strong>{account.economy.coins}</strong> Stars</span>
-                <span><strong>{account.progression.level}</strong> Level</span>
-                <span><strong>{account.progression.xp}</strong> XP</span>
-              </div>
-              <section className="comic-theme-picker" aria-label="Theme background">
-                <h3>Theme Background</h3>
-                <div className="comic-theme-options">
-                  {comicBackgrounds.map((option) => (
-                    <button
-                      key={option.key}
-                      type="button"
-                      className={`comic-theme-option${profile.siteBackground === option.key ? " is-active" : ""}`}
-                      onClick={() => updateProfile({ ...profile, siteBackground: option.key })}
-                    >
-                      <span>{option.label}</span>
-                    </button>
-                  ))}
-                </div>
-              </section>
-              <Link href="/profile" className="comic-popout-action" onClick={closeProfile}>
-                Open Create-A-Slop
-              </Link>
-            </div>
-          </aside>
+        <div className="comic-profile-takeover-bg" aria-hidden="true">
+          <span />
+          <span />
+          <span />
         </div>
-      ) : null}
+        <div className="comic-profile-showcase">
+          <section className="comic-profile-main-card" aria-label="Profile summary">
+            <span className="comic-profile-badge">
+              <Image src={profile.profileImage} alt="" fill unoptimized />
+            </span>
+            <header className="comic-profile-main-head">
+              <h2>{profile.displayName}</h2>
+              <span aria-hidden="true">...</span>
+            </header>
+            <div className="comic-profile-portrait">
+              <Image src={profile.profileImage} alt={`${profile.displayName} profile`} fill unoptimized />
+            </div>
+            <p className="comic-profile-rank">
+              <span aria-hidden="true">V</span>
+              {profile.affiliation}
+            </p>
+            <div className="comic-profile-tag-row" aria-label="Profile tags">
+              <span>Confident</span>
+              <span>Catalog Main</span>
+              <span>Top Slop</span>
+            </div>
+          </section>
+
+          <section className="comic-profile-comment-card" aria-label="Profile comments">
+            <header>
+              <span aria-hidden="true" />
+              <h3>COMMENT</h3>
+            </header>
+            <div className="comic-profile-comment-list">
+              {profileCommentRows.map((comment, index) => (
+                <p key={comment.name}>
+                  <span>{comment.name.slice(0, 1)}</span>
+                  <strong>{comment.name}</strong>
+                  <em>{index === 0 ? profile.description : comment.copy}</em>
+                </p>
+              ))}
+            </div>
+          </section>
+        </div>
+
+        <div className="comic-profile-control-strip">
+          <div className="comic-popout-stats">
+            <span><strong>{account.economy.coins}</strong> Stars</span>
+            <span><strong>{account.progression.level}</strong> Level</span>
+            <span><strong>{account.progression.xp}</strong> XP</span>
+          </div>
+          <section className="comic-theme-picker" aria-label="Theme background">
+            <h3>Theme Background</h3>
+            <div className="comic-theme-options">
+              {comicBackgrounds.map((option) => (
+                <button
+                  key={option.key}
+                  type="button"
+                  className={`comic-theme-option${profile.siteBackground === option.key ? " is-active" : ""}`}
+                  onClick={() => updateProfile({ ...profile, siteBackground: option.key })}
+                >
+                  <span>{option.label}</span>
+                </button>
+              ))}
+            </div>
+          </section>
+          <Link href="/profile" className="comic-popout-action" onClick={closeProfile}>
+            Open Create-A-Slop
+          </Link>
+        </div>
+      </aside>
     </div>
+  );
+
+  return (
+    <>
+      <div
+        className={`demo2-page comic-app bg-${profile.siteBackground}${profile.darkMode ? " theme-dark" : ""}${profile.glossyMode ? " theme-glossy" : ""} ${className}`.trim()}
+        style={themeStyle}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+      >
+        <div className="comic-shell-parallax" aria-hidden="true">
+          <span className="comic-shell-shape-layer comic-shell-shape-layer-back" />
+          <span className="comic-shell-shape-layer comic-shell-shape-layer-mid" />
+          <span className="comic-shell-shape-layer comic-shell-shape-layer-front" />
+        </div>
+        <header className="comic-header" aria-label="Slop List navigation">
+          <SlopLogo />
+
+          <nav className="comic-nav" aria-label="Main navigation">
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`comic-nav-item is-${item.color}${pathname === item.href ? " is-active" : ""}`}
+              >
+                <ComicNavIcon name={item.icon} />
+                <span>{item.label}</span>
+              </Link>
+            ))}
+          </nav>
+
+          <button type="button" className="comic-profile-card" onClick={() => setProfileOpen(true)} aria-label="Open profile card">
+            <span className="comic-profile-avatar">
+              <Image src={profile.profileImage} alt="" fill unoptimized className="comic-profile-avatar-image" />
+            </span>
+            <span className="comic-profile-copy">
+              <strong>{profile.displayName}</strong>
+              <span>{profile.affiliation}</span>
+              <em><span aria-hidden="true">{"\u2605"}</span> {account.economy.coins}</em>
+            </span>
+          </button>
+        </header>
+
+        {children}
+      </div>
+      {profileOpen && typeof document !== "undefined" ? createPortal(profileOverlay, document.body) : null}
+    </>
   );
 }
 

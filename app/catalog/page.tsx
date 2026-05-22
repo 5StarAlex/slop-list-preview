@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { type FormEvent, useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import ComicShell from "../components/ComicShell";
 
 type Anime = {
@@ -411,54 +412,59 @@ export default function CatalogPage() {
     setPostDraft("");
   };
 
-  return (
-    <ComicShell className="comic-catalog-page">
-      <main className="comic-catalog">
-        <CatalogRow
-          title="MY WATCH LIST"
-          items={watchlistPreview}
-          emptyText="Add anime from the shelves below and they will show up here."
-          onSelect={setSelectedAnime}
-          ratings={ratings}
-          topSlopVotes={topSlopVotes}
-        />
-        {watchlist.length > WATCHLIST_COLLAPSED_LIMIT ? (
-          <button type="button" className="comic-watchlist-expand" onClick={() => setWatchlistExpanded((current) => !current)}>
-            {watchlistExpanded ? "Show Less" : `+ Show ${watchlist.length - WATCHLIST_COLLAPSED_LIMIT} More`}
-          </button>
-        ) : null}
+  const animeOverlay = selectedAnime ? (
+    <div className="comic-overlay-layer comic-anime-overlay-layer">
+      <AnimeDetailPanel
+        anime={selectedAnime}
+        rating={ratings[selectedAnime.mal_id] ?? 0}
+        topSlopVotes={topSlopVotes[selectedAnime.mal_id] ?? 0}
+        isInWatchlist={watchlist.some((item) => item.mal_id === selectedAnime.mal_id)}
+        posts={selectedPosts}
+        postDraft={postDraft}
+        onPostDraftChange={setPostDraft}
+        onClose={() => setSelectedAnime(null)}
+        onRate={(rating) => rateAnime(selectedAnime, rating)}
+        onVote={() => voteTopSlop(selectedAnime)}
+        onAdd={() => addToWatchlist(selectedAnime)}
+        onRemove={() => removeFromWatchlist(selectedAnime)}
+        onSubmitPost={submitAnimePost}
+      />
+    </div>
+  ) : null;
 
-        {discoveryQueries.map((query) => (
+  return (
+    <>
+      <ComicShell className="comic-catalog-page">
+        <main className={`comic-catalog${selectedAnime ? " has-floating-overlay" : ""}`}>
           <CatalogRow
-            key={query.title}
-            title={query.title}
-            items={rows[query.title] ?? []}
-            emptyText={isLoading ? query.empty : "No shows loaded for this shelf."}
+            title="MY WATCH LIST"
+            items={watchlistPreview}
+            emptyText="Add anime from the shelves below and they will show up here."
             onSelect={setSelectedAnime}
             ratings={ratings}
             topSlopVotes={topSlopVotes}
           />
-        ))}
+          {watchlist.length > WATCHLIST_COLLAPSED_LIMIT ? (
+            <button type="button" className="comic-watchlist-expand" onClick={() => setWatchlistExpanded((current) => !current)}>
+              {watchlistExpanded ? "Show Less" : `+ Show ${watchlist.length - WATCHLIST_COLLAPSED_LIMIT} More`}
+            </button>
+          ) : null}
 
-        {selectedAnime ? (
-          <AnimeDetailPanel
-            anime={selectedAnime}
-            rating={ratings[selectedAnime.mal_id] ?? 0}
-            topSlopVotes={topSlopVotes[selectedAnime.mal_id] ?? 0}
-            isInWatchlist={watchlist.some((item) => item.mal_id === selectedAnime.mal_id)}
-            posts={selectedPosts}
-            postDraft={postDraft}
-            onPostDraftChange={setPostDraft}
-            onClose={() => setSelectedAnime(null)}
-            onRate={(rating) => rateAnime(selectedAnime, rating)}
-            onVote={() => voteTopSlop(selectedAnime)}
-            onAdd={() => addToWatchlist(selectedAnime)}
-            onRemove={() => removeFromWatchlist(selectedAnime)}
-            onSubmitPost={submitAnimePost}
-          />
-        ) : null}
-      </main>
-    </ComicShell>
+          {discoveryQueries.map((query) => (
+            <CatalogRow
+              key={query.title}
+              title={query.title}
+              items={rows[query.title] ?? []}
+              emptyText={isLoading ? query.empty : "No shows loaded for this shelf."}
+              onSelect={setSelectedAnime}
+              ratings={ratings}
+              topSlopVotes={topSlopVotes}
+            />
+          ))}
+        </main>
+      </ComicShell>
+      {animeOverlay && typeof document !== "undefined" ? createPortal(animeOverlay, document.body) : null}
+    </>
   );
 }
 

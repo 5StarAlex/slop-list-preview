@@ -18077,3 +18077,120 @@ main {
     height: calc(100dvh - 12px);
   }
 }
+
+/* True viewport portal layer for catalog/profile popups */
+
+.comic-overlay-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 240;
+  display: grid;
+  place-items: center;
+  padding: clamp(8px, 2vw, 20px);
+  pointer-events: none;
+}
+
+.comic-overlay-layer::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(13, 20, 46, 0.34);
+  backdrop-filter: blur(7px);
+  pointer-events: none;
+}
+
+.comic-overlay-layer > * {
+  pointer-events: auto;
+}
+
+.comic-catalog.has-floating-overlay > * {
+  filter: blur(6px) saturate(0.82);
+  transition: filter 180ms ease;
+}
+
+.comic-overlay-layer .comic-anime-panel {
+  position: relative;
+  inset: auto;
+  top: auto;
+  bottom: auto;
+  width: min(1120px, calc(100vw - 28px));
+  height: min(760px, calc(100dvh - 28px));
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  transform: none;
+}
+
+.comic-overlay-layer .comic-anime-panel::after {
+  content: none;
+}
+
+.comic-overlay-layer .comic-anime-panel-poster {
+  height: auto;
+  max-height: none;
+}
+
+.comic-overlay-layer .comic-anime-panel-poster img,
+.comic-profile-portrait img {
+  object-fit: contain;
+  object-position: center;
+}
+
+.comic-profile-overlay {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 240 !important;
+  display: grid !important;
+  place-items: center !important;
+  pointer-events: none;
+}
+
+.comic-profile-overlay::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: rgba(13, 20, 46, 0.26);
+  backdrop-filter: blur(7px);
+}
+
+.comic-profile-popout {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  width: min(1120px, calc(100vw - 28px));
+  height: min(760px, calc(100dvh - 28px));
+  margin: 0;
+  transform: none !important;
+}
+
+.comic-profile-portrait {
+  background:
+    linear-gradient(130deg, rgba(255, 45, 170, 0.72) 0 12%, transparent 12.4%),
+    linear-gradient(135deg, #151f7a, #6659ff 44%, #75eaff);
+}
+
+@media (max-width: 900px) {
+  .comic-overlay-layer .comic-anime-panel {
+    width: calc(100vw - 18px);
+    height: min(720px, calc(100dvh - 18px));
+  }
+
+  .comic-profile-popout {
+    width: calc(100vw - 18px);
+    height: min(720px, calc(100dvh - 18px));
+  }
+}
+
+@media (max-width: 620px) {
+  .comic-overlay-layer .comic-anime-panel {
+    width: calc(100vw - 12px);
+    height: calc(100dvh - 12px);
+    transform: none;
+  }
+
+  .comic-profile-popout {
+    width: calc(100vw - 12px);
+    height: calc(100dvh - 12px);
+  }
+}
