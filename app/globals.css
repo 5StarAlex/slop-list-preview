@@ -17713,3 +17713,301 @@ main {
     min-height: 220px;
   }
 }
+
+/* Viewport-bound overlay corrections */
+
+.comic-anime-panel {
+  position: fixed;
+  inset: clamp(10px, 2vw, 22px);
+  z-index: 130;
+  display: grid;
+  grid-template-columns: minmax(160px, 0.42fr) minmax(0, 1fr);
+  gap: clamp(12px, 2vw, 22px);
+  align-items: stretch;
+  width: auto;
+  max-width: 1120px;
+  max-height: calc(100dvh - clamp(20px, 4vw, 44px));
+  margin: auto;
+  overflow: hidden;
+  padding: clamp(14px, 2.2vw, 24px);
+  border: 5px solid #11131a;
+  border-radius: 26px;
+  background:
+    radial-gradient(circle at 16% 18%, rgba(255, 255, 255, 0.64) 0 8px, transparent 9px),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0 56%, rgba(140, 226, 255, 0.92) 56.3% 100%);
+  box-shadow:
+    0 0 0 100vmax rgba(17, 22, 48, 0.56),
+    10px 12px 0 rgba(0, 0, 0, 0.2),
+    inset 0 0 0 3px rgba(255, 255, 255, 0.7);
+}
+
+.comic-anime-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    repeating-linear-gradient(116deg, rgba(0, 0, 0, 0.045) 0 1px, transparent 1px 13px),
+    radial-gradient(circle at 90% 12%, rgba(255, 70, 166, 0.2) 0 120px, transparent 124px);
+  pointer-events: none;
+}
+
+.comic-anime-panel-close,
+.comic-anime-panel-poster,
+.comic-anime-panel-copy {
+  position: relative;
+  z-index: 1;
+}
+
+.comic-anime-panel-close {
+  top: 12px;
+  right: 12px;
+  width: 44px;
+  height: 44px;
+  border: 4px solid #11131a;
+  border-radius: 14px;
+  background: #ffffff;
+  color: #11131a;
+  box-shadow: 4px 5px 0 rgba(0, 0, 0, 0.16);
+}
+
+.comic-anime-panel-poster {
+  min-height: 0;
+  height: 100%;
+  max-height: calc(100dvh - 92px);
+  border: 4px solid #11131a;
+  border-radius: 18px;
+  background: #11131a;
+}
+
+.comic-anime-panel-poster img {
+  object-fit: cover;
+}
+
+.comic-anime-panel-copy {
+  display: grid;
+  grid-template-rows: auto auto auto minmax(0, auto) auto auto auto minmax(0, 1fr);
+  gap: 8px;
+  overflow: hidden;
+}
+
+.comic-anime-panel-copy h2 {
+  display: -webkit-box;
+  max-height: 2.25em;
+  overflow: hidden;
+  font-size: clamp(1.5rem, 3.4vw, 3rem);
+  line-height: 1.04;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.comic-anime-panel-copy > p:nth-of-type(2) {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: 0.92rem;
+  line-height: 1.35;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.comic-anime-rating,
+.comic-anime-actions {
+  gap: 6px;
+}
+
+.comic-anime-rating button {
+  width: 34px;
+  height: 34px;
+  min-height: 34px;
+  padding: 0;
+}
+
+.comic-anime-post-form {
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+}
+
+.comic-anime-post-form textarea {
+  min-height: 58px;
+  max-height: 72px;
+}
+
+.comic-anime-posts {
+  min-height: 0;
+  max-height: 96px;
+  overflow: auto;
+}
+
+.comic-profile-popout {
+  width: 100vw;
+  height: 100dvh;
+  max-height: 100dvh;
+  padding: clamp(40px, 5vh, 62px) clamp(18px, 4vw, 56px) clamp(62px, 8vh, 76px);
+  overflow: hidden;
+}
+
+.comic-profile-showcase {
+  width: min(1040px, 100%);
+  max-height: calc(100dvh - 190px);
+  align-self: center;
+}
+
+.comic-profile-main-card {
+  min-height: 0;
+  max-height: calc(100dvh - 210px);
+  gap: 10px;
+  padding: clamp(18px, 2.2vw, 22px);
+}
+
+.comic-profile-portrait {
+  width: min(320px, 74%);
+  min-height: 0;
+  height: clamp(150px, 30vh, 250px);
+  justify-self: center;
+}
+
+.comic-profile-portrait img {
+  object-fit: cover;
+  object-position: center 28%;
+}
+
+.comic-profile-comment-card {
+  max-height: calc(100dvh - 230px);
+  overflow: hidden;
+}
+
+.comic-profile-comment-list {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.comic-profile-control-strip {
+  max-height: 120px;
+  overflow: hidden;
+}
+
+@media (max-width: 900px) {
+  .comic-anime-panel {
+    grid-template-columns: minmax(112px, 0.36fr) minmax(0, 1fr);
+    gap: 10px;
+    padding: 12px;
+  }
+
+  .comic-anime-panel-poster {
+    max-height: calc(100dvh - 58px);
+  }
+
+  .comic-anime-panel-copy {
+    gap: 6px;
+  }
+
+  .comic-anime-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .comic-anime-rating button {
+    width: 28px;
+    height: 28px;
+    min-height: 28px;
+    font-size: 0.72rem;
+  }
+
+  .comic-profile-popout {
+    height: 100dvh;
+    overflow: hidden;
+    padding: 60px 12px 68px;
+  }
+
+  .comic-profile-showcase {
+    grid-template-columns: minmax(0, 1fr) minmax(210px, 0.64fr);
+    max-height: calc(100dvh - 170px);
+    gap: 12px;
+  }
+
+  .comic-profile-main-card,
+  .comic-profile-comment-card {
+    max-height: calc(100dvh - 190px);
+    transform: none;
+  }
+
+  .comic-profile-tag-row {
+    gap: 6px;
+  }
+
+  .comic-profile-tag-row span {
+    padding: 6px 8px;
+    font-size: 0.72rem;
+  }
+
+  .comic-profile-control-strip {
+    grid-template-columns: 1fr auto;
+    max-height: 112px;
+  }
+
+  .comic-profile-control-strip .comic-theme-picker {
+    display: none;
+  }
+}
+
+@media (max-width: 620px) {
+  .comic-anime-panel {
+    inset: 8px;
+    grid-template-columns: 1fr;
+    grid-template-rows: 30vh minmax(0, 1fr);
+    max-height: calc(100dvh - 16px);
+  }
+
+  .comic-anime-panel-poster {
+    height: 30vh;
+    max-height: 30vh;
+  }
+
+  .comic-anime-panel-copy h2 {
+    font-size: clamp(1.2rem, 8vw, 2rem);
+  }
+
+  .comic-anime-panel-copy > p:nth-of-type(2) {
+    -webkit-line-clamp: 2;
+  }
+
+  .comic-anime-posts {
+    max-height: 56px;
+  }
+
+  .comic-profile-showcase {
+    grid-template-columns: 1fr;
+    max-height: calc(100dvh - 160px);
+  }
+
+  .comic-profile-main-card {
+    max-height: calc(58dvh - 76px);
+  }
+
+  .comic-profile-comment-card {
+    max-height: 28dvh;
+    padding: 14px;
+  }
+
+  .comic-profile-comment-list {
+    gap: 6px;
+  }
+
+  .comic-profile-comment-list p:nth-child(n + 3) {
+    display: none;
+  }
+
+  .comic-profile-portrait {
+    height: clamp(118px, 22vh, 170px);
+  }
+
+  .comic-profile-control-strip {
+    grid-template-columns: 1fr;
+    max-height: 86px;
+    padding: 8px;
+  }
+
+  .comic-profile-control-strip .comic-popout-action {
+    display: none;
+  }
+}
