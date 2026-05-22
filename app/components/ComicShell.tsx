@@ -37,6 +37,13 @@ const comicBackgrounds = [
   { key: "sunrise", label: "Sunrise", image: null },
 ] as const;
 
+const profileCommentRows = [
+  { name: "Laville", copy: "profile is actually ranked" },
+  { name: "Zata", copy: "fit check passed" },
+  { name: "Helen", copy: "top slop energy" },
+  { name: "Veres", copy: "theme goes hard" },
+] as const;
+
 export default function ComicShell({ children, className = "" }: ComicShellProps) {
   const pathname = usePathname();
   const { account, updateProfile } = useAccount();
@@ -138,40 +145,76 @@ export default function ComicShell({ children, className = "" }: ComicShellProps
             <button type="button" className="comic-popout-close" onClick={closeProfile} aria-label="Close profile card">
               {"\u00d7"}
             </button>
-            <div className="comic-popout-head">
-              <span className="comic-popout-avatar">
-                <Image src={profile.profileImage} alt={`${profile.displayName} profile`} fill unoptimized />
-              </span>
-              <div>
-                <h2>{profile.displayName}</h2>
-                <p>{profile.affiliation}</p>
-                <strong><span aria-hidden="true">{"\u2605"}</span> {account.economy.coins}</strong>
-              </div>
+            <div className="comic-profile-takeover-bg" aria-hidden="true">
+              <span />
+              <span />
+              <span />
             </div>
-            <div className="comic-popout-stats">
-              <span><strong>{account.economy.coins}</strong> Stars</span>
-              <span><strong>{account.progression.level}</strong> Level</span>
-              <span><strong>{account.progression.xp}</strong> XP</span>
+            <div className="comic-profile-showcase">
+              <section className="comic-profile-main-card" aria-label="Profile summary">
+                <span className="comic-profile-badge">
+                  <Image src={profile.profileImage} alt="" fill unoptimized />
+                </span>
+                <header className="comic-profile-main-head">
+                  <h2>{profile.displayName}</h2>
+                  <span aria-hidden="true">...</span>
+                </header>
+                <div className="comic-profile-portrait">
+                  <Image src={profile.profileImage} alt={`${profile.displayName} profile`} fill unoptimized />
+                </div>
+                <p className="comic-profile-rank">
+                  <span aria-hidden="true">V</span>
+                  {profile.affiliation}
+                </p>
+                <div className="comic-profile-tag-row" aria-label="Profile tags">
+                  <span>Confident</span>
+                  <span>Catalog Main</span>
+                  <span>Top Slop</span>
+                </div>
+              </section>
+
+              <section className="comic-profile-comment-card" aria-label="Profile comments">
+                <header>
+                  <span aria-hidden="true" />
+                  <h3>COMMENT</h3>
+                </header>
+                <div className="comic-profile-comment-list">
+                  {profileCommentRows.map((comment, index) => (
+                    <p key={comment.name}>
+                      <span>{comment.name.slice(0, 1)}</span>
+                      <strong>{comment.name}</strong>
+                      <em>{index === 0 ? profile.description : comment.copy}</em>
+                    </p>
+                  ))}
+                </div>
+              </section>
             </div>
-            <p className="comic-popout-copy">{profile.description}</p>
-            <section className="comic-theme-picker" aria-label="Theme background">
-              <h3>Theme Background</h3>
-              <div className="comic-theme-options">
-                {comicBackgrounds.map((option) => (
-                  <button
-                    key={option.key}
-                    type="button"
-                    className={`comic-theme-option${profile.siteBackground === option.key ? " is-active" : ""}`}
-                    onClick={() => updateProfile({ ...profile, siteBackground: option.key })}
-                  >
-                    <span>{option.label}</span>
-                  </button>
-                ))}
+
+            <div className="comic-profile-control-strip">
+              <div className="comic-popout-stats">
+                <span><strong>{account.economy.coins}</strong> Stars</span>
+                <span><strong>{account.progression.level}</strong> Level</span>
+                <span><strong>{account.progression.xp}</strong> XP</span>
               </div>
-            </section>
-            <Link href="/profile" className="comic-popout-action" onClick={closeProfile}>
-              Open Create-A-Slop
-            </Link>
+              <section className="comic-theme-picker" aria-label="Theme background">
+                <h3>Theme Background</h3>
+                <div className="comic-theme-options">
+                  {comicBackgrounds.map((option) => (
+                    <button
+                      key={option.key}
+                      type="button"
+                      className={`comic-theme-option${profile.siteBackground === option.key ? " is-active" : ""}`}
+                      onClick={() => updateProfile({ ...profile, siteBackground: option.key })}
+                    >
+                      <span>{option.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </section>
+              <Link href="/profile" className="comic-popout-action" onClick={closeProfile}>
+                Open Create-A-Slop
+              </Link>
+            </div>
           </aside>
         </div>
       ) : null}
