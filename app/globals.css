@@ -18194,3 +18194,298 @@ main {
     height: calc(100dvh - 12px);
   }
 }
+
+/* Pixel pass: modal visibility and image containment */
+
+.comic-overlay-layer,
+.comic-profile-overlay {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 10000 !important;
+  display: grid !important;
+  place-items: center !important;
+  width: 100vw !important;
+  height: 100dvh !important;
+  padding: clamp(8px, 1.6vw, 18px) !important;
+  overflow: hidden !important;
+}
+
+.comic-overlay-layer::before,
+.comic-profile-overlay::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: rgba(8, 14, 32, 0.48);
+  backdrop-filter: blur(8px) saturate(0.82);
+  pointer-events: none;
+}
+
+.comic-overlay-layer .comic-anime-panel {
+  position: relative !important;
+  inset: auto !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  z-index: 1 !important;
+  display: grid !important;
+  grid-template-columns: minmax(190px, 0.34fr) minmax(0, 1fr) !important;
+  gap: clamp(12px, 1.8vw, 22px) !important;
+  width: min(1120px, calc(100vw - 28px)) !important;
+  height: min(720px, calc(100dvh - 28px)) !important;
+  max-width: none !important;
+  max-height: none !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  transform: none !important;
+}
+
+.comic-overlay-layer .comic-anime-panel-poster {
+  position: relative !important;
+  align-self: stretch !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow: hidden !important;
+  border-radius: 18px !important;
+  background:
+    linear-gradient(180deg, rgba(20, 26, 48, 0.96), rgba(8, 12, 28, 0.98));
+}
+
+.comic-overlay-layer .comic-anime-panel-poster img {
+  object-fit: contain !important;
+  object-position: center center !important;
+  padding: 6px !important;
+}
+
+.comic-overlay-layer .comic-anime-panel-copy {
+  min-height: 0 !important;
+  overflow: hidden !important;
+  align-self: stretch !important;
+  display: grid !important;
+  grid-template-rows: auto auto auto auto auto auto minmax(0, 1fr) !important;
+  gap: clamp(6px, 1vh, 10px) !important;
+}
+
+.comic-overlay-layer .comic-anime-panel-copy h2 {
+  max-height: none !important;
+  font-size: clamp(1.5rem, 3.1vw, 2.75rem) !important;
+  line-height: 1.02 !important;
+  -webkit-line-clamp: 2;
+}
+
+.comic-overlay-layer .comic-anime-panel-copy > p:nth-of-type(2) {
+  margin: 0 !important;
+  -webkit-line-clamp: 3;
+}
+
+.comic-overlay-layer .comic-anime-rating {
+  display: flex !important;
+  flex-wrap: wrap !important;
+}
+
+.comic-overlay-layer .comic-anime-actions {
+  display: flex !important;
+  flex-wrap: wrap !important;
+}
+
+.comic-overlay-layer .comic-anime-post-form {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: end !important;
+}
+
+.comic-overlay-layer .comic-anime-post-form textarea {
+  min-height: 58px !important;
+  max-height: 76px !important;
+}
+
+.comic-overlay-layer .comic-anime-posts {
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow: auto !important;
+}
+
+.comic-profile-overlay {
+  pointer-events: none !important;
+}
+
+.comic-profile-popout {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  z-index: 1 !important;
+  display: grid !important;
+  grid-template-rows: minmax(0, 1fr) auto !important;
+  width: min(1180px, calc(100vw - 28px)) !important;
+  height: min(720px, calc(100dvh - 28px)) !important;
+  max-width: none !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: clamp(42px, 5vh, 58px) clamp(16px, 3vw, 38px) clamp(16px, 2.6vh, 28px) !important;
+  overflow: hidden !important;
+  transform: none !important;
+  pointer-events: auto !important;
+}
+
+.comic-profile-showcase {
+  align-self: center !important;
+  width: min(1000px, 100%) !important;
+  max-height: 100% !important;
+  min-height: 0 !important;
+  display: grid !important;
+  grid-template-columns: minmax(250px, 0.78fr) minmax(240px, 0.7fr) !important;
+  gap: clamp(12px, 2vw, 26px) !important;
+}
+
+.comic-profile-main-card {
+  min-height: 0 !important;
+  max-height: min(520px, calc(100dvh - 178px)) !important;
+  overflow: visible !important;
+  padding: clamp(16px, 2vw, 22px) !important;
+  gap: clamp(8px, 1vh, 12px) !important;
+}
+
+.comic-profile-main-head {
+  align-items: start !important;
+}
+
+.comic-profile-main-head h2 {
+  max-width: 100% !important;
+  font-size: clamp(1.55rem, 3.2vw, 2.65rem) !important;
+  line-height: 0.98 !important;
+}
+
+.comic-profile-portrait {
+  position: relative !important;
+  width: min(300px, 78%) !important;
+  height: clamp(150px, 27vh, 240px) !important;
+  min-height: 0 !important;
+  justify-self: center !important;
+  overflow: hidden !important;
+  background:
+    linear-gradient(135deg, #151f7a, #6659ff 44%, #75eaff) !important;
+}
+
+.comic-profile-portrait img,
+.comic-profile-badge img {
+  object-fit: contain !important;
+  object-position: center !important;
+}
+
+.comic-profile-comment-card {
+  min-height: 0 !important;
+  max-height: min(480px, calc(100dvh - 190px)) !important;
+  overflow: hidden !important;
+}
+
+.comic-profile-comment-list {
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+.comic-profile-control-strip {
+  width: min(1000px, 100%) !important;
+  max-height: 118px !important;
+  min-height: 0 !important;
+  margin: clamp(8px, 1.4vh, 14px) auto 0 !important;
+  overflow: hidden !important;
+  grid-template-columns: auto minmax(0, 1fr) auto !important;
+}
+
+.comic-profile-control-strip .comic-theme-options {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 6px !important;
+  max-height: 72px !important;
+  overflow: hidden !important;
+}
+
+.comic-profile-control-strip .comic-popout-stats {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(58px, auto)) !important;
+  gap: 6px !important;
+}
+
+.comic-profile-control-strip .comic-popout-stats span,
+.comic-profile-control-strip .comic-popout-action,
+.comic-theme-option {
+  min-height: 36px !important;
+  padding: 4px 10px !important;
+  white-space: nowrap !important;
+}
+
+@media (max-width: 900px) {
+  .comic-overlay-layer .comic-anime-panel {
+    grid-template-columns: minmax(140px, 0.32fr) minmax(0, 1fr) !important;
+    width: calc(100vw - 18px) !important;
+    height: calc(100dvh - 18px) !important;
+  }
+
+  .comic-profile-popout {
+    width: calc(100vw - 18px) !important;
+    height: calc(100dvh - 18px) !important;
+    padding: 56px 12px 12px !important;
+  }
+
+  .comic-profile-showcase {
+    grid-template-columns: minmax(0, 1fr) minmax(210px, 0.72fr) !important;
+  }
+
+  .comic-profile-control-strip {
+    grid-template-columns: minmax(0, 1fr) auto !important;
+  }
+
+  .comic-profile-control-strip .comic-theme-picker {
+    display: none !important;
+  }
+}
+
+@media (max-width: 620px) {
+  .comic-overlay-layer .comic-anime-panel {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: minmax(130px, 30dvh) minmax(0, 1fr) !important;
+    width: calc(100vw - 10px) !important;
+    height: calc(100dvh - 10px) !important;
+    padding: 10px !important;
+  }
+
+  .comic-overlay-layer .comic-anime-panel-poster {
+    height: 100% !important;
+  }
+
+  .comic-overlay-layer .comic-anime-panel-copy h2 {
+    font-size: clamp(1.25rem, 7.5vw, 2rem) !important;
+  }
+
+  .comic-profile-popout {
+    width: calc(100vw - 10px) !important;
+    height: calc(100dvh - 10px) !important;
+    padding: 54px 10px 10px !important;
+  }
+
+  .comic-profile-showcase {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: minmax(0, 1fr) auto !important;
+    gap: 8px !important;
+  }
+
+  .comic-profile-main-card {
+    max-height: none !important;
+  }
+
+  .comic-profile-comment-card {
+    max-height: 26dvh !important;
+    padding: 12px !important;
+  }
+
+  .comic-profile-comment-list p:nth-child(n + 3) {
+    display: none !important;
+  }
+
+  .comic-profile-control-strip {
+    display: none !important;
+  }
+}
