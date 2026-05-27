@@ -1,0 +1,748 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Slop Top Game Component</title>
+  <style>
+    /*
+      Slop Top Game Component
+      Drop this whole file into any plain HTML/CSS project, or copy:
+      1. the <section class="slop-top-game-component"> markup,
+      2. this <style> block,
+      3. the <script> block.
+    */
+
+    :root {
+      --slop-game-ui-font: Verdana, Tahoma, "Segoe UI", sans-serif;
+      --slop-game-pixel-font: "Trebuchet MS", Verdana, Tahoma, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: start center;
+      padding: 28px;
+      background:
+        linear-gradient(180deg, rgba(243, 251, 248, 0.92), rgba(255, 248, 219, 0.96)),
+        linear-gradient(90deg, rgba(180, 238, 247, 0.34) 50%, rgba(238, 248, 236, 0.34) 50%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.12) 50%, transparent 50%);
+      background-size: 100% 100%, 40px 40px, 40px 40px;
+      font-family: var(--slop-game-ui-font);
+    }
+
+    .slop-top-game-component {
+      width: min(1080px, 100%);
+      display: grid;
+      gap: 8px;
+      color: #f5fdff;
+      font-family: var(--slop-game-ui-font);
+    }
+
+    .slop-top-game-label {
+      margin: 0;
+      color: #1a4e8e;
+      font-size: 0.82rem;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .slop-game-marquee {
+      position: relative;
+      min-height: 108px;
+      overflow: hidden;
+      isolation: isolate;
+      border: 2px solid rgba(161, 197, 255, 0.8);
+      border-radius: 24px;
+      background:
+        linear-gradient(180deg, rgba(248, 252, 255, 0.16), rgba(255, 255, 255, 0.02)),
+        linear-gradient(180deg, #0d1426, #060910);
+      box-shadow:
+        inset 0 0 0 3px rgba(255, 255, 255, 0.58),
+        inset 0 12px 26px rgba(255, 255, 255, 0.12),
+        0 16px 34px rgba(54, 90, 181, 0.22);
+      cursor: crosshair;
+      user-select: none;
+      touch-action: none;
+    }
+
+    .slop-game-track {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      min-height: inherit;
+      overflow: hidden;
+      border-radius: inherit;
+    }
+
+    .slop-game-track::before {
+      content: "";
+      position: absolute;
+      inset: 10px 16px auto 16px;
+      height: 2px;
+      background: rgba(201, 227, 255, 0.4);
+      box-shadow:
+        0 28px 0 rgba(201, 227, 255, 0.26),
+        0 56px 0 rgba(201, 227, 255, 0.18);
+      pointer-events: none;
+    }
+
+    .slop-star-layer,
+    .slop-nebula-layer,
+    .slop-gloss-layer {
+      position: absolute;
+      inset: -10%;
+      pointer-events: none;
+    }
+
+    .slop-star-layer.back {
+      opacity: 0.38;
+      background:
+        radial-gradient(circle at 6% 30%, rgba(255, 255, 255, 0.7) 0 1px, transparent 2px),
+        radial-gradient(circle at 22% 12%, rgba(255, 255, 255, 0.9) 0 2px, transparent 3px),
+        radial-gradient(circle at 55% 8%, rgba(255, 255, 255, 0.86) 0 2px, transparent 3px),
+        radial-gradient(circle at 92% 10%, rgba(255, 255, 255, 0.92) 0 2px, transparent 3px);
+    }
+
+    .slop-star-layer.front {
+      opacity: 0.9;
+      background:
+        radial-gradient(circle at 12% 20%, rgba(255, 255, 255, 0.88) 0 1px, transparent 2px),
+        radial-gradient(circle at 22% 70%, rgba(255, 255, 255, 0.92) 0 2px, transparent 3px),
+        radial-gradient(circle at 52% 26%, rgba(255, 255, 255, 0.94) 0 2px, transparent 3px),
+        radial-gradient(circle at 82% 34%, rgba(255, 255, 255, 0.96) 0 2px, transparent 3px);
+    }
+
+    .slop-nebula-layer {
+      opacity: 0.76;
+      mix-blend-mode: screen;
+      background:
+        radial-gradient(circle at 20% 28%, rgba(76, 118, 255, 0.2), transparent 26%),
+        radial-gradient(circle at 72% 26%, rgba(255, 118, 229, 0.14), transparent 24%),
+        radial-gradient(circle at 48% 74%, rgba(104, 214, 255, 0.1), transparent 22%);
+    }
+
+    .slop-gloss-layer {
+      inset: 0;
+      opacity: 0.72;
+      background:
+        radial-gradient(circle at top, rgba(255, 255, 255, 0.14), transparent 36%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.1), transparent 26%),
+        repeating-linear-gradient(180deg, rgba(193, 225, 255, 0.08) 0 1px, transparent 1px 28px);
+    }
+
+    .slop-pixel {
+      position: absolute;
+      left: 0;
+      border: 1px solid rgba(214, 241, 255, 0.7);
+      background: #ffffff;
+      box-shadow: 0 0 0 1px rgba(136, 197, 222, 0.16);
+      pointer-events: none;
+    }
+
+    .slop-cursor {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      margin-left: -4px;
+      margin-top: -4px;
+      border: 1px solid rgba(214, 241, 255, 0.7);
+      background: #ffffff;
+      box-shadow: 0 0 0 1px rgba(136, 197, 222, 0.2);
+      pointer-events: none;
+      z-index: 7;
+    }
+
+    .slop-cursor.is-ability {
+      width: 10px;
+      height: 10px;
+      margin-left: -5px;
+      margin-top: -5px;
+      animation: slop-cursor-ability 240ms step-end infinite;
+    }
+
+    .slop-attack {
+      position: absolute;
+      margin-left: -4px;
+      margin-top: -4px;
+      border: 1px solid rgba(215, 245, 255, 0.95);
+      background: rgba(120, 223, 255, 1);
+      box-shadow:
+        0 0 0 1px rgba(61, 177, 232, 0.45),
+        0 0 8px rgba(120, 223, 255, 0.45);
+      pointer-events: none;
+      z-index: 8;
+    }
+
+    .slop-runner {
+      position: absolute;
+      left: calc(100% + 36px);
+      top: 18px;
+      width: 32px;
+      height: 24px;
+      border: 2px solid #e8f5ff;
+      border-radius: 12px 12px 8px 8px;
+      background: linear-gradient(180deg, #ffffff, #d9ecff);
+      box-shadow:
+        10px 3px 0 -7px #ffffff,
+        15px 7px 0 -8px #ffffff,
+        0 0 16px rgba(255, 255, 255, 0.35);
+      animation: slop-drift 5.6s linear infinite;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .slop-eye {
+      position: absolute;
+      top: 8px;
+      width: 4px;
+      height: 4px;
+      background: #1b3178;
+    }
+
+    .slop-eye.left {
+      left: 9px;
+    }
+
+    .slop-eye.right {
+      right: 9px;
+    }
+
+    .slop-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 9;
+      display: grid;
+      place-items: center;
+      pointer-events: none;
+    }
+
+    .slop-overlay span {
+      color: #fff6af;
+      font-family: var(--slop-game-pixel-font);
+      font-size: clamp(1.2rem, 1rem + 1vw, 1.9rem);
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      text-shadow:
+        -1px -1px 0 #1d4097,
+        1px -1px 0 #1d4097,
+        -1px 1px 0 #1d4097,
+        1px 1px 0 #1d4097,
+        0 0 12px rgba(255, 255, 255, 0.32);
+      animation: slop-overlay-fade 850ms ease forwards;
+    }
+
+    .slop-hud {
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-end;
+      padding: 0 8px 8px;
+      pointer-events: none;
+    }
+
+    .slop-timer,
+    .slop-coins {
+      z-index: 10;
+      padding: 4px 8px;
+      border: 2px solid rgba(170, 218, 255, 0.8);
+      border-radius: 999px;
+      background: rgba(17, 28, 61, 0.86);
+      color: #ffffff;
+      font-family: var(--slop-game-pixel-font);
+      font-size: 0.74rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      text-shadow:
+        -1px -1px 0 #1d4097,
+        1px -1px 0 #1d4097,
+        -1px 1px 0 #1d4097,
+        1px 1px 0 #1d4097;
+      pointer-events: none;
+    }
+
+    .slop-timer {
+      opacity: 0;
+      transform: translateY(6px);
+      transition:
+        opacity 220ms ease,
+        transform 220ms ease,
+        color 120ms ease,
+        border-color 120ms ease,
+        box-shadow 120ms ease;
+    }
+
+    .slop-timer.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .slop-timer.is-flash {
+      color: #ffe45c;
+      border-color: rgba(255, 228, 92, 0.65);
+      box-shadow: 0 0 10px rgba(255, 228, 92, 0.35);
+    }
+
+    .slop-coins {
+      position: absolute;
+      bottom: 8px;
+      left: 10px;
+    }
+
+    @keyframes slop-drift {
+      0% {
+        left: calc(100% + 36px);
+        top: 18px;
+        transform: translateX(0) scale(0.96);
+      }
+
+      18% {
+        transform: translateX(0) scale(1);
+      }
+
+      100% {
+        left: -52px;
+        top: 64px;
+        transform: translateX(0) scale(0.98);
+      }
+    }
+
+    @keyframes slop-overlay-fade {
+      0% {
+        opacity: 0;
+        transform: scale(0.92);
+      }
+
+      20% {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      100% {
+        opacity: 0.92;
+      }
+    }
+
+    @keyframes slop-cursor-ability {
+      0%,
+      100% {
+        background: #ffffff;
+        border-color: rgba(214, 241, 255, 0.7);
+        box-shadow: 0 0 0 1px rgba(136, 197, 222, 0.2);
+      }
+
+      50% {
+        background: #5ec8ff;
+        border-color: rgba(94, 200, 255, 0.9);
+        box-shadow: 0 0 0 1px rgba(94, 200, 255, 0.45);
+      }
+    }
+
+    @media (max-width: 620px) {
+      body {
+        padding: 14px;
+      }
+
+      .slop-game-marquee {
+        min-height: 92px;
+        border-radius: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <section class="slop-top-game-component" data-slop-game data-starting-coins="0">
+    <p class="slop-top-game-label">Hover the space bar to start. Dodge white pixels. Click when charged to clear.</p>
+    <div class="slop-game-marquee" aria-label="Interactive Slop pixel dodge game">
+      <div class="slop-game-track" data-track>
+        <span class="slop-star-layer back" aria-hidden="true"></span>
+        <span class="slop-nebula-layer" aria-hidden="true"></span>
+        <span class="slop-star-layer front" aria-hidden="true"></span>
+        <span class="slop-gloss-layer" aria-hidden="true"></span>
+
+        <div class="slop-runner" aria-hidden="true">
+          <span class="slop-eye left"></span>
+          <span class="slop-eye right"></span>
+        </div>
+
+        <div class="slop-coins" data-coins>Coins: 0</div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    (() => {
+      const PARTICLE_SPEED = 18;
+      const MIN_SPEED = 1;
+      const MAX_SPEED = 100;
+      const PLAYER_SIZE = 8;
+      const ABILITY_CHARGE_SECONDS = 15;
+      const COIN_AWARD_SECONDS = 5;
+      const ATTACK_PIXEL_COUNT = 24;
+      const ATTACK_SPEED = 150;
+      const ATTACK_LIFE_SECONDS = 0.4;
+
+      function speedToPixelsPerSecond(speed) {
+        const clamped = Math.min(Math.max(speed, MIN_SPEED), MAX_SPEED);
+        return 6 + clamped * 3;
+      }
+
+      function randomSpawnDelay() {
+        return 120 + Math.random() * 280;
+      }
+
+      function isFrozen(phase) {
+        return phase === "intro" || phase === "countdown";
+      }
+
+      function formatElapsedTime(seconds) {
+        const totalSeconds = Math.floor(seconds);
+        const minutes = Math.floor(totalSeconds / 60);
+        const remainingSeconds = totalSeconds % 60;
+        return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
+      }
+
+      class SlopTopGame {
+        constructor(root) {
+          this.root = root;
+          this.marquee = root.querySelector(".slop-game-marquee");
+          this.track = root.querySelector("[data-track]");
+          this.coinsEl = root.querySelector("[data-coins]");
+          this.nextId = 0;
+          this.trail = [];
+          this.driftPixels = [];
+          this.attackPixels = [];
+          this.phase = "idle";
+          this.overlayText = null;
+          this.elapsedSeconds = 0;
+          this.timerFlash = false;
+          this.abilityReady = false;
+          this.cursor = null;
+          this.spawnTimeout = null;
+          this.frame = null;
+          this.lastFrameTime = null;
+          this.gameTimeouts = [];
+          this.coinInterval = null;
+          this.abilityTimeout = null;
+          this.gameStartTime = null;
+          this.coins = Number(root.dataset.startingCoins || 0);
+
+          this.renderCoins();
+          this.bind();
+          this.startLoop();
+        }
+
+        bind() {
+          this.marquee.addEventListener("mouseenter", () => {
+            if (this.phase === "idle") this.startGame();
+          });
+
+          this.marquee.addEventListener("mousemove", (event) => this.handlePointerMove(event.clientX, event.clientY));
+          this.marquee.addEventListener("touchmove", (event) => {
+            const touch = event.touches[0];
+            if (!touch) return;
+            this.handlePointerMove(touch.clientX, touch.clientY);
+          }, { passive: true });
+
+          this.marquee.addEventListener("mouseleave", () => this.reset());
+          this.marquee.addEventListener("click", () => this.fireAbility());
+        }
+
+        handlePointerMove(clientX, clientY) {
+          const rect = this.marquee.getBoundingClientRect();
+          const point = {
+            id: this.nextId++,
+            x: clientX - rect.left,
+            y: clientY - rect.top,
+          };
+
+          this.cursor = { x: point.x, y: point.y };
+          this.trail = [...this.trail.slice(-8), point];
+          this.renderTransient();
+        }
+
+        startGame() {
+          this.clearTimers();
+          this.elapsedSeconds = 0;
+          this.timerFlash = false;
+          this.abilityReady = false;
+          this.attackPixels = [];
+          this.gameStartTime = null;
+          this.phase = "intro";
+          this.setOverlay("GAME START");
+
+          this.schedule(1000, () => {
+            this.phase = "countdown";
+            this.setOverlay("3");
+          });
+          this.schedule(1800, () => this.setOverlay("2"));
+          this.schedule(2600, () => this.setOverlay("1"));
+          this.schedule(3400, () => this.continueGame());
+        }
+
+        continueGame() {
+          this.overlayText = null;
+          this.phase = "playing";
+          this.gameStartTime = performance.now();
+          this.abilityReady = false;
+          this.startCoinAwards();
+          this.armAbility();
+          this.renderTransient();
+        }
+
+        reset() {
+          this.clearTimers();
+          this.trail = [];
+          this.attackPixels = [];
+          this.cursor = null;
+          this.phase = "idle";
+          this.overlayText = null;
+          this.elapsedSeconds = 0;
+          this.timerFlash = false;
+          this.abilityReady = false;
+          this.gameStartTime = null;
+          this.renderTransient();
+        }
+
+        schedule(delay, callback) {
+          const timeout = window.setTimeout(callback, delay);
+          this.gameTimeouts.push(timeout);
+        }
+
+        clearTimers() {
+          for (const timeout of this.gameTimeouts) window.clearTimeout(timeout);
+          this.gameTimeouts = [];
+          if (this.coinInterval) window.clearInterval(this.coinInterval);
+          if (this.abilityTimeout) window.clearTimeout(this.abilityTimeout);
+          this.coinInterval = null;
+          this.abilityTimeout = null;
+        }
+
+        startCoinAwards() {
+          if (this.coinInterval) window.clearInterval(this.coinInterval);
+          this.coinInterval = window.setInterval(() => {
+            this.coins += 5;
+            this.renderCoins();
+            this.flashTimer();
+            this.root.dispatchEvent(new CustomEvent("slopgamecoins", {
+              detail: { coins: this.coins, award: 5 },
+              bubbles: true,
+            }));
+          }, COIN_AWARD_SECONDS * 1000);
+        }
+
+        armAbility() {
+          if (this.abilityTimeout) window.clearTimeout(this.abilityTimeout);
+          this.abilityTimeout = window.setTimeout(() => {
+            this.abilityReady = true;
+            this.abilityTimeout = null;
+            this.renderTransient();
+          }, ABILITY_CHARGE_SECONDS * 1000);
+        }
+
+        flashTimer() {
+          this.timerFlash = true;
+          this.renderTransient();
+          this.schedule(500, () => {
+            this.timerFlash = false;
+            this.renderTransient();
+          });
+        }
+
+        fireAbility() {
+          if (this.phase !== "playing" || !this.abilityReady || !this.cursor) return;
+
+          this.attackPixels = Array.from({ length: ATTACK_PIXEL_COUNT }, (_, index) => {
+            const angle = (Math.PI * 2 * index) / ATTACK_PIXEL_COUNT;
+            return {
+              id: this.nextId++,
+              x: this.cursor.x,
+              y: this.cursor.y,
+              vx: Math.cos(angle) * ATTACK_SPEED,
+              vy: Math.sin(angle) * ATTACK_SPEED,
+              size: 8,
+              life: ATTACK_LIFE_SECONDS,
+            };
+          });
+
+          this.abilityReady = false;
+          this.armAbility();
+          this.renderTransient();
+        }
+
+        setOverlay(text) {
+          this.overlayText = text;
+          this.renderTransient();
+        }
+
+        renderCoins() {
+          this.coinsEl.textContent = `Coins: ${this.coins}`;
+        }
+
+        startLoop() {
+          const spawnPixel = () => {
+            if (!this.marquee || isFrozen(this.phase)) {
+              this.spawnTimeout = window.setTimeout(spawnPixel, randomSpawnDelay());
+              return;
+            }
+
+            const bounds = this.marquee.getBoundingClientRect();
+            const pixelSize = 5 + Math.floor(Math.random() * 4);
+            const topPadding = 4;
+            const maxY = Math.max(topPadding, bounds.height - pixelSize - topPadding);
+
+            this.driftPixels.push({
+              id: this.nextId++,
+              x: bounds.width + pixelSize,
+              y: topPadding + Math.random() * (maxY - topPadding),
+              size: pixelSize,
+            });
+
+            this.spawnTimeout = window.setTimeout(spawnPixel, randomSpawnDelay());
+          };
+
+          const step = (time) => {
+            if (this.lastFrameTime == null) this.lastFrameTime = time;
+            const deltaSeconds = (time - this.lastFrameTime) / 1000;
+            this.lastFrameTime = time;
+            const frozen = isFrozen(this.phase);
+            const pixelsPerSecond = speedToPixelsPerSecond(PARTICLE_SPEED);
+
+            this.attackPixels = frozen
+              ? this.attackPixels
+              : this.attackPixels
+                .map((pixel) => ({
+                  ...pixel,
+                  x: pixel.x + pixel.vx * deltaSeconds,
+                  y: pixel.y + pixel.vy * deltaSeconds,
+                  life: pixel.life - deltaSeconds,
+                }))
+                .filter((pixel) => pixel.life > 0);
+
+            this.driftPixels = frozen
+              ? this.driftPixels
+              : this.driftPixels
+                .map((pixel) => ({ ...pixel, x: pixel.x - pixelsPerSecond * deltaSeconds }))
+                .filter((pixel) => pixel.x + pixel.size > -12);
+
+            if (this.attackPixels.length > 0) {
+              this.driftPixels = this.driftPixels.filter((pixel) => {
+                return !this.attackPixels.some((attack) => {
+                  const dx = pixel.x + pixel.size / 2 - (attack.x + attack.size / 2);
+                  const dy = pixel.y + pixel.size / 2 - (attack.y + attack.size / 2);
+                  return Math.sqrt(dx * dx + dy * dy) <= attack.size + pixel.size;
+                });
+              });
+            }
+
+            if (this.phase === "playing") {
+              if (this.cursor) {
+                const hit = this.driftPixels.some((pixel) => {
+                  const playerLeft = this.cursor.x - PLAYER_SIZE / 2;
+                  const playerTop = this.cursor.y - PLAYER_SIZE / 2;
+                  const playerRight = playerLeft + PLAYER_SIZE;
+                  const playerBottom = playerTop + PLAYER_SIZE;
+                  return !(
+                    playerRight < pixel.x ||
+                    playerLeft > pixel.x + pixel.size ||
+                    playerBottom < pixel.y ||
+                    playerTop > pixel.y + pixel.size
+                  );
+                });
+
+                if (hit) {
+                  this.phase = "gameover";
+                  this.setOverlay("GAME OVER");
+                  this.gameStartTime = null;
+                  if (this.coinInterval) window.clearInterval(this.coinInterval);
+                }
+              }
+
+              if (this.gameStartTime != null) {
+                this.elapsedSeconds = (time - this.gameStartTime) / 1000;
+              }
+            }
+
+            this.renderTransient();
+            this.frame = window.requestAnimationFrame(step);
+          };
+
+          this.spawnTimeout = window.setTimeout(spawnPixel, randomSpawnDelay());
+          this.frame = window.requestAnimationFrame(step);
+        }
+
+        renderTransient() {
+          this.track.querySelectorAll("[data-generated]").forEach((node) => node.remove());
+
+          for (const pixel of this.driftPixels) {
+            const node = document.createElement("span");
+            node.className = "slop-pixel";
+            node.dataset.generated = "true";
+            node.style.left = `${pixel.x}px`;
+            node.style.top = `${pixel.y}px`;
+            node.style.width = `${pixel.size}px`;
+            node.style.height = `${pixel.size}px`;
+            this.track.appendChild(node);
+          }
+
+          this.trail.forEach((point, index) => {
+            const node = document.createElement("span");
+            node.className = `slop-cursor${index === this.trail.length - 1 && this.abilityReady ? " is-ability" : ""}`;
+            node.dataset.generated = "true";
+            node.style.left = `${point.x}px`;
+            node.style.top = `${point.y}px`;
+            node.style.opacity = String((index + 1) / this.trail.length);
+            this.track.appendChild(node);
+          });
+
+          for (const pixel of this.attackPixels) {
+            const node = document.createElement("span");
+            node.className = "slop-attack";
+            node.dataset.generated = "true";
+            node.style.left = `${pixel.x}px`;
+            node.style.top = `${pixel.y}px`;
+            node.style.width = `${pixel.size}px`;
+            node.style.height = `${pixel.size}px`;
+            this.track.appendChild(node);
+          }
+
+          if (this.overlayText) {
+            const overlay = document.createElement("div");
+            overlay.className = "slop-overlay";
+            overlay.dataset.generated = "true";
+            overlay.innerHTML = `<span>${this.overlayText}</span>`;
+            this.track.appendChild(overlay);
+          }
+
+          if (this.phase !== "idle") {
+            const hud = document.createElement("div");
+            hud.className = "slop-hud";
+            hud.dataset.generated = "true";
+            const timer = document.createElement("div");
+            timer.className = `slop-timer is-visible${this.timerFlash ? " is-flash" : ""}`;
+            timer.textContent = `Time: ${formatElapsedTime(this.phase === "playing" ? this.elapsedSeconds : 0)}`;
+            hud.appendChild(timer);
+            this.track.appendChild(hud);
+          }
+        }
+      }
+
+      window.SlopTopGame = SlopTopGame;
+
+      document.querySelectorAll("[data-slop-game]").forEach((root) => {
+        if (!root.__slopTopGame) {
+          root.__slopTopGame = new SlopTopGame(root);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
