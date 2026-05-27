@@ -38,11 +38,11 @@ const comicBackgrounds = [
   { key: "sunrise", label: "Sunrise", image: null },
 ] as const;
 
-const profileCommentRows = [
-  { name: "Laville", copy: "profile is actually ranked" },
-  { name: "Zata", copy: "fit check passed" },
-  { name: "Helen", copy: "top slop energy" },
-  { name: "Veres", copy: "theme goes hard" },
+const profilePostRows = [
+  { title: "Top slop streak", meta: "2m ago", copy: "Moved three shows into the watch list and kept the vote streak alive." },
+  { title: "Fit check passed", meta: "18m ago", copy: "Updated the profile theme, badge crop, and catalog main tags." },
+  { title: "Queue cleaned", meta: "1h ago", copy: "Trimmed the backlog down to the next six episodes worth watching." },
+  { title: "Theme swap", meta: "Yesterday", copy: "Tried Sky, Arcade, and Main before locking the current background." },
 ] as const;
 
 export default function ComicShell({ children, className = "" }: ComicShellProps) {
@@ -115,12 +115,16 @@ export default function ComicShell({ children, className = "" }: ComicShellProps
               <Image src={profile.profileImage} alt="" fill unoptimized />
             </span>
             <header className="comic-profile-main-head">
-              <h2>{profile.displayName}</h2>
+              <div>
+                <span>{profile.username}</span>
+                <h2>{profile.displayName}</h2>
+              </div>
               <span aria-hidden="true">...</span>
             </header>
             <div className="comic-profile-portrait">
               <Image src={profile.profileImage} alt={`${profile.displayName} profile`} fill unoptimized />
             </div>
+            <p className="comic-profile-bio">{profile.description}</p>
             <p className="comic-profile-rank">
               <span aria-hidden="true">V</span>
               {profile.affiliation}
@@ -132,17 +136,20 @@ export default function ComicShell({ children, className = "" }: ComicShellProps
             </div>
           </section>
 
-          <section className="comic-profile-comment-card" aria-label="Profile comments">
+          <section className="comic-profile-comment-card" aria-label="Recent profile posts">
             <header>
               <span aria-hidden="true" />
-              <h3>COMMENT</h3>
+              <div>
+                <small>Profile activity</small>
+                <h3>Recent Posts</h3>
+              </div>
             </header>
             <div className="comic-profile-comment-list">
-              {profileCommentRows.map((comment, index) => (
-                <p key={comment.name}>
-                  <span>{comment.name.slice(0, 1)}</span>
-                  <strong>{comment.name}</strong>
-                  <em>{index === 0 ? profile.description : comment.copy}</em>
+              {profilePostRows.map((post) => (
+                <p key={post.title}>
+                  <span>{post.title.slice(0, 1)}</span>
+                  <strong>{post.title}<small>{post.meta}</small></strong>
+                  <em>{post.copy}</em>
                 </p>
               ))}
             </div>
