@@ -28,6 +28,10 @@ export type CommunityPost = {
   score?: number;
   tag: string;
   imageUrl?: string;
+  imageDataUrl?: string;
+  gifUrl?: string;
+  poll?: string[];
+  spoiler?: boolean;
 };
 
 export type SlopContestEntry = {
@@ -97,6 +101,7 @@ export const platformPosts: CommunityPost[] = [
     reactions: 184,
     comments: 36,
     tag: "King of Slop",
+    spoiler: false,
   },
   {
     id: "post-game-score",
@@ -109,6 +114,7 @@ export const platformPosts: CommunityPost[] = [
     comments: 14,
     score: 13420,
     tag: "Arcade",
+    spoiler: false,
   },
   {
     id: "post-watchlist",
@@ -120,6 +126,8 @@ export const platformPosts: CommunityPost[] = [
     reactions: 67,
     comments: 11,
     tag: "Catalog",
+    poll: ["Frieren", "Apothecary Diaries"],
+    spoiler: false,
   },
 ];
 

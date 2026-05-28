@@ -1,113 +1,226 @@
 "use client";
 
 import Link from "next/link";
+import { useMemo, useState } from "react";
 import ComicShell from "../components/ComicShell";
 import { useAccount } from "../components/AccountProvider";
 
-const games = [
+type ArcadeGame = {
+  slug: string;
+  title: string;
+  description: string;
+  modes: string[];
+  score: number;
+  distance: string;
+  played: number;
+  tone: "pink" | "blue" | "gold" | "green" | "violet" | "purple";
+  scene: "sprint" | "battle" | "slide" | "soccer" | "stealth" | "karts";
+};
+
+const arcadeGames: ArcadeGame[] = [
   {
-    ribbon: "ARCADE RUSH",
-    badge: "2P",
-    title: "TAG GAME",
-    slug: "tag-game",
-    copy: "Two blocky slops sprint through neon lanes, juking corners and trading chase pressure.",
-    button: "PLAY TAG",
-    tone: "blue",
-    stats: ["PLAYERS 2", "PACE FAST", "ARENA NEON CITY"],
-  },
-  {
-    ribbon: "NEON SPRINT",
-    badge: "RUN",
-    title: "ENDLESS RUNNER",
     slug: "endless-runner",
-    copy: "A chunky slop charges through traps while a rival shadow racer pushes every jump and dodge.",
-    button: "START RUN",
-    tone: "yellow",
-    stats: ["MODE ENDLESS", "BEST 2,480M", "DIFFICULTY HARD"],
+    title: "Neon Sprint",
+    description: "Dash through vibrant neon worlds, dodge obstacles, and see how far you can go.",
+    modes: ["Run", "Endless"],
+    score: 2450,
+    distance: "4,892m",
+    played: 28,
+    tone: "pink",
+    scene: "sprint",
   },
   {
-    ribbon: "ARENA CLASH",
-    badge: "VS",
-    title: "CLASH GAME",
     slug: "clash-game",
-    copy: "Two blocky slops collide with bursts, shields, and arcade timing in a stylized duel arena.",
-    button: "ENTER CLASH",
-    tone: "pink",
-    stats: ["PLAYERS 2", "POWER-UPS ON", "BEST OF 3"],
+    title: "Slop Battle",
+    description: "Duel another slop in fast-paced 1v1 clash matches.",
+    modes: ["PVP", "1V1"],
+    score: 1890,
+    distance: "1,240m",
+    played: 16,
+    tone: "blue",
+    scene: "battle",
   },
-] as const;
+  {
+    slug: "slop-runner",
+    title: "Slip & Slide",
+    description: "Slide, jump, and time your moves across tricky platforms.",
+    modes: ["Skill", "Platformer"],
+    score: 1320,
+    distance: "2,060m",
+    played: 11,
+    tone: "gold",
+    scene: "slide",
+  },
+  {
+    slug: "tag-game",
+    title: "Slop Soccer",
+    description: "Score goals, make plays, and lead your team to victory.",
+    modes: ["Sports", "Team"],
+    score: 980,
+    distance: "740m",
+    played: 9,
+    tone: "green",
+    scene: "soccer",
+  },
+  {
+    slug: "tag-game",
+    title: "Stealth Slop",
+    description: "Sneak, hide, and outsmart the last slop standing.",
+    modes: ["Stealth", "Battle Royale"],
+    score: 1750,
+    distance: "1,880m",
+    played: 13,
+    tone: "violet",
+    scene: "stealth",
+  },
+  {
+    slug: "endless-runner",
+    title: "Slop Karts",
+    description: "Drift, boost, and race to the finish line in chaotic kart races.",
+    modes: ["Racing", "Multiplayer"],
+    score: 1210,
+    distance: "3 laps",
+    played: 7,
+    tone: "purple",
+    scene: "karts",
+  },
+];
 
 const leaders = [
-  ["NeonGlitch", "13,420"],
-  ["PixelPunk", "11,090"],
-  ["TurboToast", "8,765"],
-  ["SlopKing23", "6,540"],
-  ["ByteBoi", "5,310"],
+  ["NeonGlitch", "13,420", "glitch"],
+  ["PixelPunk", "11,090", "punk"],
+  ["TurboToast", "8,765", "toast"],
+  ["SlopMaster", "7,240", "master"],
+  ["GlitchySlop", "6,180", "slop"],
+  ["VoidRunner", "5,320", "void"],
+  ["SlopKid", "4,910", "kid"],
 ] as const;
+
+const filters = ["All Modes", "Endless", "PVP", "Skill", "Racing"] as const;
+
+function GameScene({ scene, large = false }: { scene: ArcadeGame["scene"]; large?: boolean }) {
+  return (
+    <div className={`arcade-scene is-${scene} ${large ? "is-large" : ""}`} aria-hidden="true">
+      <span className="arcade-scene-grid" />
+      <span className="arcade-scene-slop" />
+      <span className="arcade-scene-slop is-rival" />
+      <span className="arcade-scene-ball" />
+      <span className="arcade-scene-obstacle is-one" />
+      <span className="arcade-scene-obstacle is-two" />
+    </div>
+  );
+}
 
 export default function GamesPage() {
   const { account } = useAccount();
+  const [selectedSlug, setSelectedSlug] = useState(arcadeGames[0].title);
+  const [query, setQuery] = useState("");
+  const [filter, setFilter] = useState<(typeof filters)[number]>("All Modes");
+
+  const visibleGames = useMemo(
+    () =>
+      arcadeGames.filter((game) => {
+        const matchesQuery = `${game.title} ${game.description} ${game.modes.join(" ")}`.toLowerCase().includes(query.toLowerCase());
+        const matchesFilter = filter === "All Modes" || game.modes.some((mode) => mode.toLowerCase() === filter.toLowerCase());
+        return matchesQuery && matchesFilter;
+      }),
+    [filter, query],
+  );
+
+  const selectedGame = arcadeGames.find((game) => game.title === selectedSlug) ?? visibleGames[0] ?? arcadeGames[0];
 
   return (
-    <ComicShell className="comic-games-page">
-      <main className="comic-arcade">
-        <header className="comic-page-title">
+    <ComicShell className="arcade-hub-page">
+      <main className="arcade-hub">
+        <header className="arcade-hub-title">
           <div>
-            <h1>SLOP ARCADE</h1>
-            <p>GAMES</p>
+            <h1>Arcade</h1>
+            <span aria-hidden="true" />
+            <p>Play games, earn items, and climb the leaderboard!</p>
           </div>
-          <div className="comic-window-controls">
-            <span>{"\u2b50"} {account.economy.coins}</span>
-          </div>
+          <strong><span aria-hidden="true">★</span> {account.economy.coins}</strong>
         </header>
 
-        <section className="comic-arcade-board">
-          <div className="comic-arcade-head">
-            <div>
-              <h2>SELECT GAME</h2>
-              <p>Choose your slop and jump into the action!</p>
+        <section className="arcade-hub-layout">
+          <div className="arcade-game-browser">
+            <div className="arcade-search-row">
+              <label>
+                <span aria-hidden="true">⌕</span>
+                <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search games..." />
+              </label>
+              <select value={filter} onChange={(event) => setFilter(event.target.value as (typeof filters)[number])} aria-label="Filter games">
+                {filters.map((item) => <option key={item}>{item}</option>)}
+              </select>
             </div>
-            <strong>{"\u2606"} 3 MODES</strong>
-          </div>
 
-          <div className="comic-game-grid">
-            {games.map((game) => (
-              <article key={game.title} className={`comic-game-card is-${game.tone}`}>
-                <div className="comic-game-ribbon">{game.ribbon}</div>
-                <span className="comic-game-badge">{game.badge}</span>
-                <div className="comic-game-art">
-                  <span className="comic-mini-slop is-left" />
-                  <span className="comic-mini-slop is-right" />
-                  <span className="comic-impact-line" />
-                </div>
-                <h3>{game.title}</h3>
-                <p>{game.copy}</p>
-                <div className="comic-game-stats">
-                  {game.stats.map((stat) => <span key={stat}>{stat}</span>)}
-                </div>
-                <Link href={`/games/${game.slug}`} className="comic-game-link-button">{game.button}</Link>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section className="comic-arcade-info">
-          <div className="comic-info-strip">
-            <h2>ARCADE INFO</h2>
-            <article><span>{"\ud83c\udfae"}</span><strong>CONTROLS</strong><p>Easy to learn, hard to master!</p></article>
-            <article><span>{"\u2606"}</span><strong>EARN STARS</strong><p>Win matches and complete challenges to earn stars!</p></article>
-            <article><span>{"\ud83d\udcc5"}</span><strong>DAILY CHALLENGES</strong><p>New challenges every day. More stars, better rewards!</p></article>
-            <article><span>{"\ud83c\udf81"}</span><strong>REWARDS</strong><p>Unlock avatars, themes, emotes and more!</p></article>
-          </div>
-
-          <aside className="comic-arcade-leaderboard">
-            <h2>LEADERBOARD</h2>
-            <ol>
-              {leaders.map(([name, score], index) => (
-                <li key={name}><span>{index + 1}</span><strong>{name}</strong><em>{"\u2b50"} {score}</em></li>
+            <div className="arcade-game-list">
+              {visibleGames.map((game) => (
+                <article key={game.title} className={`arcade-game-row is-${game.tone} ${selectedGame.title === game.title ? "is-active" : ""}`}>
+                  <button type="button" onClick={() => setSelectedSlug(game.title)} aria-label={`Select ${game.title}`}>
+                    <GameScene scene={game.scene} />
+                    <span>
+                      <strong>{game.title}</strong>
+                      <em>{game.description}</em>
+                      <span>
+                        {game.modes.map((mode) => <mark key={mode}>{mode}</mark>)}
+                      </span>
+                    </span>
+                  </button>
+                  <div>
+                    <Link href={`/games/${game.slug}`}>Play</Link>
+                    <small><span aria-hidden="true">★</span> {game.score.toLocaleString()}</small>
+                  </div>
+                </article>
               ))}
-            </ol>
-            <Link href="/games/tag-game" className="comic-game-link-button">VIEW GAME ROOMS</Link>
+            </div>
+
+            <footer className="arcade-random-row">
+              <span>Can&apos;t find what you&apos;re looking for?</span>
+              <button type="button" onClick={() => setSelectedSlug(arcadeGames[Math.floor(Math.random() * arcadeGames.length)].title)}>
+                Random Game <span aria-hidden="true">⤨</span>
+              </button>
+            </footer>
+          </div>
+
+          <aside className="arcade-detail-panel">
+            <GameScene scene={selectedGame.scene} large />
+            <div className="arcade-detail-copy">
+              <h2>{selectedGame.title}</h2>
+              <div>{selectedGame.modes.map((mode) => <mark key={mode}>{mode}</mark>)}</div>
+              <p>{selectedGame.description}</p>
+            </div>
+
+            <div className="arcade-stat-strip">
+              <article><span>Best Score</span><strong><span aria-hidden="true">★</span> {selectedGame.score.toLocaleString()}</strong></article>
+              <article><span>Best Distance</span><strong>{selectedGame.distance}</strong></article>
+              <article><span>Played</span><strong>{selectedGame.played}</strong></article>
+            </div>
+
+            <section className="arcade-leaderboard-panel">
+              <header>
+                <h3>Leaderboard <span aria-hidden="true">↻</span></h3>
+                <nav aria-label="Leaderboard scope">
+                  <button type="button" className="is-active">Global</button>
+                  <button type="button">Friends</button>
+                  <button type="button">Local</button>
+                </nav>
+              </header>
+              <ol>
+                {leaders.map(([name, score, avatar], index) => (
+                  <li key={name} className={index < 3 ? "is-medal" : ""}>
+                    <span>{index + 1}</span>
+                    <i className={`arcade-player-face is-${avatar}`} />
+                    <strong>{name}</strong>
+                    <em><span aria-hidden="true">★</span> {score}</em>
+                  </li>
+                ))}
+              </ol>
+            </section>
+
+            <div className="arcade-reward-callout">
+              <span aria-hidden="true">▣</span>
+              <p>Keep playing to climb the leaderboard and earn exclusive rewards!</p>
+            </div>
           </aside>
         </section>
       </main>

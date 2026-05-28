@@ -50,14 +50,14 @@ export function SlopBodySvg({ className }: PartProps) {
   return (
     <SlopPartShell className={className}>
       <path
-        d="M91.3 88.4h82c6.1 0 11 4.9 11 11v77.4c0 6.6-5.4 12-12 12h-80c-6.6 0-12-5.4-12-12V99.4c0-6.1 4.9-11 11-11Z"
+        d="M97.6 92.8H167c5.5 0 10 4.5 10 10v63.1c0 6-4.8 10.8-10.8 10.8H98.4c-6 0-10.8-4.8-10.8-10.8v-63.1c0-5.5 4.5-10 10-10Z"
         fill="var(--slop-body-fill)"
         stroke="var(--slop-body-stroke)"
         strokeLinejoin="round"
         strokeWidth="7.5"
       />
       <path
-        d="M94.8 95.8h74.8v83.6H94.8Z"
+        d="M101.2 100h62.1v67.8h-62.1Z"
         fill="var(--slop-body-highlight)"
         opacity="0.28"
       />
@@ -66,16 +66,16 @@ export function SlopBodySvg({ className }: PartProps) {
 }
 
 export function SlopLegSvg({ className, variant }: LegSvgProps) {
-  const x = variant === "left" ? 92.4 : 136.7;
-  const skew = variant === "left" ? "rotate(3 109.8 212)" : "rotate(-3 154.1 212)";
+  const x = variant === "left" ? 92.8 : 136.8;
+  const skew = variant === "left" ? "rotate(3 110.5 204)" : "rotate(-3 154.4 204)";
 
   return (
     <SlopPartShell className={className}>
       <rect
         x={x}
-        y="177.3"
-        width="35"
-        height="64.5"
+        y="156.8"
+        width="35.8"
+        height="86.2"
         rx="5.2"
         transform={skew}
         fill="var(--slop-body-fill)"
@@ -84,7 +84,7 @@ export function SlopLegSvg({ className, variant }: LegSvgProps) {
         strokeWidth="7.5"
       />
       <path
-        d={`M${x + 6} 185.2v47.2`}
+        d={`M${x + 6.4} 168.5v62.9`}
         stroke="var(--slop-body-highlight)"
         strokeLinecap="round"
         strokeWidth="4"

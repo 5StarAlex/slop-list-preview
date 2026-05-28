@@ -1,6 +1,9 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import ComicShell from "./components/ComicShell";
+import { useAccount } from "./components/AccountProvider";
 
 const runnerUps = [
   ["NeonGlitch", "13,420"],
@@ -17,17 +20,22 @@ const topSlopCards = [
 ] as const;
 
 export default function Home() {
+  const { account } = useAccount();
+  const kingProfile = account.profile;
+  const kingScore = account.economy.coins.toLocaleString();
+
   return (
     <ComicShell>
       <main className="demo2-board">
         <section className="demo2-hero-poster" aria-label="Create a slop">
           <Image
-            src="/assets/home/hero/create-slop-home-panel.png"
+            src="/assets/home/hero/create-slop-home-panel-v2.png"
             alt="Slop List poster with Create A Slop headline and anime character"
             fill
             priority
             sizes="(max-width: 900px) 100vw, 66vw"
             className="demo2-hero-poster-image"
+            unoptimized
           />
           <Link href="/create" className="demo2-create-button" aria-label="New slop entry">
             <Image
@@ -50,21 +58,20 @@ export default function Home() {
               <h1>KING OF SLOP</h1>
               <span aria-hidden="true">{"\u2606"}</span>
             </div>
-            <div className="demo2-ribbon">ARIAL ACE</div>
+            <div className="demo2-ribbon">{kingProfile.displayName}</div>
 
             <div className="demo2-king-stage">
-              <div className="demo2-king-figure" aria-label="King slop character">
-                <span className="demo2-king-crown" aria-hidden="true">{"\u2655"}</span>
-                <span className="demo2-king-face" aria-hidden="true" />
-                <span className="demo2-king-body" aria-hidden="true" />
-                <span className="demo2-king-arm is-left" aria-hidden="true" />
-                <span className="demo2-king-arm is-right" aria-hidden="true" />
-                <span className="demo2-king-leg is-left" aria-hidden="true" />
-                <span className="demo2-king-leg is-right" aria-hidden="true" />
+              <div className="demo2-king-player-card" aria-label={`Current King of Slop: ${kingProfile.displayName}`}>
+                <span className="demo2-king-avatar-crown" aria-hidden="true">{"\u2655"}</span>
+                <span className="demo2-king-avatar-frame">
+                  <Image src={kingProfile.profileImage} alt={`${kingProfile.displayName} avatar`} fill unoptimized />
+                </span>
+                <strong>{kingProfile.username}</strong>
+                <em>{kingProfile.affiliation}</em>
               </div>
               <div className="demo2-medal-stack" aria-label="King of Slop stats">
                 <span><strong>{"\u2655"}</strong> 1</span>
-                <span><strong>{"\u2605"}</strong> 15,230</span>
+                <span><strong>{"\u2605"}</strong> {kingScore}</span>
               </div>
             </div>
 

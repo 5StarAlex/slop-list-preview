@@ -17,8 +17,10 @@ type ComicShellProps = {
 const navItems = [
   { href: "/", label: "Home", icon: "home", color: "pink" },
   { href: "/catalog", label: "Catalog", icon: "search", color: "orange" },
-  { href: "/games", label: "Genres", icon: "smile", color: "blue" },
-  { href: "/create", label: "New Entry", icon: "pen", color: "pink" },
+  { href: "/community", label: "Community", icon: "smile", color: "blue" },
+  { href: "/platform", label: "Platform", icon: "shop", color: "cyan" },
+  { href: "/create", label: "Post", icon: "pen", color: "pink" },
+  { href: "/games", label: "Arcade", icon: "smile", color: "blue" },
   { href: "/shop", label: "Slop Shop", icon: "shop", color: "cyan" },
   { href: "/profile", label: "Create-A-Slop", icon: "smile", color: "purple" },
 ] as const;
@@ -26,16 +28,16 @@ const navItems = [
 type ComicNavIconName = (typeof navItems)[number]["icon"];
 
 const comicBackgrounds = [
-  { key: "main", label: "Main", image: null },
+  { key: "main", label: "Main", image: "/demo-2/bg-main.jpg" },
   { key: "flame", label: "Flame", image: "/demo-2/bg-flame.jpg" },
   { key: "field", label: "Field", image: "/demo-2/bg-field.jpg" },
   { key: "sky", label: "Sky", image: "/demo-2/bg-sky.jpg" },
   { key: "arcade", label: "Arcade", image: "/demo-2/bg-arcade.jpg" },
-  { key: "nebula", label: "Nebula", image: null },
-  { key: "city", label: "City", image: null },
-  { key: "forest", label: "Forest", image: null },
-  { key: "synth", label: "Synth", image: null },
-  { key: "sunrise", label: "Sunrise", image: null },
+  { key: "nebula", label: "Nebula", image: "/demo-2/bg-nebula.jpg" },
+  { key: "city", label: "City", image: "/demo-2/bg-city.jpg" },
+  { key: "forest", label: "Forest", image: "/demo-2/bg-forest.jpg" },
+  { key: "synth", label: "Synth", image: "/demo-2/bg-synth.jpg" },
+  { key: "sunrise", label: "Sunrise", image: "/demo-2/bg-sunrise.jpg" },
 ] as const;
 
 const profilePostRows = [

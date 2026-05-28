@@ -29,12 +29,16 @@ export function validateDisplayName(displayName: string) {
   return "";
 }
 
-export function validatePostInput(input: { title: string; body: string }) {
+export function validatePostInput(input: { title: string; body: string; hasAttachment?: boolean }) {
   const errors: Record<string, string> = {};
   const title = clean(input.title);
   const body = clean(input.body);
 
-  if (title.length < 3 || title.length > 100) {
+  if (title.length > 0 && title.length < 3) {
+    errors.title = "Title must be at least 3 characters.";
+  }
+
+  if (title.length > 100) {
     errors.title = "Title must be 3-100 characters.";
   }
 
@@ -42,8 +46,8 @@ export function validatePostInput(input: { title: string; body: string }) {
     errors.body = "Posts can be up to 2000 characters.";
   }
 
-  if (!title && !body) {
-    errors.title = "Add a title or body before posting.";
+  if (!title && !body && !input.hasAttachment) {
+    errors.title = "Add a title, body, image, GIF, or poll before posting.";
   }
 
   return {
