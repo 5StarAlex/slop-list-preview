@@ -22583,10 +22583,1479 @@ body > .comic-profile-overlay > .comic-profile-popout.is-leaving {
   }
 }
 
+/* Experiment branch: game-home shell */
+
+.demo2-page.comic-app {
+  --experiment-ink: #211036;
+  --experiment-night: #1b0d2d;
+  --experiment-cream: #fff6ca;
+  --experiment-yellow: #ffce2f;
+  --experiment-pink: #ff4da6;
+  --experiment-blue: #31c8ff;
+  min-height: 100dvh;
+  padding: 0;
+  overflow-x: hidden;
+  color: #ffffff;
+  background:
+    radial-gradient(circle at 70% 25%, rgba(255, 213, 82, 0.45), transparent 22%),
+    linear-gradient(145deg, #4b1bc9 0%, #ff4da6 45%, #ffb83d 100%);
+  font-family: "Trebuchet MS", system-ui, sans-serif;
+}
+
+.demo2-page.comic-app::before {
+  opacity: 0;
+}
+
+.experiment-pixel-bg,
+.experiment-waves,
+.experiment-sparkles,
+.experiment-sparkles i {
+  position: fixed;
+  pointer-events: none;
+}
+
+.experiment-pixel-bg {
+  inset: 0;
+  z-index: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 32px 32px;
+  mask-image: linear-gradient(to bottom, black, transparent 85%);
+}
+
+.experiment-waves {
+  inset: auto 0 0;
+  z-index: 0;
+  height: 45%;
+  opacity: 0.7;
+  background:
+    repeating-radial-gradient(ellipse at 50% 120%, rgba(255, 255, 255, 0.12) 0 2px, transparent 3px 38px);
+  animation: experiment-drift 7s linear infinite;
+}
+
+.experiment-sparkles {
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.experiment-sparkles i {
+  bottom: -12vh;
+  width: 10px;
+  height: 10px;
+  background: #ffffff;
+  box-shadow: 0 0 12px #ffffff;
+  opacity: 0.78;
+  animation: experiment-float 4s linear infinite;
+}
+
+.comic-header.experiment-topbar {
+  position: fixed;
+  top: 20px;
+  right: 28px;
+  left: 28px;
+  z-index: 15;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: auto;
+  height: 76px;
+  margin: 0;
+  padding: 10px 18px;
+  border: 5px solid var(--experiment-ink);
+  border-radius: 22px;
+  background: rgba(32, 19, 70, 0.84);
+  box-shadow: 0 10px 0 var(--experiment-night), 0 0 35px rgba(255, 255, 255, 0.25);
+}
+
+.experiment-topbar .slop-logo {
+  width: clamp(180px, 22vw, 310px);
+  transform: rotate(-3deg);
+}
+
+.experiment-topbar .slop-logo-image {
+  filter: drop-shadow(4px 4px 0 #36115e) drop-shadow(4px 4px 0 #ff4b8f);
+}
+
+.experiment-player-card.comic-profile-card {
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr);
+  width: min(300px, 34vw);
+  min-height: 54px;
+  padding: 6px 12px;
+  border: 4px solid #120a20;
+  border-radius: 14px;
+  background: #3b225f;
+  color: #ffffff;
+  box-shadow: inset 0 -5px 0 rgba(0, 0, 0, 0.25);
+  transform: none;
+}
+
+.experiment-player-card .comic-profile-avatar {
+  width: 42px;
+  height: 42px;
+  border-width: 3px;
+  border-radius: 10px;
+}
+
+.experiment-player-card .comic-profile-copy {
+  gap: 0;
+}
+
+.experiment-player-card .comic-profile-copy strong,
+.experiment-player-card .comic-profile-copy span,
+.experiment-player-card .comic-profile-copy em {
+  color: #ffffff;
+  font-size: 0.82rem;
+  line-height: 1.05;
+}
+
+.experiment-player-card .comic-profile-copy em {
+  color: #fff1a7;
+}
+
+.experiment-side-tabs {
+  position: fixed;
+  top: 130px;
+  left: 28px;
+  z-index: 16;
+  display: flex;
+  width: 150px;
+  flex-direction: column;
+  gap: 14px;
+  transform: skewY(-9deg);
+}
+
+.experiment-tab {
+  display: grid;
+  height: 86px;
+  place-items: center;
+  padding: 8px;
+  border: 5px solid #1c102d;
+  border-radius: 18px;
+  background: var(--c);
+  box-shadow: 7px 8px 0 var(--experiment-night), inset 0 -8px rgba(0, 0, 0, 0.2);
+  color: #ffffff;
+  font-weight: 1000;
+  font-size: 15px;
+  text-align: center;
+  line-height: 1;
+  transition: transform 0.25s ease, filter 0.25s ease, margin 0.25s ease;
+}
+
+.experiment-tab span:first-child {
+  display: block;
+  font-size: 18px;
+  letter-spacing: 0;
+}
+
+.experiment-tab:hover,
+.experiment-tab.is-active {
+  margin-block: 10px;
+  filter: saturate(1.4) brightness(1.12);
+  transform: translateX(26px) scale(1.18) skewY(9deg);
+}
+
+.comic-app > main:not(.experiment-home),
+.comic-app > section:not(.experiment-mascot) {
+  position: relative;
+  z-index: 2;
+  width: min(1420px, calc(100% - 250px));
+  margin: 126px 28px 32px 220px;
+}
+
+.experiment-home {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 360px);
+  grid-template-areas:
+    "hero king"
+    "top king"
+    "chat chat";
+  gap: 20px;
+  min-height: 100dvh;
+  padding: 130px 32px 24px 220px;
+}
+
+.experiment-hero {
+  position: relative;
+  grid-area: hero;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 38%);
+  gap: clamp(18px, 3vw, 38px);
+  align-items: center;
+  min-height: clamp(430px, 49vh, 620px);
+  padding: clamp(24px, 4vw, 44px);
+  border: 7px solid var(--experiment-ink);
+  border-radius: 30px;
+  clip-path: polygon(7% 0, 100% 0, 93% 100%, 0 100%);
+  background: rgba(255, 246, 202, 0.96);
+  color: #2d1649;
+  box-shadow: 18px 18px 0 rgba(31, 13, 52, 0.8), 0 0 45px rgba(255, 255, 255, 0.25);
+  animation: experiment-bob 3s ease-in-out infinite;
+}
+
+.experiment-hero-copy {
+  display: grid;
+  gap: 14px;
+}
+
+.experiment-hero-copy p,
+.experiment-hero-copy h1,
+.experiment-hero-copy span {
+  margin: 0;
+}
+
+.experiment-hero-copy p {
+  color: #ff2f92;
+  font-size: clamp(1rem, 1.5vw, 1.35rem);
+  font-weight: 1000;
+  text-transform: uppercase;
+}
+
+.experiment-hero-copy h1 {
+  color: #ff5d3d;
+  font-size: clamp(3.4rem, 7vw, 7.3rem);
+  font-weight: 1000;
+  line-height: 0.86;
+  text-shadow: 5px 5px 0 #27133f, 8px 8px 0 rgba(0, 0, 0, 0.22);
+}
+
+.experiment-hero-copy span {
+  max-width: 720px;
+  font-size: clamp(1.08rem, 1.7vw, 1.65rem);
+  font-weight: 900;
+  line-height: 1.22;
+}
+
+.experiment-card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(120px, 1fr));
+  gap: 16px;
+  grid-column: 1 / -1;
+}
+
+.experiment-action-card {
+  display: grid;
+  min-height: 120px;
+  align-content: center;
+  gap: 8px;
+  padding: 18px;
+  border: 5px solid #28153e;
+  border-radius: 18px;
+  background: #ffffff;
+  color: #2d1649;
+  box-shadow: 8px 8px 0 rgba(41, 19, 62, 0.35);
+  animation: experiment-wiggle 2.8s ease-in-out infinite;
+}
+
+.experiment-action-card:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.experiment-action-card:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+.experiment-action-card b {
+  color: #ff2f92;
+  font-size: 1.35rem;
+}
+
+.experiment-action-card small {
+  color: #70578b;
+  font-size: 0.92rem;
+  font-weight: 900;
+}
+
+.experiment-cta {
+  position: absolute;
+  left: 28%;
+  bottom: 26px;
+  z-index: 4;
+  padding: 16px 36px;
+  border: 5px solid #1c102d;
+  border-radius: 20px;
+  background: var(--experiment-yellow);
+  color: #351b49;
+  box-shadow: 0 10px 0 #a85a00;
+  font-size: clamp(1.35rem, 2.4vw, 2rem);
+  font-weight: 1000;
+  transform: rotate(-5deg);
+  animation: experiment-pulse 1.4s ease-in-out infinite;
+}
+
+.experiment-poster-card {
+  position: relative;
+  min-height: min(380px, 39vw);
+  overflow: visible;
+  border: 5px solid var(--experiment-ink);
+  border-radius: 22px;
+  background: #ffffff;
+  box-shadow: 10px 10px 0 rgba(31, 13, 52, 0.32);
+}
+
+.experiment-poster-image {
+  object-fit: cover;
+}
+
+.experiment-speech {
+  position: fixed;
+  top: 195px;
+  right: 225px;
+  z-index: 18;
+  max-width: 230px;
+  padding: 15px 18px;
+  border: 5px solid var(--experiment-ink);
+  border-radius: 20px;
+  background: #ffffff;
+  color: #2d1649;
+  box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.25);
+  font-size: 20px;
+  font-weight: 1000;
+  transform: rotate(-4deg);
+}
+
+.experiment-mascot {
+  position: fixed;
+  right: 72px;
+  bottom: 75px;
+  z-index: 17;
+  width: 230px;
+  height: 360px;
+  animation: experiment-mascot 2.5s ease-in-out infinite;
+}
+
+.experiment-head,
+.experiment-body,
+.experiment-arm,
+.experiment-leg,
+.experiment-crown {
+  position: absolute;
+  border: 7px solid var(--experiment-ink);
+  background: #fff5df;
+  box-shadow: inset -10px -10px rgba(87, 65, 120, 0.16);
+}
+
+.experiment-head {
+  top: 22px;
+  left: 46px;
+  width: 132px;
+  height: 132px;
+  border-radius: 50%;
+}
+
+.experiment-eye {
+  position: absolute;
+  top: 48px;
+  width: 16px;
+  height: 44px;
+  border-radius: 20px;
+  background: var(--experiment-ink);
+}
+
+.experiment-eye.is-one {
+  left: 38px;
+}
+
+.experiment-eye.is-two {
+  right: 38px;
+}
+
+.experiment-mouth {
+  position: absolute;
+  top: 95px;
+  left: 56px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--experiment-ink);
+}
+
+.experiment-body {
+  top: 148px;
+  left: 60px;
+  width: 104px;
+  height: 130px;
+  border-radius: 18px;
+}
+
+.experiment-arm {
+  top: 132px;
+  width: 42px;
+  height: 130px;
+  border-radius: 16px;
+}
+
+.experiment-arm.is-left {
+  left: 15px;
+  transform: rotate(-42deg);
+  transform-origin: bottom;
+}
+
+.experiment-arm.is-right {
+  right: 15px;
+  transform: rotate(18deg);
+}
+
+.experiment-leg {
+  top: 265px;
+  width: 45px;
+  height: 110px;
+  border-radius: 12px;
+}
+
+.experiment-leg.is-left {
+  left: 62px;
+  transform: rotate(5deg);
+}
+
+.experiment-leg.is-right {
+  right: 62px;
+  transform: rotate(-5deg);
+}
+
+.experiment-crown {
+  top: -5px;
+  left: 72px;
+  width: 86px;
+  height: 48px;
+  background: #ffd447;
+  clip-path: polygon(0 100%, 0 32%, 25% 60%, 50% 0, 75% 60%, 100% 32%, 100% 100%);
+}
+
+.experiment-king-panel,
+.experiment-top-slop,
+.experiment-bottom-chat {
+  border: 5px solid var(--experiment-ink);
+  border-radius: 22px;
+  background: rgba(32, 19, 70, 0.86);
+  box-shadow: 0 10px 0 var(--experiment-night), 0 0 35px rgba(255, 255, 255, 0.18);
+}
+
+.experiment-king-panel {
+  grid-area: king;
+  display: grid;
+  align-content: start;
+  gap: 16px;
+  padding: 18px;
+}
+
+.experiment-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.experiment-panel-head h2 {
+  margin: 0;
+  color: #fff1a7;
+  font-size: clamp(1.8rem, 3vw, 3.1rem);
+  font-weight: 1000;
+  line-height: 0.9;
+  text-align: center;
+  text-shadow: 4px 4px 0 #36115e, 7px 7px 0 #ff4b8f;
+}
+
+.experiment-ribbon {
+  justify-self: center;
+  max-width: 100%;
+  padding: 8px 16px;
+  border: 4px solid var(--experiment-ink);
+  border-radius: 16px;
+  background: #ff4da6;
+  color: #ffffff;
+  box-shadow: 5px 6px 0 rgba(0, 0, 0, 0.22);
+  font-weight: 1000;
+  text-align: center;
+  transform: rotate(-2deg);
+}
+
+.experiment-king-stage {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  padding: 18px;
+  border: 5px solid var(--experiment-ink);
+  border-radius: 22px;
+  background: rgba(255, 246, 202, 0.94);
+  color: #2d1649;
+  text-align: center;
+}
+
+.experiment-king-avatar {
+  position: relative;
+  display: block;
+  width: min(180px, 72%);
+  aspect-ratio: 1;
+  overflow: hidden;
+  border: 6px solid var(--experiment-ink);
+  border-radius: 24px;
+  background: #ffffff;
+  box-shadow: 8px 8px 0 rgba(31, 13, 52, 0.24);
+  animation: experiment-mascot 3s ease-in-out infinite;
+}
+
+.experiment-king-avatar img {
+  object-fit: cover;
+}
+
+.experiment-king-stage strong,
+.experiment-king-stage em,
+.experiment-king-stage p {
+  display: block;
+  margin: 0;
+  overflow-wrap: anywhere;
+  font-weight: 1000;
+}
+
+.experiment-king-stage em {
+  color: #ff2f92;
+  font-style: normal;
+}
+
+.experiment-runners {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.experiment-runners li {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+  padding: 10px;
+  border: 3px solid var(--experiment-ink);
+  border-radius: 14px;
+  background: #ffffff;
+  color: #2d1649;
+  font-weight: 900;
+}
+
+.experiment-runners li span {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border-radius: 999px;
+  background: #8e5cff;
+  color: #ffffff;
+}
+
+.experiment-top-slop {
+  grid-area: top;
+  padding: 18px 24px 24px;
+}
+
+.experiment-top-slop header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 16px;
+}
+
+.experiment-top-slop h2 {
+  margin: 0;
+  color: #fff1a7;
+  font-size: clamp(2rem, 4vw, 4.4rem);
+  font-weight: 1000;
+  line-height: 0.9;
+  text-shadow: 4px 4px 0 #36115e, 7px 7px 0 #ff4b8f;
+}
+
+.experiment-top-slop header a {
+  padding: 10px 16px;
+  border: 4px solid var(--experiment-ink);
+  border-radius: 16px;
+  background: var(--experiment-yellow);
+  color: #351b49;
+  box-shadow: 0 7px 0 #a85a00;
+  font-weight: 1000;
+}
+
+.experiment-slop-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.experiment-slop-card {
+  position: relative;
+  display: grid;
+  min-height: 210px;
+  align-content: end;
+  overflow: hidden;
+  padding: 18px;
+  border: 5px solid var(--experiment-ink);
+  border-radius: 18px;
+  box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.28);
+  animation: experiment-wiggle 3s ease-in-out infinite;
+}
+
+.experiment-slop-card.is-featured {
+  transform: scale(1.04);
+}
+
+.experiment-slop-card.is-outlaw {
+  background: linear-gradient(160deg, #4d1a8f, #111111 56%, #ef7625);
+}
+
+.experiment-slop-card.is-rwby {
+  background: linear-gradient(145deg, #07151f, #152a60 42%, #050509);
+}
+
+.experiment-slop-card.is-idol {
+  background: linear-gradient(160deg, #ff4eaa, #d81a76 48%, #3b104e);
+}
+
+.experiment-slop-card > span {
+  position: absolute;
+  inset: 14% 20% 28%;
+  border-radius: 999px 999px 18px 18px;
+  background: rgba(255, 255, 255, 0.76);
+  filter: drop-shadow(28px 12px 0 rgba(255, 255, 255, 0.46));
+}
+
+.experiment-slop-card strong,
+.experiment-slop-card small {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  text-shadow: 3px 3px 0 #000000;
+}
+
+.experiment-slop-card strong {
+  font-size: clamp(1.4rem, 2.2vw, 2.4rem);
+  font-weight: 1000;
+  line-height: 0.9;
+}
+
+.experiment-slop-card small {
+  font-weight: 1000;
+  text-transform: uppercase;
+}
+
+.experiment-bottom-chat {
+  grid-area: chat;
+  padding: 18px 26px;
+  font-size: 20px;
+  font-weight: 900;
+}
+
+@keyframes experiment-drift {
+  from { transform: translateX(0); }
+  to { transform: translateX(-80px); }
+}
+
+@keyframes experiment-float {
+  from { transform: translateY(110vh) rotate(0); }
+  to { transform: translateY(-20vh) rotate(360deg); }
+}
+
+@keyframes experiment-bob {
+  0%, 100% { transform: translateY(0) rotate(-1deg); }
+  50% { transform: translateY(-9px) rotate(1deg); }
+}
+
+@keyframes experiment-wiggle {
+  0%, 100% { transform: rotate(-1deg); }
+  50% { transform: rotate(2deg) translateY(-4px); }
+}
+
+@keyframes experiment-pulse {
+  50% { transform: rotate(-5deg) scale(1.08); }
+}
+
+@keyframes experiment-mascot {
+  50% { transform: translateY(-12px); }
+}
+
+@media (max-width: 1180px) {
+  .experiment-speech,
+  .experiment-mascot {
+    display: none;
+  }
+
+  .experiment-home {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "hero"
+      "king"
+      "top"
+      "chat";
+  }
+
+  .experiment-hero {
+    clip-path: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .demo2-page.comic-app {
+    overflow-x: hidden;
+  }
+
+  .comic-header.experiment-topbar {
+    position: relative;
+    inset: auto;
+    height: auto;
+    margin: 14px;
+    flex-wrap: wrap;
+  }
+
+  .experiment-player-card.comic-profile-card {
+    width: 100%;
+  }
+
+  .experiment-side-tabs {
+    position: relative;
+    top: auto;
+    left: 16px;
+    z-index: 12;
+    width: auto;
+    flex-direction: row;
+    overflow-x: auto;
+    padding: 0 16px 14px 0;
+  }
+
+  .experiment-tab {
+    min-width: 110px;
+  }
+
+  .comic-app > main:not(.experiment-home),
+  .comic-app > section:not(.experiment-mascot),
+  .experiment-home {
+    width: min(100%, calc(100% - 24px));
+    margin: 20px auto 28px;
+    padding: 0;
+  }
+
+  .experiment-home {
+    min-height: auto;
+  }
+
+  .experiment-hero {
+    grid-template-columns: 1fr;
+    padding: 24px;
+  }
+
+  .experiment-card-grid,
+  .experiment-slop-row {
+    grid-template-columns: 1fr;
+  }
+
+  .experiment-cta {
+    position: relative;
+    left: auto;
+    bottom: auto;
+    justify-self: start;
+  }
+
+  .experiment-poster-card {
+    min-height: 320px;
+  }
+}
+
+@media (max-width: 560px) {
+  .experiment-topbar .slop-logo {
+    width: 210px;
+  }
+
+  .experiment-hero-copy h1,
+  .experiment-top-slop h2,
+  .experiment-panel-head h2 {
+    font-size: 2.6rem;
+  }
+
+  .experiment-runners li {
+    grid-template-columns: 30px minmax(0, 1fr);
+  }
+
+  .experiment-runners li em {
+    grid-column: 2;
+  }
+}
+
 @media (max-width: 620px) {
   body > .comic-profile-overlay > .comic-profile-popout {
     width: calc(100vw - 12px) !important;
     max-width: calc(100vw - 12px) !important;
     height: calc(100dvh - 12px) !important;
+  }
+}
+
+html,
+body {
+  overflow-x: hidden;
+}
+
+.demo2-page.comic-app {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: clip;
+}
+
+@media (max-width: 900px) {
+  .comic-header.experiment-topbar {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    justify-items: center;
+    width: calc(100% - 28px);
+    max-width: calc(100vw - 28px);
+    margin: 14px auto;
+    padding: 10px;
+  }
+
+  .experiment-topbar .slop-logo {
+    width: min(190px, 68vw);
+    height: 70px;
+    transform: rotate(-3deg);
+  }
+
+  .experiment-player-card.comic-profile-card {
+    grid-template-columns: 42px minmax(0, 1fr);
+    width: min(100%, 320px);
+    min-height: 52px;
+  }
+
+  .experiment-side-tabs {
+    left: auto;
+    width: 100%;
+    max-width: 100vw;
+    margin: 0 auto;
+    padding: 0 18px 16px;
+    transform: none;
+  }
+
+  .experiment-tab:hover,
+  .experiment-tab.is-active {
+    margin-block: 0;
+    transform: translateY(-3px) scale(1.04);
+  }
+
+  .experiment-side-tabs::-webkit-scrollbar {
+    height: 0;
+  }
+
+  .experiment-home {
+    width: calc(100% - 18px);
+    max-width: calc(100vw - 18px);
+  }
+
+  .experiment-hero {
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .experiment-hero-copy h1 {
+    font-size: clamp(2.35rem, 13vw, 3.5rem);
+  }
+}
+
+/* Pixel polish pass: cleaner spacing, richer depth, calmer responsive behavior */
+
+.demo2-page.comic-app {
+  background:
+    radial-gradient(circle at 68% 18%, rgba(255, 239, 114, 0.42), transparent 20%),
+    radial-gradient(circle at 13% 72%, rgba(49, 200, 255, 0.28), transparent 22%),
+    linear-gradient(145deg, #4b1bc9 0%, #ff4da6 48%, #ffb83d 100%);
+}
+
+.experiment-pixel-bg {
+  opacity: 0.78;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.075) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.075) 1px, transparent 1px),
+    radial-gradient(circle at center, rgba(255, 255, 255, 0.18) 0 1px, transparent 2px);
+  background-size: 32px 32px, 32px 32px, 96px 96px;
+}
+
+.comic-header.experiment-topbar {
+  height: 84px;
+  padding: 8px 18px;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, rgba(70, 36, 134, 0.94), rgba(32, 19, 70, 0.9)),
+    rgba(32, 19, 70, 0.86);
+}
+
+.experiment-topbar .slop-logo {
+  width: clamp(190px, 18vw, 250px);
+  height: 66px;
+  transform: rotate(-3deg);
+}
+
+.experiment-topbar .slop-logo:hover {
+  transform: translateY(-2px) rotate(-4deg) scale(1.02);
+}
+
+.experiment-player-card.comic-profile-card {
+  width: min(300px, 26vw);
+  background:
+    radial-gradient(circle at 10% 18%, rgba(255, 255, 255, 0.22), transparent 24%),
+    linear-gradient(180deg, #4c2c77, #2d194f);
+}
+
+.experiment-side-tabs {
+  top: 182px;
+  gap: 12px;
+}
+
+.experiment-tab {
+  height: 78px;
+  border-width: 4px;
+  border-radius: 16px;
+  font-size: 14px;
+}
+
+.experiment-tab span:first-child {
+  font-size: 21px;
+  font-weight: 1000;
+}
+
+.experiment-home {
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 340px);
+  gap: 18px;
+  padding-top: 142px;
+  padding-right: 28px;
+}
+
+.experiment-hero {
+  grid-template-areas:
+    "copy poster"
+    "cards poster"
+    "cta poster";
+  grid-template-rows: auto auto 1fr;
+  align-items: start;
+  min-height: clamp(500px, 60vh, 690px);
+  padding: clamp(28px, 4vw, 50px);
+  background:
+    linear-gradient(90deg, rgba(255, 96, 139, 0.14) 0 7%, transparent 7.4% 86%, rgba(49, 200, 255, 0.12) 86.4%),
+    radial-gradient(circle at 82% 16%, rgba(255, 255, 255, 0.72) 0 5px, transparent 7px),
+    rgba(255, 246, 202, 0.97);
+}
+
+.experiment-hero::before,
+.experiment-hero::after,
+.experiment-king-panel::before,
+.experiment-top-slop::before {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+
+.experiment-hero::before {
+  inset: 12px;
+  border: 2px dashed rgba(33, 16, 54, 0.18);
+  border-radius: 22px;
+  clip-path: polygon(7% 0, 100% 0, 93% 100%, 0 100%);
+}
+
+.experiment-hero::after {
+  right: 11%;
+  bottom: 15%;
+  width: 74px;
+  height: 74px;
+  background: #ffffff;
+  clip-path: polygon(50% 0, 60% 40%, 100% 50%, 60% 60%, 50% 100%, 40% 60%, 0 50%, 40% 40%);
+  filter: drop-shadow(4px 4px 0 rgba(33, 16, 54, 0.5));
+  opacity: 0.8;
+  animation: experiment-star-pop 2.8s ease-in-out infinite;
+}
+
+.experiment-hero-copy {
+  grid-area: copy;
+  align-self: start;
+}
+
+.experiment-hero-copy h1 {
+  max-width: 560px;
+}
+
+.experiment-hero-copy span {
+  max-width: 570px;
+}
+
+.experiment-card-grid {
+  grid-area: cards;
+  grid-column: 1;
+  align-self: start;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  max-width: 440px;
+  margin-top: clamp(16px, 3vh, 28px);
+}
+
+.experiment-action-card {
+  min-height: 108px;
+  transform-origin: center;
+  transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
+}
+
+.experiment-action-card:hover {
+  transform: translateY(-7px) rotate(-1deg) scale(1.03);
+  filter: saturate(1.12);
+  box-shadow: 11px 13px 0 rgba(41, 19, 62, 0.35);
+}
+
+.experiment-cta {
+  position: relative;
+  left: auto;
+  bottom: auto;
+  grid-area: cta;
+  justify-self: start;
+  align-self: start;
+  margin-top: clamp(20px, 4vh, 38px);
+}
+
+.experiment-poster-card {
+  grid-area: poster;
+  align-self: stretch;
+  min-height: 0;
+  height: min(430px, 46vh);
+  transform: rotate(1.2deg);
+  transition: transform 220ms ease, box-shadow 220ms ease;
+}
+
+.experiment-poster-card:hover {
+  transform: rotate(-0.6deg) translateY(-5px);
+  box-shadow: 14px 16px 0 rgba(31, 13, 52, 0.32);
+}
+
+.experiment-speech {
+  display: none;
+}
+
+.experiment-king-panel,
+.experiment-top-slop,
+.experiment-bottom-chat {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 22% 10%, rgba(255, 255, 255, 0.12), transparent 22%),
+    linear-gradient(180deg, rgba(70, 35, 99, 0.94), rgba(47, 21, 72, 0.96));
+}
+
+.experiment-king-panel::before,
+.experiment-top-slop::before {
+  inset: 9px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 15px;
+}
+
+.experiment-king-panel {
+  align-self: start;
+  min-height: 770px;
+}
+
+.experiment-panel-head h2 {
+  font-size: clamp(1.9rem, 2.7vw, 3rem);
+}
+
+.experiment-king-stage {
+  padding: 16px;
+  transform: rotate(-0.8deg);
+}
+
+.experiment-runners li {
+  min-height: 52px;
+  box-shadow: 4px 5px 0 rgba(0, 0, 0, 0.16);
+  transition: transform 160ms ease;
+}
+
+.experiment-runners li:hover {
+  transform: translateX(7px);
+}
+
+.experiment-top-slop {
+  padding: 18px 24px 28px;
+}
+
+.experiment-slop-card {
+  min-height: 230px;
+  transition: transform 180ms ease, filter 180ms ease;
+}
+
+.experiment-slop-card:hover {
+  transform: translateY(-8px) rotate(1deg);
+  filter: saturate(1.18) brightness(1.04);
+}
+
+.experiment-bottom-chat {
+  display: flex;
+  align-items: center;
+  min-height: 66px;
+}
+
+@keyframes experiment-star-pop {
+  0%, 100% { transform: rotate(0deg) scale(0.82); opacity: 0.55; }
+  50% { transform: rotate(16deg) scale(1); opacity: 0.95; }
+}
+
+@media (max-width: 1320px) {
+  .experiment-speech {
+    display: none;
+  }
+
+  .experiment-home {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "hero"
+      "king"
+      "top"
+      "chat";
+  }
+
+  .experiment-king-panel {
+    min-height: auto;
+  }
+}
+
+@media (max-width: 900px) {
+  .comic-header.experiment-topbar {
+    overflow: visible;
+    min-height: 154px;
+    align-content: start;
+    row-gap: 6px;
+  }
+
+  .experiment-topbar .slop-logo {
+    width: min(154px, 52vw);
+    height: 58px;
+    overflow: hidden;
+    transform: none;
+  }
+
+  .experiment-topbar .slop-logo-image {
+    transform: scale(0.78);
+  }
+
+  .experiment-player-card.comic-profile-card {
+    position: relative;
+    z-index: 2;
+    margin-top: 2px;
+  }
+
+  .experiment-side-tabs {
+    top: auto;
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  .experiment-tab {
+    height: 78px;
+    min-width: 108px;
+  }
+
+  .experiment-hero {
+    display: block;
+    clip-path: none;
+    animation: none;
+    transform: none;
+    padding: 24px;
+  }
+
+  .experiment-hero::before {
+    clip-path: none;
+  }
+
+  .experiment-hero-copy {
+    margin-bottom: 18px;
+  }
+
+  .experiment-hero-copy h1 {
+    max-width: 100%;
+    font-size: clamp(2.25rem, 12vw, 3.4rem);
+  }
+
+  .experiment-hero-copy span {
+    display: block;
+    max-width: 100%;
+    font-size: 1rem;
+    line-height: 1.22;
+    overflow-wrap: anywhere;
+  }
+
+  .experiment-card-grid {
+    max-width: none;
+  }
+
+  .experiment-action-card {
+    min-height: 104px;
+  }
+
+  .experiment-poster-card {
+    height: 300px;
+    margin-top: 16px;
+    transform: none;
+  }
+
+  .experiment-top-slop,
+  .experiment-king-panel {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 430px) {
+  .experiment-home {
+    width: calc(100% - 14px);
+    max-width: calc(100vw - 14px);
+  }
+
+  .experiment-hero {
+    padding: 22px 18px;
+  }
+
+  .experiment-hero-copy h1 {
+    font-size: clamp(2rem, 11vw, 2.85rem);
+  }
+
+  .experiment-card-grid {
+    gap: 12px;
+  }
+
+  .experiment-action-card b {
+    font-size: 1.18rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .comic-header.experiment-topbar {
+    height: 154px !important;
+    min-height: 154px !important;
+  }
+
+  .experiment-topbar .slop-logo {
+    width: min(154px, 52vw) !important;
+    height: 58px !important;
+    overflow: hidden !important;
+    transform: none !important;
+  }
+
+  .experiment-topbar .slop-logo-image {
+    transform: scale(0.78) !important;
+  }
+
+  .experiment-player-card.comic-profile-card {
+    width: min(100%, 320px) !important;
+    min-height: 52px !important;
+    margin-top: 4px !important;
+  }
+
+  .experiment-side-tabs {
+    margin-top: 12px !important;
+  }
+
+  .experiment-home {
+    padding: 0 !important;
+  }
+}
+
+/* Inner routes need explicit room for the fixed arcade chrome. */
+.comic-app.is-inner-route {
+  min-height: 100dvh;
+  padding-top: 150px;
+}
+
+.comic-app.is-inner-route > main:not(.experiment-home),
+.comic-app.is-inner-route > section:not(.experiment-mascot) {
+  width: min(1420px, calc(100vw - 272px));
+  margin: 0 28px 44px 220px;
+  padding-top: 118px;
+}
+
+.comic-app.is-inner-route .comic-catalog,
+.comic-app.is-inner-route .community-hub,
+.comic-app.is-inner-route .arcade-hub,
+.comic-app.is-inner-route .comic-entry,
+.comic-app.is-inner-route .comic-about,
+.comic-app.is-inner-route .comic-detail,
+.comic-app.is-inner-route .slop-shop-studio,
+.comic-app.is-inner-route .slop-studio {
+  position: relative;
+  z-index: 2;
+}
+
+.comic-app.is-inner-route .comic-catalog {
+  gap: 28px;
+}
+
+.comic-app.is-inner-route .comic-catalog-section:first-child {
+  margin-top: -12px;
+}
+
+.comic-app.is-inner-route .experiment-topbar {
+  align-items: center;
+  overflow: hidden;
+}
+
+.comic-app.is-inner-route .experiment-topbar .slop-logo {
+  width: clamp(180px, 16vw, 240px);
+  height: 62px;
+  overflow: visible;
+  transform: none;
+}
+
+.comic-app.is-inner-route .experiment-topbar .slop-logo-image {
+  opacity: 0;
+}
+
+.comic-app.is-inner-route .experiment-topbar .slop-logo::after {
+  content: "SLOP LIST";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  color: #fff1a7;
+  font-size: clamp(2rem, 2.8vw, 3.3rem);
+  font-weight: 1000;
+  line-height: 0.82;
+  text-align: left;
+  text-shadow: 4px 4px 0 #36115e, 7px 7px 0 #ff4b8f;
+  transform: translateY(-50%) rotate(-3deg);
+}
+
+.experiment-inner-wordmark {
+  display: inline-grid;
+  align-items: center;
+  min-height: 62px;
+  color: #fff1a7;
+  font-size: clamp(2.2rem, 3vw, 3.6rem);
+  font-weight: 1000;
+  line-height: 0.82;
+  text-shadow: 4px 4px 0 #36115e, 7px 7px 0 #ff4b8f;
+  transform: rotate(-3deg);
+}
+
+@media (min-width: 901px) {
+  .comic-app.is-inner-route .experiment-side-tabs {
+    top: 168px;
+  }
+}
+
+@media (max-width: 900px) {
+  .comic-app.is-inner-route {
+    padding-top: 0;
+  }
+
+  .comic-app.is-inner-route > main:not(.experiment-home),
+  .comic-app.is-inner-route > section:not(.experiment-mascot) {
+    width: calc(100% - 18px);
+    max-width: calc(100vw - 18px);
+    margin: 16px auto 34px;
+    padding: 0;
+  }
+
+  .comic-app.is-inner-route .comic-catalog {
+    gap: 18px;
+  }
+
+  .comic-app.is-inner-route .comic-catalog-section {
+    padding: 16px;
+    border-radius: 22px;
+  }
+
+  .comic-app.is-inner-route .comic-catalog-section header {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin: 0 0 14px;
+  }
+
+  .comic-app.is-inner-route .comic-catalog-section h2 {
+    width: 100%;
+    padding: 10px 14px;
+    clip-path: none;
+    border-radius: 12px;
+    font-size: clamp(1.25rem, 7vw, 1.85rem);
+    line-height: 1.05;
+  }
+
+  .comic-app.is-inner-route .comic-catalog-section header a {
+    justify-self: start;
+    font-size: 1rem;
+  }
+
+  .comic-app.is-inner-route .comic-empty-line {
+    margin-top: 8px;
+    font-size: 1.25rem;
+    line-height: 1.35;
+  }
+
+  .comic-app.is-inner-route .comic-catalog-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+}
+
+/* Home route safety: keep the hero copy out of the angled edge and side chrome. */
+.comic-app.is-home-route .experiment-home {
+  width: 100%;
+  max-width: 100vw;
+  padding-left: clamp(240px, 18vw, 280px);
+  padding-right: clamp(22px, 2.2vw, 34px);
+}
+
+.comic-app.is-home-route .experiment-hero {
+  clip-path: polygon(0 0, 100% 0, 96% 100%, 0 100%);
+  overflow: visible;
+}
+
+.comic-app.is-home-route .experiment-hero::before {
+  clip-path: polygon(0 0, 100% 0, 96% 100%, 0 100%);
+}
+
+.comic-app.is-home-route .experiment-hero-copy {
+  padding-left: clamp(0px, 0.8vw, 12px);
+}
+
+.comic-app.is-home-route .experiment-hero-copy h1 {
+  max-width: min(100%, 600px);
+}
+
+@media (max-width: 1320px) and (min-width: 901px) {
+  .comic-app.is-home-route .experiment-home {
+    padding-left: 236px;
+  }
+
+  .comic-app.is-home-route .experiment-hero {
+    grid-template-columns: minmax(0, 0.95fr) minmax(260px, 0.72fr);
+  }
+
+  .comic-app.is-home-route .experiment-hero-copy h1 {
+    font-size: clamp(4rem, 6.8vw, 6.1rem);
+  }
+}
+
+@media (max-width: 900px) {
+  .comic-app.is-home-route .experiment-home {
+    padding: 0 !important;
+  }
+
+  .comic-app.is-home-route .experiment-hero,
+  .comic-app.is-home-route .experiment-hero::before {
+    clip-path: none;
+  }
+
+  .comic-app.is-home-route .experiment-hero {
+    width: 100%;
+    max-width: 100%;
+    margin-inline: auto;
+  }
+
+  .comic-app.is-home-route .experiment-hero-copy span {
+    max-width: min(100%, 320px);
+    font-size: 0.96rem;
+  }
+
+  .comic-app.is-home-route .experiment-card-grid {
+    grid-template-columns: 1fr;
+    max-width: none;
   }
 }

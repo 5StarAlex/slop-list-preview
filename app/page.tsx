@@ -10,13 +10,18 @@ const runnerUps = [
   ["PixelPunk", "11,090"],
   ["TurboToast", "8,765"],
   ["SlopKing23", "6,540"],
-  ["ByteBoi", "5,310"],
+] as const;
+
+const hubCards = [
+  { title: "Daily Quest", copy: "+250 coins waiting", href: "/games", tone: "orange" },
+  { title: "Watch List", copy: "Saved anime and ratings", href: "/catalog", tone: "cyan" },
+  { title: "Community", copy: "Posts, polls, and reactions", href: "/community", tone: "purple" },
 ] as const;
 
 const topSlopCards = [
-  { title: "PIXEL OUTLAW", subtitle: "", className: "is-outlaw" },
-  { title: "RWBY", subtitle: "ARCADE MAYHEM", className: "is-rwby" },
-  { title: "IDOL REBOOT", subtitle: "", className: "is-idol" },
+  { title: "PIXEL OUTLAW", subtitle: "Hot pick", className: "is-outlaw" },
+  { title: "RWBY", subtitle: "Arcade mayhem", className: "is-rwby" },
+  { title: "IDOL REBOOT", subtitle: "Rising slop", className: "is-idol" },
 ] as const;
 
 export default function Home() {
@@ -25,106 +30,109 @@ export default function Home() {
   const kingScore = account.economy.coins.toLocaleString();
 
   return (
-    <ComicShell>
-      <main className="demo2-board">
-        <section className="demo2-hero-poster" aria-label="Create a slop">
-          <Image
-            src="/assets/home/hero/create-slop-home-panel-v2.png"
-            alt="Slop List poster with Create A Slop headline and anime character"
-            fill
-            priority
-            sizes="(max-width: 900px) 100vw, 66vw"
-            className="demo2-hero-poster-image"
-            unoptimized
-          />
-          <Link href="/create" className="demo2-create-button" aria-label="New slop entry">
+    <ComicShell className="experiment-home-page">
+      <main className="experiment-home" aria-label="Slop List home hub">
+        <section className="experiment-hero" aria-label="Slop List launch hub">
+          <div className="experiment-hero-copy">
+            <p>Welcome back, {kingProfile.displayName}</p>
+            <h1>SLOP LIST HOME</h1>
+            <span>
+              Your game-style hub for creating slop, tracking anime, ranking favorites,
+              posting with the community, and jumping into arcade rewards.
+            </span>
+          </div>
+
+          <section className="experiment-card-grid" aria-label="Quick actions">
+            {hubCards.map((card) => (
+              <Link key={card.title} href={card.href} className={`experiment-action-card is-${card.tone}`}>
+                <b>{card.title}</b>
+                <small>{card.copy}</small>
+              </Link>
+            ))}
+          </section>
+
+          <Link href="/create" className="experiment-cta">
+            CREATE SLOP
+          </Link>
+
+          <div className="experiment-poster-card" aria-label="Create A Slop poster">
             <Image
-              src="/assets/home/hero/create-slop-button.png"
-              alt="New slop entry"
+              src="/assets/home/hero/create-slop-home-panel-v2.png"
+              alt="Slop List poster with Create A Slop headline and anime character"
               fill
               priority
-              sizes="30vw"
-              className="demo2-create-button-image"
+              sizes="(max-width: 900px) 92vw, 34vw"
+              className="experiment-poster-image"
+              unoptimized
             />
-          </Link>
-          <span className="demo2-float-star is-one" aria-hidden="true" />
-          <span className="demo2-float-star is-two" aria-hidden="true" />
+          </div>
         </section>
 
-        <aside className="demo2-king-panel" aria-label="King of Slop leaderboard">
-          <div className="demo2-panel-frame">
-            <div className="demo2-king-head">
-              <span aria-hidden="true">{"\u2606"}</span>
-              <h1>KING OF SLOP</h1>
-              <span aria-hidden="true">{"\u2606"}</span>
-            </div>
-            <div className="demo2-ribbon">{kingProfile.displayName}</div>
-
-            <div className="demo2-king-stage">
-              <div className="demo2-king-player-card" aria-label={`Current King of Slop: ${kingProfile.displayName}`}>
-                <span className="demo2-king-avatar-crown" aria-hidden="true">{"\u2655"}</span>
-                <span className="demo2-king-avatar-frame">
-                  <Image src={kingProfile.profileImage} alt={`${kingProfile.displayName} avatar`} fill unoptimized />
-                </span>
-                <strong>{kingProfile.username}</strong>
-                <em>{kingProfile.affiliation}</em>
-              </div>
-              <div className="demo2-medal-stack" aria-label="King of Slop stats">
-                <span><strong>{"\u2655"}</strong> 1</span>
-                <span><strong>{"\u2605"}</strong> {kingScore}</span>
-              </div>
-            </div>
-
-            <div className="demo2-runner-panel">
-              <div className="demo2-runner-ribbon">RUNNER UP</div>
-              <ol>
-                {runnerUps.map(([name, score], index) => (
-                  <li key={name}>
-                    <span className="demo2-runner-face" aria-hidden="true">{"\u263b"}</span>
-                    <span className="demo2-runner-rank">{index + 1}</span>
-                    <strong>{name}</strong>
-                    <span className="demo2-runner-score"><span aria-hidden="true">{"\u2605"}</span> {score}</span>
-                  </li>
-                ))}
-              </ol>
-            </div>
-          </div>
+        <aside className="experiment-speech" aria-label="Guide message">
+          Pick a tab. The whole site is your arcade menu now.
         </aside>
 
-        <section className="demo2-top-slop" aria-label="Top Slop carousel">
-          <button type="button" className="demo2-carousel-arrow is-left" aria-label="Previous top slop">
-            {"\u2039"}
-          </button>
-          <div className="demo2-top-slop-title">
-            <span aria-hidden="true">{"\u265b"}</span>
-            <h2>TOP SLOP</h2>
-            <Link href="/create" aria-label="Add top slop">+</Link>
+        <section className="experiment-mascot" aria-hidden="true">
+          <div className="experiment-crown" />
+          <div className="experiment-head">
+            <div className="experiment-eye is-one" />
+            <div className="experiment-eye is-two" />
+            <div className="experiment-mouth" />
           </div>
-          <div className="demo2-card-row">
+          <div className="experiment-arm is-left" />
+          <div className="experiment-arm is-right" />
+          <div className="experiment-body" />
+          <div className="experiment-leg is-left" />
+          <div className="experiment-leg is-right" />
+        </section>
+
+        <aside className="experiment-king-panel" aria-label="King of Slop leaderboard">
+          <div className="experiment-panel-head">
+            <span aria-hidden="true">*</span>
+            <h2>KING OF SLOP</h2>
+            <span aria-hidden="true">*</span>
+          </div>
+          <div className="experiment-ribbon">{kingProfile.displayName}</div>
+          <div className="experiment-king-stage">
+            <span className="experiment-king-avatar">
+              <Image src={kingProfile.profileImage} alt={`${kingProfile.displayName} avatar`} fill unoptimized />
+            </span>
+            <div>
+              <strong>{kingProfile.username}</strong>
+              <em>{kingProfile.affiliation}</em>
+              <p>{kingScore} stars banked</p>
+            </div>
+          </div>
+          <ol className="experiment-runners">
+            {runnerUps.map(([name, score], index) => (
+              <li key={name}>
+                <span>{index + 1}</span>
+                <strong>{name}</strong>
+                <em>* {score}</em>
+              </li>
+            ))}
+          </ol>
+        </aside>
+
+        <section className="experiment-top-slop" aria-label="Top Slop carousel">
+          <header>
+            <h2>TOP SLOP</h2>
+            <Link href="/catalog">VIEW ALL</Link>
+          </header>
+          <div className="experiment-slop-row">
             {topSlopCards.map((card, index) => (
-              <article key={card.title} className={`demo2-slop-card ${card.className}${index === 1 ? " is-featured" : ""}`}>
-                <div className="demo2-slop-card-art">
-                  <span className="demo2-card-figure is-a" aria-hidden="true" />
-                  <span className="demo2-card-figure is-b" aria-hidden="true" />
-                  <span className="demo2-card-splash" aria-hidden="true" />
-                </div>
+              <article key={card.title} className={`experiment-slop-card ${card.className}${index === 1 ? " is-featured" : ""}`}>
+                <span aria-hidden="true" />
                 <strong>{card.title}</strong>
-                {card.subtitle ? <span>{card.subtitle}</span> : null}
+                <small>{card.subtitle}</small>
               </article>
             ))}
           </div>
-          <div className="demo2-carousel-dots" aria-hidden="true">
-            <span className="is-active" />
-            <span />
-            <span />
-            <span />
-            <span />
-            <span />
-          </div>
-          <button type="button" className="demo2-carousel-arrow is-right" aria-label="Next top slop">
-            {"\u203a"}
-          </button>
         </section>
+
+        <div className="experiment-bottom-chat">
+          Slop List is live: create, rate, watch, post, shop, and play from the left-side tabs.
+        </div>
       </main>
     </ComicShell>
   );

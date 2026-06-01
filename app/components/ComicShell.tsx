@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { type CSSProperties, type SVGProps, useEffect, useMemo, useState } from "react";
+import { type CSSProperties, useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { useAccount } from "./AccountProvider";
 import SlopLogo from "./layout/SlopLogo";
@@ -15,17 +15,21 @@ type ComicShellProps = {
 };
 
 const navItems = [
-  { href: "/", label: "Home", icon: "home", color: "pink" },
-  { href: "/catalog", label: "Catalog", icon: "search", color: "orange" },
-  { href: "/community", label: "Community", icon: "smile", color: "blue" },
-  { href: "/platform", label: "Platform", icon: "shop", color: "cyan" },
-  { href: "/create", label: "Post", icon: "pen", color: "pink" },
-  { href: "/games", label: "Arcade", icon: "smile", color: "blue" },
-  { href: "/shop", label: "Slop Shop", icon: "shop", color: "cyan" },
-  { href: "/profile", label: "Create-A-Slop", icon: "smile", color: "purple" },
+  { href: "/", label: "Home", icon: "HOME", color: "#ff7043", tone: "pink" },
+  { href: "/catalog", label: "Watchlist", icon: "LIST", color: "#31c8ff", tone: "cyan" },
+  { href: "/community", label: "Community", icon: "CHAT", color: "#8e5cff", tone: "purple" },
+  { href: "/games", label: "Arcade", icon: "PLAY", color: "#ffbf2e", tone: "orange" },
+  { href: "/shop", label: "Shop", icon: "SHOP", color: "#ff4da6", tone: "pink" },
+  { href: "/create", label: "Post", icon: "POST", color: "#26d57c", tone: "cyan" },
+  { href: "/profile", label: "Avatar", icon: "ME", color: "#ff7b38", tone: "orange" },
+  { href: "/about", label: "About", icon: "INFO", color: "#6f8cff", tone: "blue" },
 ] as const;
 
-type ComicNavIconName = (typeof navItems)[number]["icon"];
+const sparkleSlots = Array.from({ length: 32 }, (_, index) => ({
+  left: `${(index * 37) % 100}vw`,
+  delay: `${((index * 19) % 40) / 10}s`,
+  duration: `${3 + ((index * 11) % 40) / 10}s`,
+}));
 
 const comicBackgrounds = [
   { key: "main", label: "Main", image: "/demo-2/bg-main.jpg" },
@@ -49,6 +53,7 @@ const profilePostRows = [
 
 export default function ComicShell({ children, className = "" }: ComicShellProps) {
   const pathname = usePathname();
+  const isHomeRoute = pathname === "/";
   const { account, updateProfile } = useAccount();
   const { offset, handleMouseMove, handleMouseLeave } = useParallaxOffset();
   const profile = account.profile;
@@ -190,7 +195,7 @@ export default function ComicShell({ children, className = "" }: ComicShellProps
   return (
     <>
       <div
-        className={`demo2-page comic-app bg-${profile.siteBackground}${profile.darkMode ? " theme-dark" : ""}${profile.glossyMode ? " theme-glossy" : ""} ${className}`.trim()}
+        className={`demo2-page comic-app bg-${profile.siteBackground}${isHomeRoute ? " is-home-route" : " is-inner-route"}${profile.darkMode ? " theme-dark" : ""}${profile.glossyMode ? " theme-glossy" : ""} ${className}`.trim()}
         style={themeStyle}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
@@ -200,23 +205,24 @@ export default function ComicShell({ children, className = "" }: ComicShellProps
           <span className="comic-shell-shape-layer comic-shell-shape-layer-mid" />
           <span className="comic-shell-shape-layer comic-shell-shape-layer-front" />
         </div>
-        <header className="comic-header" aria-label="Slop List navigation">
-          <SlopLogo />
+        <div className="experiment-pixel-bg" aria-hidden="true" />
+        <div className="experiment-waves" aria-hidden="true" />
+        <div className="experiment-sparkles" aria-hidden="true">
+          {sparkleSlots.map((sparkle, index) => (
+            <i key={index} style={{ left: sparkle.left, animationDelay: sparkle.delay, animationDuration: sparkle.duration }} />
+          ))}
+        </div>
 
-          <nav className="comic-nav" aria-label="Main navigation">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`comic-nav-item is-${item.color}${pathname === item.href ? " is-active" : ""}`}
-              >
-                <ComicNavIcon name={item.icon} />
-                <span>{item.label}</span>
-              </Link>
-            ))}
-          </nav>
+        <header className="comic-header experiment-topbar" aria-label="Slop List navigation">
+          {isHomeRoute ? (
+            <SlopLogo />
+          ) : (
+            <Link href="/" className="experiment-inner-wordmark" aria-label="Slop List home">
+              SLOP LIST
+            </Link>
+          )}
 
-          <button type="button" className="comic-profile-card" onClick={() => setProfileOpen(true)} aria-label="Open profile card">
+          <button type="button" className="comic-profile-card experiment-player-card" onClick={() => setProfileOpen(true)} aria-label="Open profile card">
             <span className="comic-profile-avatar">
               <Image src={profile.profileImage} alt="" fill unoptimized className="comic-profile-avatar-image" />
             </span>
@@ -228,69 +234,23 @@ export default function ComicShell({ children, className = "" }: ComicShellProps
           </button>
         </header>
 
+        <nav className="experiment-side-tabs" aria-label="Main navigation">
+          {navItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`experiment-tab is-${item.tone}${pathname === item.href ? " is-active" : ""}`}
+              style={{ "--c": item.color } as CSSProperties}
+            >
+              <span>{item.icon}</span>
+              <span>{item.label}</span>
+            </Link>
+          ))}
+        </nav>
+
         {children}
       </div>
       {profileOpen && typeof document !== "undefined" ? createPortal(profileOverlay, document.body) : null}
     </>
-  );
-}
-
-function ComicNavIcon({ name }: { name: ComicNavIconName }) {
-  const iconProps: SVGProps<SVGSVGElement> = {
-    viewBox: "0 0 24 24",
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: 2.8,
-    strokeLinecap: "round",
-    strokeLinejoin: "round",
-    className: "comic-nav-icon",
-    "aria-hidden": true,
-  };
-
-  if (name === "home") {
-    return (
-      <svg {...iconProps}>
-        <path d="M3 11.5 12 4l9 7.5" />
-        <path d="M6.5 10.5v8h4v-4.8h3v4.8h4v-8" />
-      </svg>
-    );
-  }
-
-  if (name === "search") {
-    return (
-      <svg {...iconProps}>
-        <circle cx="10.5" cy="10.5" r="6.2" />
-        <path d="m15.2 15.2 5 5" />
-      </svg>
-    );
-  }
-
-  if (name === "pen") {
-    return (
-      <svg {...iconProps}>
-        <path d="m4 19 4.2-1 10-10a2.2 2.2 0 0 0-3.1-3.1l-10 10L4 19Z" />
-        <path d="m13.8 6.2 4 4" />
-      </svg>
-    );
-  }
-
-  if (name === "shop") {
-    return (
-      <svg {...iconProps}>
-        <path d="M4.5 10h15l-1.2-5.2H5.7L4.5 10Z" />
-        <path d="M6 10v9h12v-9" />
-        <path d="M9 19v-5h6v5" />
-        <path d="M4.5 10c.8 2.1 3.2 2.1 4 0 .8 2.1 3.2 2.1 4 0 .8 2.1 3.2 2.1 4 0 .8 2.1 3.2 2.1 4 0" />
-      </svg>
-    );
-  }
-
-  return (
-    <svg {...iconProps}>
-      <circle cx="12" cy="12" r="8" />
-      <path d="M8.5 10h.1" />
-      <path d="M15.5 10h.1" />
-      <path d="M8.5 14.2c1.7 1.8 5.3 1.8 7 0" />
-    </svg>
   );
 }
